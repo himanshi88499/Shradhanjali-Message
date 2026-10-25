@@ -7,22 +7,23 @@
     --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
 
     /* Dark Mode Tokens (Strict Default) */
-    --bg-main: #111318;
-    --bg-surface: #191C23;
-    --bg-card: #1E222B;
-    --bg-card-hover: #262B37;
-    --color-border: #2C323F;
-    --color-border-subtle: #242934;
+    --bg-main: #061625;
+    --bg-hero: #030B12;
+    --bg-surface: #0A1F32;
+    --bg-card: #071A2B;
+    --bg-card-hover: #0E263D;
+    --color-border: #173A54;
+    --color-border-subtle: #102A3D;
 
     /* Refined Golden Amber Accent */
     --color-gold: #D9A441;
     --color-gold-hover: #B98524;
-    --color-gold-light: #ECC77B;
+    --color-gold-light: #F5C45E;
 
     /* Dark Theme Typography */
     --text-primary: #F4F5F7;
-    --text-secondary: #B2B9C7;
-    --text-muted: #808A9D;
+    --text-secondary: #C7D0DA;
+    --text-muted: #8495A9;
 
     /* Status & Brand */
     --color-whatsapp: #128C7E;

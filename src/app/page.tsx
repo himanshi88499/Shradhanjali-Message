@@ -4,9 +4,9 @@ import { getPosts, getCategories, getSettings } from '@/lib/db';
 import { HomePageContent } from '@/components/HomePageContent';
 
 export const metadata: Metadata = {
-  title: 'Shradhanjali Msg — Memorial Condolences & Tributes',
+  title: 'શ્રદ્ધાંજલિ — પ્રિયજનોની સ્મૃતિઓ ક્યારેય ભૂલાતી નથી | Shradhanjali Msg',
   description:
-    'Shradhanjali Msg is a respectful digital memorial and tribute publishing platform offering condolences, punyatithi messages, memorial poetry, and thoughtful remembrance guidance.',
+    'શ્રદ્ધાંજલિ સંદેશ, પુણ્યતિથિ, શાયરી અને સંવેદનશીલ માહિતી માટેનું વિશ્વસનીય અને સન્માનનીય ગુજરાતી મંચ.',
 };
 
 export default function HomePage() {

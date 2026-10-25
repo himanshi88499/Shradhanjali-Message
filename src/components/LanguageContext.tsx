@@ -18,15 +18,15 @@ interface LanguageContextType {
 }
 
 const LanguageContext = createContext<LanguageContextType>({
-  language: 'en',
+  language: 'gu',
   setLanguage: () => {},
-  t: (key) => translations.en[key] || '',
+  t: (key) => translations.gu[key] || '',
   languages: SUPPORTED_LANGUAGES,
   currentLanguageInfo: SUPPORTED_LANGUAGES[0],
 });
 
 export function LanguageProvider({ children }: { children: React.ReactNode }) {
-  const [language, setLanguageState] = useState<LanguageCode>('en');
+  const [language, setLanguageState] = useState<LanguageCode>('gu');
 
   useEffect(() => {
     try {
@@ -35,9 +35,9 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
         setLanguageState(saved);
         document.documentElement.lang = saved;
       } else {
-        // Default to English as per project specifications
-        setLanguageState('en');
-        document.documentElement.lang = 'en';
+        // Default to Gujarati as strictly required
+        setLanguageState('gu');
+        document.documentElement.lang = 'gu';
       }
     } catch {
       // ignore
@@ -58,8 +58,8 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
     if (currentDict && currentDict[key]) {
       return currentDict[key];
     }
-    // Fallback to English, then Gujarati
-    return translations.en[key] || translations.gu[key] || '';
+    // Strict fallback: Gujarati first, then English
+    return translations.gu[key] || translations.en[key] || '';
   };
 
   const currentLanguageInfo =
@@ -80,4 +80,10 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
   );
 }
 
-export const useLanguage = () => useContext(LanguageContext);
+export function useLanguage() {
+  const context = useContext(LanguageContext);
+  if (!context) {
+    throw new Error('useLanguage must be used within a LanguageProvider');
+  }
+  return context;
+}

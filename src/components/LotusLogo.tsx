@@ -10,7 +10,7 @@ interface LotusLogoProps {
 /**
  * Memorial Emblem:
  * Refined, minimalist tribute flame emblem representing enduring light and reverence.
- * Subtle golden amber tone (#D9A441), crisp on dark and light backgrounds without heavy glow.
+ * Subtle golden amber tone (#D9A441), crisp on dark and light backgrounds.
  */
 export const LotusIcon: React.FC<{ className?: string; size?: number }> = ({
   className = '',
@@ -57,33 +57,26 @@ export const LotusLogo: React.FC<LotusLogoProps> = ({
   showTagline = true,
   size = 'md',
 }) => {
-  const iconSize = size === 'sm' ? 26 : size === 'lg' ? 38 : 32;
+  const iconSize = size === 'sm' ? 28 : size === 'lg' ? 40 : 34;
   const titleSize = size === 'sm' ? 'text-lg' : size === 'lg' ? 'text-2xl' : 'text-xl';
-  const tagSize = size === 'sm' ? 'text-[9px]' : size === 'lg' ? 'text-xs' : 'text-[11px]';
+  const tagSize = size === 'sm' ? 'text-[10px]' : size === 'lg' ? 'text-xs' : 'text-[11px]';
 
   return (
     <Link
       href="/"
       className={`group inline-flex items-center gap-2.5 transition-opacity hover:opacity-95 ${className}`}
-      aria-label="Shradhanjali Msg — Home"
+      aria-label="શ્રદ્ધાંજલિ — હોમ"
     >
-      <LotusIcon size={iconSize} className="transition-transform duration-200 group-hover:scale-105" />
+      <LotusIcon size={iconSize} className="transition-transform duration-200 group-hover:scale-105 text-gold shrink-0" />
       <div className="flex flex-col justify-center leading-none">
-        <div className="flex items-center gap-1.5">
-          <span
-            className={`font-extrabold tracking-tight text-theme-primary transition-colors ${titleSize}`}
-          >
-            Shradhanjali
-          </span>
-          <span
-            className="px-1.5 py-0.5 rounded font-bold uppercase tracking-wider text-[10px] sm:text-xs bg-gold/15 text-gold border border-gold/30"
-          >
-            Msg
-          </span>
-        </div>
+        <span
+          className={`font-extrabold tracking-tight text-white transition-colors ${titleSize}`}
+        >
+          શ્રદ્ધાંજલિ
+        </span>
         {showTagline && (
-          <span className={`text-theme-muted tracking-wide mt-1 font-normal ${tagSize}`}>
-            Everlasting in Loving Memories
+          <span className={`text-[#C7D0DA] tracking-wide mt-1 font-normal ${tagSize}`}>
+            ભાવપૂર્ણ શ્રદ્ધાંજલિ સંદેશ
           </span>
         )}
       </div>
