@@ -25,30 +25,42 @@ export const LotusIcon: React.FC<{ className?: string; size?: number }> = ({
     className={`shrink-0 ${className}`}
     aria-hidden="true"
   >
+    <defs>
+      <linearGradient id="lotusGoldGradient" x1="18" y1="6" x2="18" y2="31" gradientUnits="userSpaceOnUse">
+        <stop offset="0%" stopColor="#FFE399" />
+        <stop offset="50%" stopColor="#F5C45E" />
+        <stop offset="100%" stopColor="#E5B54E" />
+      </linearGradient>
+      <radialGradient id="emberGlow" cx="50%" cy="50%" r="50%">
+        <stop offset="0%" stopColor="#FFFFFF" />
+        <stop offset="60%" stopColor="#FFE399" />
+        <stop offset="100%" stopColor="#F5C45E" stopOpacity="0" />
+      </radialGradient>
+    </defs>
     {/* Base gentle pedicel */}
     <path
       d="M10 28C14 30.5 22 30.5 26 28C24 29.5 20 30.5 18 30.5C16 30.5 12 29.5 10 28Z"
-      fill="#D9A441"
+      fill="url(#lotusGoldGradient)"
     />
     {/* Outer left petal */}
     <path
       d="M18 27C12 24 7 19 8 13C12 16 16 21 18 27Z"
-      fill="#D9A441"
-      opacity="0.85"
+      fill="url(#lotusGoldGradient)"
+      opacity="0.9"
     />
     {/* Outer right petal */}
     <path
       d="M18 27C24 24 29 19 28 13C24 16 20 21 18 27Z"
-      fill="#D9A441"
-      opacity="0.85"
+      fill="url(#lotusGoldGradient)"
+      opacity="0.9"
     />
     {/* Inner center eternal flame / petal */}
     <path
       d="M18 6C15 13 13 19 18 27C23 19 21 13 18 6Z"
-      fill="#D9A441"
+      fill="url(#lotusGoldGradient)"
     />
     {/* Small center core ember */}
-    <circle cx="18" cy="21" r="2" fill="#FFFFFF" opacity="0.9" />
+    <circle cx="18" cy="21" r="2.5" fill="url(#emberGlow)" />
   </svg>
 );
 
@@ -64,18 +76,19 @@ export const LotusLogo: React.FC<LotusLogoProps> = ({
   return (
     <Link
       href="/"
-      className={`group inline-flex items-center gap-2.5 transition-opacity hover:opacity-95 ${className}`}
+      className={`group inline-flex items-center gap-2.5 transition-opacity hover:opacity-95 select-none ${className}`}
       aria-label="Shradhanjali — હોમ"
     >
-      <LotusIcon size={iconSize} className="transition-transform duration-200 group-hover:scale-105 text-gold shrink-0" />
-      <div className="flex flex-col justify-center leading-none">
+      <LotusIcon size={iconSize} className="transition-transform duration-300 group-hover:scale-110 drop-shadow-md text-[#F5C45E] shrink-0" />
+      <div className="flex flex-col justify-center leading-tight">
         <span
-          className={`font-extrabold tracking-tight text-theme-primary transition-colors ${titleSize}`}
+          className={`font-serif font-black tracking-wide text-transparent bg-clip-text bg-gradient-to-r from-[#F5C45E] via-[#FFEBB0] to-[#E5B54E] transition-all drop-shadow-sm ${titleSize}`}
+          style={{ letterSpacing: '0.02em' }}
         >
           Shradhanjali
         </span>
         {showTagline && (
-          <span className={`text-theme-secondary tracking-wide mt-1 font-normal ${tagSize}`}>
+          <span className={`text-theme-secondary tracking-wider font-medium opacity-90 ${tagSize}`}>
             ભાવપૂર્ણ શ્રદ્ધાંજલિ સંદેશ
           </span>
         )}

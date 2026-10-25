@@ -94,10 +94,6 @@ export default function LanguageDropdown({ isMobile = false }: LanguageDropdownP
                       <span className="text-xs text-theme-muted ml-1.5">({lang.name})</span>
                     </div>
                   </div>
-
-                  <span className="text-[10px] px-2 py-0.5 rounded-full font-medium bg-gold/10 text-gold border border-gold/30">
-                    Active
-                  </span>
                 </button>
               );
             })}

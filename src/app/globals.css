@@ -6,19 +6,19 @@
     --font-gujarati: 'Noto Sans Gujarati', sans-serif;
     --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
 
-    /* Dark Mode Tokens (Strict Default) */
+    /* Dark Mode Tokens (Strict Default matching Reference Screenshot) */
     --bg-main: #061625;
     --bg-hero: #030B12;
     --bg-surface: #0A1F32;
     --bg-card: #071A2B;
     --bg-card-hover: #0E263D;
-    --color-border: #173A54;
-    --color-border-subtle: #102A3D;
+    --color-border: #1B3E5B;
+    --color-border-subtle: #132F47;
 
-    /* Refined Golden Amber Accent */
-    --color-gold: #D9A441;
-    --color-gold-hover: #B98524;
-    --color-gold-light: #F5C45E;
+    /* Luminous Warm Golden Accent */
+    --color-gold: #F5C45E;
+    --color-gold-hover: #E5B54E;
+    --color-gold-light: #FFE399;
 
     /* Dark Theme Typography */
     --text-primary: #F4F5F7;
@@ -125,10 +125,10 @@ body {
 
 /* Card Glow and Subtle Elevation */
 .card-glow {
-  box-shadow: 0 4px 18px -2px rgba(0, 0, 0, 0.45), 0 0 10px -2px rgba(217, 164, 65, 0.05);
+  box-shadow: 0 4px 18px -2px rgba(0, 0, 0, 0.45), 0 0 10px -2px rgba(245, 196, 94, 0.08);
 }
 .card-glow:hover {
-  box-shadow: 0 8px 26px -3px rgba(0, 0, 0, 0.55), 0 0 16px -2px rgba(217, 164, 65, 0.12);
+  box-shadow: 0 8px 26px -3px rgba(0, 0, 0, 0.55), 0 0 16px -2px rgba(245, 196, 94, 0.16);
 }
 
 html.light .card-glow {
@@ -213,4 +213,18 @@ input::placeholder, textarea::placeholder {
 
 .animate-fade-in {
   animation: fadeIn 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Google Translate Widget Clean Integration */
+.goog-te-banner-frame,
+.skiptranslate > iframe,
+#goog-gt-tt {
+  display: none !important;
+}
+body {
+  top: 0px !important;
+}
+.goog-text-highlight {
+  background: transparent !important;
+  box-shadow: none !important;
 }

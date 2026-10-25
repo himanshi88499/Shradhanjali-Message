@@ -50,7 +50,7 @@ export default function RootLayout({
           }}
         />
       </head>
-      <body className="min-h-screen flex flex-col antialiased selection:bg-[#D9A441] selection:text-white">
+      <body className="min-h-screen flex flex-col antialiased selection:bg-[#F5C45E] selection:text-[#061625]">
         <ThemeProvider>
           <LanguageProvider>
             {children}

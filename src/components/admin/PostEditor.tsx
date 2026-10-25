@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import {
   Save,
@@ -13,6 +13,10 @@ import {
   CheckCircle2,
   AlertTriangle,
   XCircle,
+  UploadCloud,
+  ArrowUp,
+  ArrowDown,
+  Image as ImageIcon,
 } from 'lucide-react';
 import { Post, Category, MessageCard } from '@/lib/types';
 
@@ -36,7 +40,9 @@ export const PostEditor: React.FC<PostEditorProps> = ({
   const [quote, setQuote] = useState(initialPost?.quote || '');
   const [featuredImage, setFeaturedImage] = useState(initialPost?.featuredImage || '/images/hero-candle.jpg');
   const [imageAlt, setImageAlt] = useState(initialPost?.imageAlt || '');
-  const [readingTime, setReadingTime] = useState(initialPost?.readingTime || '5 મિનિટ વાંચો');
+  const [uploadingImage, setUploadingImage] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
   const [status, setStatus] = useState<'published' | 'draft' | 'scheduled'>(initialPost?.status || 'published');
   const [showTableOfContents, setShowTableOfContents] = useState(initialPost?.showTableOfContents ?? true);
   const [content, setContent] = useState(initialPost?.content || '');
@@ -83,6 +89,54 @@ export const PostEditor: React.FC<PostEditorProps> = ({
   // Remove card
   const handleRemoveCard = (id: number) => {
     setMessageCards(messageCards.filter((c) => c.id !== id));
+  };
+
+  // Reorder card
+  const handleMoveCard = (index: number, direction: 'up' | 'down') => {
+    const targetIdx = direction === 'up' ? index - 1 : index + 1;
+    if (targetIdx < 0 || targetIdx >= messageCards.length) return;
+    const copy = [...messageCards];
+    const item = copy[index];
+    copy[index] = copy[targetIdx];
+    copy[targetIdx] = item;
+    setMessageCards(copy);
+  };
+
+  // Handle image upload from computer
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setUploadingImage(true);
+    const fd = new FormData();
+    fd.append('file', file);
+    fd.append('title', title || file.name);
+    fd.append('altText', imageAlt || title);
+
+    try {
+      const res = await fetch('/api/admin/media', {
+        method: 'POST',
+        body: fd,
+      });
+      const data = await res.json();
+      if (res.ok && data.url) {
+        setFeaturedImage(data.url);
+        setNotification({ type: 'success', message: 'ઇમેજ સફળતાપૂર્વક અપલોડ થઈ!' });
+        setTimeout(() => setNotification(null), 3000);
+      } else {
+        alert(data.error || 'ઇમેજ અપલોડ નિષ્ફળ ગયું.');
+      }
+    } catch (err) {
+      console.error(err);
+      alert('ઇમેજ અપલોડ કરવામાં એરર આવી.');
+    } finally {
+      setUploadingImage(false);
+      if (fileInputRef.current) fileInputRef.current.value = '';
+    }
+  };
+
+  const handleRemoveImage = () => {
+    setFeaturedImage('');
   };
 
   // 100-point SEO checklist calculations
@@ -184,7 +238,6 @@ export const PostEditor: React.FC<PostEditorProps> = ({
       quote: quote.trim(),
       featuredImage: featuredImage.trim(),
       imageAlt: imageAlt.trim() || title.trim(),
-      readingTime: readingTime.trim(),
       status,
       showTableOfContents,
       content,
@@ -343,54 +396,119 @@ export const PostEditor: React.FC<PostEditorProps> = ({
 
           {/* Individual Message Cards Builder */}
           <div className="bg-[#0B1D2D] border border-[#1C3A52] rounded-2xl p-5 card-glow">
-            <div className="flex items-center justify-between pb-3 border-b border-[#1C3A52]/60 mb-4">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-3 border-b border-[#1C3A52]/60 mb-4 gap-2">
               <div>
                 <h3 className="text-sm font-bold text-white flex items-center gap-1.5">
                   <Sparkles size={16} className="text-gold" />
                   <span>શ્રદ્ધાંજલિ સંદેશ કાર્ડ્સ (Individual Message Cards)</span>
+                  <span className="text-xs bg-[#142B40] text-gold px-2 py-0.5 rounded-full font-mono font-bold">
+                    {messageCards.length}
+                  </span>
                 </h3>
                 <p className="text-[11px] text-[#8495A9] mt-0.5">
-                  દરેક સંદેશ માટે અલગ Copy અને WhatsApp/Facebook બટન જનરેટ થશે.
+                  દરેક સંદેશ કાર્ડ માટે અલગ Copy અને WhatsApp/Facebook શેર બટન આપમેળે જનરેટ થશે.
                 </p>
               </div>
 
               <button
                 type="button"
                 onClick={handleAddCard}
-                className="flex items-center gap-1 px-3 py-1.5 bg-[#061321] hover:bg-[#142B40] text-gold border border-gold/40 rounded-lg text-xs font-semibold transition-colors"
+                className="flex items-center gap-1.5 px-3.5 py-1.5 bg-[#061321] hover:bg-[#142B40] text-gold border border-gold/40 hover:border-gold rounded-lg text-xs font-semibold transition-all shadow-sm"
               >
-                <Plus size={13} />
-                <span>કાર્ડ ઉમેરો</span>
+                <Plus size={14} />
+                <span>નવો કાર્ડ ઉમેરો</span>
               </button>
             </div>
 
             <div className="space-y-3">
-              {messageCards.map((card, idx) => (
-                <div
-                  key={card.id}
-                  className="flex items-start gap-3 p-3 bg-[#061321] border border-[#1C3A52] rounded-xl"
-                >
-                  <span className="w-6 h-6 rounded-full bg-[#142B40] text-gold font-bold text-xs flex items-center justify-center shrink-0 mt-2">
-                    {idx + 1}
-                  </span>
-                  <textarea
-                    rows={2}
-                    value={card.text}
-                    onChange={(e) => handleCardTextChange(card.id, e.target.value)}
-                    placeholder="ગુજરાતી શ્રદ્ધાંજલિ સંદેશ અહીં લખો..."
-                    className="w-full bg-transparent text-xs text-white placeholder-[#8495A9] focus:outline-none resize-none leading-relaxed"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => handleRemoveCard(card.id)}
-                    className="p-1.5 text-[#8495A9] hover:text-[#EF4444] transition-colors shrink-0"
-                    title="ડિલીટ કરો"
-                  >
-                    <Trash2 size={14} />
-                  </button>
+              {messageCards.length === 0 ? (
+                <div className="p-6 text-center border border-dashed border-[#1C3A52] rounded-xl text-xs text-[#8495A9]">
+                  હજુ સુધી કોઈ સંદેશ કાર્ડ ઉમેરાયું નથી. "નવો કાર્ડ ઉમેરો" પર ક્લિક કરો.
                 </div>
-              ))}
+              ) : (
+                messageCards.map((card, idx) => (
+                  <div
+                    key={card.id}
+                    className="p-3.5 bg-[#061321] border border-[#1C3A52] hover:border-[#285375] rounded-xl transition-colors space-y-2"
+                  >
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <span className="w-6 h-6 rounded-full bg-[#142B40] text-gold font-bold text-xs flex items-center justify-center shrink-0">
+                          {idx + 1}
+                        </span>
+                        <span className="text-[11px] font-semibold text-[#8495A9]">
+                          સંદેશ #{idx + 1}
+                        </span>
+                      </div>
+
+                      <div className="flex items-center gap-1">
+                        <button
+                          type="button"
+                          onClick={() => handleMoveCard(idx, 'up')}
+                          disabled={idx === 0}
+                          className="p-1 rounded text-[#8495A9] hover:text-white disabled:opacity-30 disabled:hover:text-[#8495A9] transition-colors"
+                          title="ઉપર ખસેડો (Move Up)"
+                        >
+                          <ArrowUp size={14} />
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => handleMoveCard(idx, 'down')}
+                          disabled={idx === messageCards.length - 1}
+                          className="p-1 rounded text-[#8495A9] hover:text-white disabled:opacity-30 disabled:hover:text-[#8495A9] transition-colors"
+                          title="નીચે ખસેડો (Move Down)"
+                        >
+                          <ArrowDown size={14} />
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => handleRemoveCard(card.id)}
+                          className="p-1 rounded text-[#8495A9] hover:text-[#EF4444] transition-colors ml-1"
+                          title="આ કાર્ડ ડિલીટ કરો"
+                        >
+                          <Trash2 size={14} />
+                        </button>
+                      </div>
+                    </div>
+
+                    <textarea
+                      rows={2}
+                      value={card.text}
+                      onChange={(e) => handleCardTextChange(card.id, e.target.value)}
+                      placeholder="ગુજરાતી શ્રદ્ધાંજલિ સંદેશ અહીં લખો..."
+                      className="w-full bg-[#030B12] border border-[#1C3A52]/60 focus:border-gold rounded-lg p-2.5 text-xs text-white placeholder-[#8495A9] focus:outline-none resize-none leading-relaxed"
+                    />
+
+                    <div className="flex items-center justify-between text-[11px] text-[#8495A9] pt-1">
+                      <span>{card.text ? `${card.text.length} અક્ષરો` : 'ખાલી'}</span>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          if (card.text.trim()) {
+                            setContent((prev) => `${prev}\n\n> ${card.text.trim()}\n\n`);
+                          }
+                        }}
+                        className="text-gold/80 hover:text-gold hover:underline transition-colors"
+                        title="આ લખાણને મુખ્ય કન્ટેન્ટમાં ક્વોટ તરીકે ઉમેરો"
+                      >
+                        + કન્ટેન્ટમાં ઉમેરો
+                      </button>
+                    </div>
+                  </div>
+                ))
+              )}
             </div>
+
+            {messageCards.length > 0 && (
+              <button
+                type="button"
+                onClick={handleAddCard}
+                className="mt-3 w-full py-2 bg-[#061321] hover:bg-[#142B40] text-gold border border-dashed border-gold/40 hover:border-gold rounded-xl text-xs font-semibold flex items-center justify-center gap-1.5 transition-colors"
+              >
+                <Plus size={14} />
+                <span>+ વધુ એક સંદેશ કાર્ડ ઉમેરો</span>
+              </button>
+            )}
           </div>
 
           {/* Main Article Content & Live Preview */}
@@ -477,47 +595,107 @@ export const PostEditor: React.FC<PostEditorProps> = ({
               </select>
             </div>
 
-            {/* Featured Image */}
-            <div>
-              <label className="block text-xs font-medium text-[#B9C6D6] mb-1.5">
-                ફીચર્ડ ઇમેજ URL
-              </label>
-              <input
-                type="text"
-                value={featuredImage}
-                onChange={(e) => setFeaturedImage(e.target.value)}
-                className="w-full bg-[#061321] border border-[#1C3A52] focus:border-gold rounded-xl px-3 py-2 text-xs text-white focus:outline-none transition-colors mb-2"
-              />
-              <div className="relative aspect-[16/9] rounded-xl overflow-hidden border border-[#1C3A52] bg-[#061321]">
-                <img src={featuredImage} alt="Featured Preview" className="w-full h-full object-cover" />
+            {/* Featured Image Management */}
+            <div className="space-y-3">
+              <div className="flex items-center justify-between">
+                <label className="block text-xs font-medium text-[#B9C6D6]">
+                  મુખ્ય ફોટો (Featured Image)
+                </label>
+                {featuredImage && (
+                  <button
+                    type="button"
+                    onClick={handleRemoveImage}
+                    className="text-[11px] text-[#EF4444] hover:underline flex items-center gap-1"
+                  >
+                    <Trash2 size={12} />
+                    <span>ઇમેજ હટાવો</span>
+                  </button>
+                )}
               </div>
-            </div>
 
-            {/* Image Alt */}
-            <div>
-              <label className="block text-xs font-medium text-[#B9C6D6] mb-1.5">
-                ઇમેજ Alt ટેગ
-              </label>
+              {/* Hidden file input for PC upload */}
               <input
-                type="text"
-                value={imageAlt}
-                onChange={(e) => setImageAlt(e.target.value)}
-                placeholder="દા.ત. માતાજીની પુણ્યતિથિ સ્મરણ દીવો"
-                className="w-full bg-[#061321] border border-[#1C3A52] focus:border-gold rounded-xl px-3 py-2 text-xs text-white focus:outline-none transition-colors"
+                type="file"
+                ref={fileInputRef}
+                onChange={handleImageUpload}
+                accept="image/*"
+                className="hidden"
               />
-            </div>
 
-            {/* Reading Time */}
-            <div>
-              <label className="block text-xs font-medium text-[#B9C6D6] mb-1.5">
-                વાંચન સમય (Reading Time)
-              </label>
-              <input
-                type="text"
-                value={readingTime}
-                onChange={(e) => setReadingTime(e.target.value)}
-                className="w-full bg-[#061321] border border-[#1C3A52] focus:border-gold rounded-xl px-3 py-2 text-xs text-white focus:outline-none transition-colors"
-              />
+              {/* Preview or Empty Area */}
+              <div className="relative aspect-[16/9] rounded-xl overflow-hidden border border-[#1C3A52] bg-[#061321] flex items-center justify-center group">
+                {featuredImage ? (
+                  <>
+                    <img
+                      src={featuredImage}
+                      alt={imageAlt || 'Featured Preview'}
+                      className="w-full h-full object-cover"
+                    />
+                    <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
+                      <button
+                        type="button"
+                        onClick={() => fileInputRef.current?.click()}
+                        className="px-3 py-1.5 bg-[#061321] text-white hover:text-gold rounded-lg text-xs font-medium border border-[#1C3A52] flex items-center gap-1"
+                      >
+                        <UploadCloud size={13} />
+                        બદલો
+                      </button>
+                      <button
+                        type="button"
+                        onClick={handleRemoveImage}
+                        className="px-3 py-1.5 bg-[#EF4444]/80 hover:bg-[#EF4444] text-white rounded-lg text-xs font-medium flex items-center gap-1"
+                      >
+                        <Trash2 size={13} />
+                        હટાવો
+                      </button>
+                    </div>
+                  </>
+                ) : (
+                  <div className="text-center p-4">
+                    <ImageIcon size={32} className="mx-auto text-[#8495A9] mb-2 opacity-60" />
+                    <p className="text-xs text-[#8495A9]">કોઈ ઇમેજ સિલેક્ટ કરેલ નથી</p>
+                  </div>
+                )}
+              </div>
+
+              {/* Upload Button */}
+              <button
+                type="button"
+                onClick={() => fileInputRef.current?.click()}
+                disabled={uploadingImage}
+                className="w-full flex items-center justify-center gap-1.5 py-2 px-3 bg-[#142B40] hover:bg-[#1C3A52] text-gold border border-gold/40 rounded-xl text-xs font-semibold transition-colors disabled:opacity-50"
+              >
+                <UploadCloud size={14} />
+                <span>{uploadingImage ? 'અપલોડ થઈ રહ્યું છે...' : 'પીસીમાંથી ઇમેજ અપલોડ કરો'}</span>
+              </button>
+
+              {/* Direct URL input */}
+              <div>
+                <label className="block text-[11px] text-[#8495A9] mb-1">
+                  અથવા ઇમેજ URL એડિટ કરો:
+                </label>
+                <input
+                  type="text"
+                  value={featuredImage}
+                  onChange={(e) => setFeaturedImage(e.target.value)}
+                  placeholder="/images/... અથવા https://..."
+                  className="w-full bg-[#061321] border border-[#1C3A52] focus:border-gold rounded-xl px-3 py-2 text-xs text-white focus:outline-none transition-colors"
+                />
+              </div>
+
+              {/* Image Alt */}
+              <div>
+                <label className="block text-xs font-medium text-[#B9C6D6] mb-1.5">
+                  ઇમેજ Alt ટેગ (SEO માટે)
+                </label>
+                <input
+                  type="text"
+                  value={imageAlt}
+                  onChange={(e) => setImageAlt(e.target.value)}
+                  placeholder="દા.ત. પિતાશ્રી પુણ્યતિથિ શ્રદ્ધાંજલિ સંદેશ ફોટો"
+                  className="w-full bg-[#061321] border border-[#1C3A52] focus:border-gold rounded-xl px-3 py-2 text-xs text-white focus:outline-none transition-colors"
+                />
+              </div>
             </div>
 
             {/* TOC Toggle */}

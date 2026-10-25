@@ -43,7 +43,7 @@ export const BlogCard: React.FC<BlogCardProps> = ({ post, priority = false }) =>
           {post.excerpt}
         </p>
 
-        {/* Card Footer: Metadata (Date & Reading Time) */}
+        {/* Card Footer: Metadata (Date only) */}
         <div className="flex items-center justify-between pt-3 border-t border-theme-subtle text-xs text-theme-muted">
           <div className="flex items-center gap-1.5">
             <Calendar size={13} className="text-theme-muted" />
@@ -56,10 +56,9 @@ export const BlogCard: React.FC<BlogCardProps> = ({ post, priority = false }) =>
             </span>
           </div>
 
-          <div className="flex items-center gap-1.5">
-            <Clock size={13} className="text-theme-muted" />
-            <span>{post.readingTime || '5 min read'}</span>
-          </div>
+          <span className="text-[11px] font-medium text-gold hover:underline group-hover:translate-x-0.5 transition-transform">
+            વાંચો →
+          </span>
         </div>
       </div>
     </article>

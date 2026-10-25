@@ -82,21 +82,28 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
             </h1>
 
             {/* Supporting paragraph */}
-            <p className="text-sm sm:text-base lg:text-[17px] text-[#C7D0DA] leading-relaxed mb-8 max-w-xl whitespace-pre-line drop-shadow-sm font-normal">
+            <p
+              className="text-sm sm:text-base lg:text-[17px] leading-relaxed mb-8 max-w-xl whitespace-pre-line drop-shadow-md font-normal"
+              style={{ color: '#E2E8F0' }}
+            >
               {displaySubtitle}
             </p>
 
             {/* Pill-shaped Search Bar matching Reference Screenshot */}
             <form onSubmit={handleSearch} className="w-full max-w-xl">
-              <div className="relative flex items-center bg-[#071A2B]/95 backdrop-blur-md border border-[#173A54] focus-within:border-[#F5C45E] rounded-full p-1.5 pl-4 sm:pl-5 shadow-2xl transition-all">
-                <Search size={19} className="text-[#8495A9] shrink-0" />
+              <div
+                className="relative flex items-center backdrop-blur-md border border-[#173A54] hover:border-[#F5C45E]/60 focus-within:border-[#F5C45E] rounded-full p-1.5 pl-4 sm:pl-5 shadow-2xl transition-all"
+                style={{ backgroundColor: 'rgba(7, 26, 43, 0.92)' }}
+              >
+                <Search size={19} className="text-[#F5C45E] shrink-0" />
                 <input
                   type="text"
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
                   placeholder={displayPlaceholder}
                   aria-label="Search memorial messages"
-                  className="w-full bg-transparent text-white px-3 sm:px-4 py-2 sm:py-2.5 text-xs sm:text-sm focus:outline-none placeholder-[#8495A9]"
+                  className="w-full bg-transparent px-3 sm:px-4 py-2 sm:py-2.5 text-xs sm:text-sm focus:outline-none placeholder:text-[#8495A9]"
+                  style={{ color: '#FFFFFF' }}
                 />
                 <button
                   type="submit"
@@ -120,7 +127,10 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                   “
                 </span>
 
-                <p className="inline text-sm sm:text-base lg:text-[17px] font-medium text-[#F4F5F7] leading-relaxed tracking-wide whitespace-pre-line drop-shadow-md">
+                <p
+                  className="inline text-sm sm:text-base lg:text-[17px] font-medium leading-relaxed tracking-wide whitespace-pre-line drop-shadow-md"
+                  style={{ color: '#FFFFFF' }}
+                >
                   {displayQuote}
                 </p>
 
