@@ -1,20 +1,6 @@
 import type { Metadata } from 'next';
-import { Noto_Sans_Gujarati, Inter } from 'next/font/google';
 import './globals.css';
 import { ThemeProvider } from '@/components/ThemeProvider';
-
-const notoGujarati = Noto_Sans_Gujarati({
-  variable: '--font-gujarati',
-  subsets: ['gujarati'],
-  weight: ['400', '500', '600', '700', '800'],
-  display: 'swap',
-});
-
-const inter = Inter({
-  variable: '--font-sans',
-  subsets: ['latin'],
-  display: 'swap',
-});
 
 export const metadata: Metadata = {
   title: 'શ્રદ્ધાંજલિ - સ્મૃતિઓમાં સદાય... | ગુજરાતી શ્રદ્ધાંજલિ પોર્ટલ',
@@ -41,7 +27,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="gu" className={`${notoGujarati.variable} ${inter.variable}`} suppressHydrationWarning>
+    <html lang="gu" suppressHydrationWarning>
       <head>
         <script
           dangerouslySetInnerHTML={{
