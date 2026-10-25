@@ -44,6 +44,46 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
+interface ContentBlock {
+  type: 'h2' | 'h3' | 'paragraph' | 'card';
+  text: string;
+}
+
+function parseContentBlocks(content: string): ContentBlock[] {
+  const blocks: ContentBlock[] = [];
+  const parts = content.split(/(:::card[\s\S]*?:::)/g);
+
+  for (const part of parts) {
+    const trimmed = part.trim();
+    if (!trimmed) continue;
+
+    if (trimmed.startsWith(':::card') && trimmed.endsWith(':::')) {
+      const cardText = trimmed
+        .replace(/^:::card\s*/, '')
+        .replace(/\s*:::$/, '')
+        .trim();
+      if (cardText) {
+        blocks.push({ type: 'card', text: cardText });
+      }
+    } else {
+      const paras = trimmed.split(/\n\n+/);
+      for (const p of paras) {
+        const pTrimmed = p.trim();
+        if (!pTrimmed) continue;
+        if (pTrimmed.startsWith('## ')) {
+          blocks.push({ type: 'h2', text: pTrimmed.replace(/^##\s+/, '') });
+        } else if (pTrimmed.startsWith('### ')) {
+          blocks.push({ type: 'h3', text: pTrimmed.replace(/^###\s+/, '') });
+        } else {
+          blocks.push({ type: 'paragraph', text: pTrimmed });
+        }
+      }
+    }
+  }
+
+  return blocks;
+}
+
 export default async function SingleArticlePage({ params }: Props) {
   const { slug } = await params;
   const post = getPostBySlug(slug);
@@ -69,6 +109,11 @@ export default async function SingleArticlePage({ params }: Props) {
 
   const bottomRelated = relatedPosts.slice(0, 4);
 
+  const hasEmbeddedCards = post.content.includes(':::card');
+  const contentBlocks = parseContentBlocks(post.content);
+  const midPoint = Math.max(1, Math.floor(contentBlocks.length / 2));
+  let cardCounter = 1;
+
   // Schema.org Article Structured Data
   const articleJsonLd = {
     '@context': 'https://schema.org',
@@ -92,6 +137,41 @@ export default async function SingleArticlePage({ params }: Props) {
     },
   };
 
+  const renderRecommendationBox = (recPost: typeof post) => (
+    <div className="my-8 p-4 sm:p-5 rounded-2xl bg-theme-surface border border-theme hover:border-[#F5C45E]/60 transition-all card-glow group">
+      <div className="flex items-center gap-2 text-xs font-bold text-[#F5C45E] uppercase tracking-wider mb-3">
+        <Sparkles size={15} className="text-[#F5C45E]" />
+        <span>આ પણ વાંચો</span>
+      </div>
+      <a
+        href={`/post/${recPost.slug}`}
+        rel="dofollow"
+        className="flex items-center gap-4 group-hover:opacity-95 transition-opacity"
+      >
+        <div className="relative w-20 h-20 sm:w-24 sm:h-20 rounded-xl overflow-hidden shrink-0 border border-theme bg-theme-main">
+          <img
+            src={recPost.featuredImage || '/images/hero-candle.jpg'}
+            alt={recPost.title}
+            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+            loading="lazy"
+          />
+        </div>
+        <div className="flex-1 min-w-0">
+          <span className="text-[10px] font-bold text-[#F5C45E] uppercase tracking-wider block mb-1">
+            {recPost.categoryName || 'Shradhanjali'}
+          </span>
+          <h4 className="text-sm sm:text-base font-bold text-theme-primary group-hover:text-[#F5C45E] transition-colors line-clamp-2 leading-snug">
+            {recPost.title}
+          </h4>
+          <span className="inline-flex items-center gap-1 text-xs text-[#F5C45E] font-semibold mt-2">
+            <span>સંપૂર્ણ લેખ વાંચો</span>
+            <span>→</span>
+          </span>
+        </div>
+      </a>
+    </div>
+  );
+
   return (
     <div className="min-h-screen flex flex-col bg-theme-main text-theme-primary transition-colors">
       <Header />
@@ -101,24 +181,23 @@ export default async function SingleArticlePage({ params }: Props) {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(articleJsonLd) }}
       />
 
-      <main className="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5 w-full">
-        {/* Breadcrumbs */}
-        <Breadcrumbs
-          items={[
-            { label: 'Home', url: '/' },
-            {
-              label: post.categoryName || 'Shradhanjali',
-              url: `/category/${post.categorySlug || 'shradhanjali'}`,
-            },
-            { label: post.tags[0] || 'Tribute' },
-            { label: post.title },
-          ]}
-        />
-
-        {/* Main 2-Column Layout starting immediately below breadcrumbs to eliminate sidebar top gap */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start mt-3">
+      <main className="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 w-full">
+        {/* Main 2-Column Layout starting at the top so sidebar aligns flush with breadcrumbs */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
           {/* Main Article Body (8 cols on lg) */}
           <article className="lg:col-span-8 flex flex-col">
+            {/* Breadcrumbs at the top of left article column */}
+            <Breadcrumbs
+              items={[
+                { label: 'Home', url: '/' },
+                {
+                  label: post.categoryName || 'Shradhanjali',
+                  url: `/category/${post.categorySlug || 'shradhanjali'}`,
+                },
+                { label: post.title },
+              ]}
+            />
+
             {/* Article Language Notice */}
             <ArticleLanguageBadge />
 
@@ -182,98 +261,137 @@ export default async function SingleArticlePage({ params }: Props) {
               </p>
             </div>
 
-            {/* Individual Message Cards */}
-            {post.messageCards && post.messageCards.length > 0 && (
-              <div className="space-y-4 my-6">
-                {post.messageCards.map((card) => (
-                  <MessageCardItem
-                    key={card.id}
-                    id={card.id}
-                    text={card.text}
-                    articleUrl={`https://shradhanjali.in/post/${post.slug}`}
-                    articleTitle={post.title}
-                  />
-                ))}
-              </div>
-            )}
+            {/* Content Display: Interweaved Message Cards & Headings OR Classic Mode */}
+            {hasEmbeddedCards ? (
+              <div className="prose prose-invert max-w-none text-theme-primary text-base leading-relaxed space-y-6">
+                {contentBlocks.map((block, idx) => {
+                  const shouldInsertMidRec = idx === midPoint && midPostRecommendation;
 
-            {/* Auto Internal Link 1: Mid-Article Also Read with Image (Do-follow) */}
-            {midPostRecommendation && (
-              <div className="my-8 p-4 sm:p-5 rounded-2xl bg-theme-surface border border-theme hover:border-[#F5C45E]/60 transition-all card-glow group">
-                <div className="flex items-center gap-2 text-xs font-bold text-[#F5C45E] uppercase tracking-wider mb-3">
-                  <Sparkles size={15} className="text-[#F5C45E]" />
-                  <span>આ પણ વાંચો • RECOMMENDATION</span>
+                  if (block.type === 'card') {
+                    const currentNum = cardCounter++;
+                    return (
+                      <React.Fragment key={idx}>
+                        <div className="not-prose my-4">
+                          <MessageCardItem
+                            id={currentNum}
+                            text={block.text}
+                            articleUrl={`https://shradhanjali.in/post/${post.slug}`}
+                            articleTitle={post.title}
+                          />
+                        </div>
+                        {shouldInsertMidRec && (
+                          <div className="not-prose">{renderRecommendationBox(midPostRecommendation)}</div>
+                        )}
+                      </React.Fragment>
+                    );
+                  }
+
+                  if (block.type === 'h2') {
+                    const id = block.text.toLowerCase().replace(/[^a-z0-9\u0A80-\u0AFF]+/g, '-');
+                    return (
+                      <React.Fragment key={idx}>
+                        <h2
+                          id={id}
+                          className="text-xl sm:text-2xl font-bold border-b border-theme pb-2 mt-8 mb-4 text-[#F5C45E] flex items-center gap-2"
+                        >
+                          <Sparkles size={18} className="text-[#F5C45E]" />
+                          <span>{block.text}</span>
+                        </h2>
+                        {shouldInsertMidRec && (
+                          <div className="not-prose">{renderRecommendationBox(midPostRecommendation)}</div>
+                        )}
+                      </React.Fragment>
+                    );
+                  }
+
+                  if (block.type === 'h3') {
+                    const id = block.text.toLowerCase().replace(/[^a-z0-9\u0A80-\u0AFF]+/g, '-');
+                    return (
+                      <React.Fragment key={idx}>
+                        <h3
+                          id={id}
+                          className="text-lg sm:text-xl font-semibold text-[#F5C45E] mt-6 mb-3"
+                        >
+                          {block.text}
+                        </h3>
+                        {shouldInsertMidRec && (
+                          <div className="not-prose">{renderRecommendationBox(midPostRecommendation)}</div>
+                        )}
+                      </React.Fragment>
+                    );
+                  }
+
+                  return (
+                    <React.Fragment key={idx}>
+                      <p className="text-theme-secondary leading-relaxed text-base">
+                        {block.text}
+                      </p>
+                      {shouldInsertMidRec && (
+                        <div className="not-prose">{renderRecommendationBox(midPostRecommendation)}</div>
+                      )}
+                    </React.Fragment>
+                  );
+                })}
+              </div>
+            ) : (
+              <>
+                {/* Classic Mode: Individual Message Cards */}
+                {post.messageCards && post.messageCards.length > 0 && (
+                  <div className="space-y-4 my-6">
+                    {post.messageCards.map((card) => (
+                      <MessageCardItem
+                        key={card.id}
+                        id={card.id}
+                        text={card.text}
+                        articleUrl={`https://shradhanjali.in/post/${post.slug}`}
+                        articleTitle={post.title}
+                      />
+                    ))}
+                  </div>
+                )}
+
+                {/* Auto Internal Link 1: Mid-Article Also Read (Do-follow) */}
+                {midPostRecommendation && renderRecommendationBox(midPostRecommendation)}
+
+                {/* Main Rich Text Content */}
+                <div className="prose prose-invert max-w-none text-theme-primary text-base leading-relaxed mt-6 space-y-6">
+                  {post.content.split('\n\n').map((paragraph, index) => {
+                    if (paragraph.startsWith('## ')) {
+                      const heading = paragraph.replace('## ', '');
+                      const id = heading.toLowerCase().replace(/[^a-z0-9\u0A80-\u0AFF]+/g, '-');
+                      return (
+                        <h2
+                          key={index}
+                          id={id}
+                          className="text-xl sm:text-2xl font-bold border-b border-theme pb-2 mt-8 mb-4 text-[#F5C45E] flex items-center gap-2"
+                        >
+                          <Sparkles size={18} className="text-[#F5C45E]" />
+                          <span>{heading}</span>
+                        </h2>
+                      );
+                    }
+                    if (paragraph.startsWith('### ')) {
+                      const heading = paragraph.replace('### ', '');
+                      const id = heading.toLowerCase().replace(/[^a-z0-9\u0A80-\u0AFF]+/g, '-');
+                      return (
+                        <h3
+                          key={index}
+                          id={id}
+                          className="text-lg sm:text-xl font-semibold text-[#F5C45E] mt-6 mb-3"
+                        >
+                          {heading}
+                        </h3>
+                      );
+                    }
+                    return (
+                      <p key={index} className="text-theme-secondary leading-relaxed text-base">
+                        {paragraph}
+                      </p>
+                    );
+                  })}
                 </div>
-                <a
-                  href={`/post/${midPostRecommendation.slug}`}
-                  rel="dofollow"
-                  className="flex items-center gap-4 group-hover:opacity-95 transition-opacity"
-                >
-                  <div className="relative w-20 h-20 sm:w-24 sm:h-20 rounded-xl overflow-hidden shrink-0 border border-theme bg-theme-main">
-                    <img
-                      src={midPostRecommendation.featuredImage || '/images/hero-candle.jpg'}
-                      alt={midPostRecommendation.title}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                      loading="lazy"
-                    />
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <span className="text-[10px] font-bold text-[#F5C45E] uppercase tracking-wider block mb-1">
-                      {midPostRecommendation.categoryName || 'Shradhanjali'}
-                    </span>
-                    <h4 className="text-sm sm:text-base font-bold text-theme-primary group-hover:text-[#F5C45E] transition-colors line-clamp-2 leading-snug">
-                      {midPostRecommendation.title}
-                    </h4>
-                    <span className="inline-flex items-center gap-1 text-xs text-[#F5C45E] font-semibold mt-2">
-                      <span>સંપૂર્ણ લેખ વાંચો</span>
-                      <span>→</span>
-                    </span>
-                  </div>
-                </a>
-              </div>
+              </>
             )}
-
-            {/* Main Rich Text Content */}
-            <div className="prose prose-invert max-w-none text-theme-primary text-base leading-relaxed mt-6 space-y-6">
-              {post.content.split('\n\n').map((paragraph, index) => {
-                if (paragraph.startsWith('## ')) {
-                  const heading = paragraph.replace('## ', '');
-                  const id = heading
-                    .toLowerCase()
-                    .replace(/[^a-z0-9\u0A80-\u0AFF]+/g, '-');
-                  return (
-                    <h2
-                      key={index}
-                      id={id}
-                      className="text-xl sm:text-2xl font-bold border-b border-theme pb-2 mt-8 mb-4 text-[#F5C45E] flex items-center gap-2"
-                    >
-                      <Sparkles size={18} className="text-[#F5C45E]" />
-                      <span>{heading}</span>
-                    </h2>
-                  );
-                }
-                if (paragraph.startsWith('### ')) {
-                  const heading = paragraph.replace('### ', '');
-                  const id = heading
-                    .toLowerCase()
-                    .replace(/[^a-z0-9\u0A80-\u0AFF]+/g, '-');
-                  return (
-                    <h3
-                      key={index}
-                      id={id}
-                      className="text-lg sm:text-xl font-semibold text-[#F5C45E] mt-6 mb-3"
-                    >
-                      {heading}
-                    </h3>
-                  );
-                }
-                return (
-                  <p key={index} className="text-theme-secondary leading-relaxed text-base">
-                    {paragraph}
-                  </p>
-                );
-              })}
-            </div>
 
             {/* Auto Internal Link 2: End-of-Article Do-Follow Recommendation */}
             {endPostRecommendation && (
@@ -281,9 +399,8 @@ export default async function SingleArticlePage({ params }: Props) {
                 <div className="flex items-center justify-between pb-3 mb-3 border-b border-theme">
                   <span className="text-xs font-bold text-[#F5C45E] uppercase tracking-wider flex items-center gap-1.5">
                     <LotusIcon size={18} className="text-[#F5C45E]" />
-                    <span>સંબંધિત વિશેષ લેખ • MORE MEMORIAL TRIBUTES</span>
+                    <span>આ પણ વાંચો</span>
                   </span>
-                  <span className="text-[11px] text-theme-muted font-medium">Do-Follow Internal Link</span>
                 </div>
                 <a
                   href={`/post/${endPostRecommendation.slug}`}
@@ -380,18 +497,18 @@ export default async function SingleArticlePage({ params }: Props) {
             )}
           </article>
 
-          {/* Desktop Right Sidebar (4 cols on lg) */}
+          {/* Desktop Right Sidebar starting flush with breadcrumbs */}
           <aside className="lg:col-span-4 flex flex-col space-y-6">
-            {/* Widget 1: Shradhanjali Categories */}
+            {/* Widget 1: Best Shradhanjali Messages */}
+            <SidebarRelatedPosts currentPostId={post.id} initialPosts={allPosts} />
+
+            {/* Widget 2: Shradhanjali Categories */}
             <SidebarCategories
               categories={categories}
               currentCategorySlug={post.categorySlug}
             />
 
-            {/* Widget 2: Best Shradhanjali Messages */}
-            <SidebarRelatedPosts currentPostId={post.id} initialPosts={allPosts} />
-
-            {/* Widget 3: ઝડપી ક્રિયાઓ */}
+            {/* Widget 3: Social Media Share */}
             <ArticleQuickActions
               title={post.title}
               excerpt={post.excerpt}

@@ -138,6 +138,23 @@ html.light .card-glow:hover {
   box-shadow: 0 6px 18px -2px rgba(0, 0, 0, 0.09), 0 0 1px rgba(0, 0, 0, 0.1) !important;
 }
 
+/* Logo Wordmark Styling (Gold in Dark mode, Black Gradient in Light mode) */
+.logo-title-gradient {
+  background: linear-gradient(to right, #F5C45E, #FFEBB0, #E5B54E);
+  -webkit-background-clip: text !important;
+  background-clip: text !important;
+  color: transparent !important;
+}
+html.light .logo-title-gradient {
+  background: linear-gradient(to right, #090D16, #1E293B, #334155) !important;
+  -webkit-background-clip: text !important;
+  background-clip: text !important;
+  color: transparent !important;
+}
+html.light .lotus-logo-icon path {
+  fill: #0F172A !important;
+}
+
 /* Mapping Tailwind arbitrary classes to tokens for seamless adaptation */
 .bg-\[\#061321\],
 .bg-\[\#061625\],

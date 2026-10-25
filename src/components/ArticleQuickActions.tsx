@@ -80,7 +80,7 @@ export const ArticleQuickActions: React.FC<ArticleQuickActionsProps> = ({
     <div className="bg-theme-card border border-theme rounded-2xl p-5 card-glow mb-6 transition-colors">
       <div className="flex items-center gap-2 pb-4 border-b border-theme text-theme-primary font-semibold text-base">
         <Share2 size={18} className="text-gold" />
-        <span>{t('quick_actions')}</span>
+        <span>Social Media Share</span>
       </div>
 
       <div className="mt-4 flex flex-col space-y-2.5">

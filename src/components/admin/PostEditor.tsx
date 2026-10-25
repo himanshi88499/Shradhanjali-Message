@@ -42,6 +42,33 @@ export const PostEditor: React.FC<PostEditorProps> = ({
   const [imageAlt, setImageAlt] = useState(initialPost?.imageAlt || '');
   const [uploadingImage, setUploadingImage] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const contentRef = useRef<HTMLTextAreaElement>(null);
+
+  const insertSnippet = (snippet: string) => {
+    const textarea = contentRef.current;
+    if (!textarea) {
+      setContent((prev) => (prev ? `${prev}\n\n${snippet}` : snippet));
+      return;
+    }
+    const start = textarea.selectionStart;
+    const end = textarea.selectionEnd;
+    const before = content.substring(0, start);
+    const after = content.substring(end);
+    const newContent = before + snippet + after;
+    setContent(newContent);
+    setTimeout(() => {
+      textarea.focus();
+      textarea.selectionStart = textarea.selectionEnd = start + snippet.length;
+    }, 50);
+  };
+
+  const insertBatchCards = (count: number) => {
+    let snippet = '\n\n';
+    for (let i = 1; i <= count; i++) {
+      snippet += `:::card\nશ્રદ્ધાંજલિ સંદેશ #${i}: પ્રિયજનની પવિત્ર સ્મૃતિને શત શત નમન...\n:::\n\n`;
+    }
+    insertSnippet(snippet);
+  };
 
   const [status, setStatus] = useState<'published' | 'draft' | 'scheduled'>(initialPost?.status || 'published');
   const [showTableOfContents, setShowTableOfContents] = useState(initialPost?.showTableOfContents ?? true);
@@ -227,6 +254,19 @@ export const PostEditor: React.FC<PostEditorProps> = ({
 
     const selectedCategory = categories.find((c) => c.id === categoryId);
 
+    // Auto-extract any :::card blocks from content to sync with messageCards
+    const extractedCards: MessageCard[] = [];
+    const cardMatches = content.match(/:::card[\s\S]*?:::/g);
+    if (cardMatches && cardMatches.length > 0) {
+      cardMatches.forEach((m, idx) => {
+        const cardText = m.replace(/^:::card\s*/, '').replace(/\s*:::$/, '').trim();
+        if (cardText) {
+          extractedCards.push({ id: idx + 1, text: cardText });
+        }
+      });
+    }
+    const finalCards = extractedCards.length > 0 ? extractedCards : messageCards;
+
     const postData: Partial<Post> = {
       id: initialPost?.id,
       title: title.trim(),
@@ -241,7 +281,7 @@ export const PostEditor: React.FC<PostEditorProps> = ({
       status,
       showTableOfContents,
       content,
-      messageCards,
+      messageCards: finalCards,
       seoTitle: seoTitle.trim() || title.trim(),
       seoDescription: seoDescription.trim() || excerpt.trim(),
       focusKeyword: focusKeyword.trim(),
@@ -485,13 +525,13 @@ export const PostEditor: React.FC<PostEditorProps> = ({
                         type="button"
                         onClick={() => {
                           if (card.text.trim()) {
-                            setContent((prev) => `${prev}\n\n> ${card.text.trim()}\n\n`);
+                            insertSnippet(`\n\n:::card\n${card.text.trim()}\n:::\n\n`);
                           }
                         }}
-                        className="text-gold/80 hover:text-gold hover:underline transition-colors"
-                        title="આ લખાણને મુખ્ય કન્ટેન્ટમાં ક્વોટ તરીકે ઉમેરો"
+                        className="px-2.5 py-1 bg-[#142B40] text-gold hover:bg-[#1C3A52] rounded-md text-[11px] font-semibold border border-gold/30 transition-colors"
+                        title="આ સંદેશ કાર્ડને કન્ટેન્ટમાં જ્યાં કર્સર છે ત્યાં દાખલ કરો"
                       >
-                        + કન્ટેન્ટમાં ઉમેરો
+                        + કાર્ડ કન્ટેન્ટમાં ઉમેરો
                       </button>
                     </div>
                   </div>
@@ -541,25 +581,121 @@ export const PostEditor: React.FC<PostEditorProps> = ({
             </div>
 
             {activeTab === 'edit' ? (
-              <div>
-                <p className="text-[11px] text-[#8495A9] mb-2">
-                  સૂચના: હેડિંગ્સ માટે <code>##</code> (H2) અને <code>###</code> (H3) નો ઉપયોગ કરો.
-                </p>
+              <div className="space-y-3">
+                {/* Visual Quick-Insert Bar for flexible article structure */}
+                <div className="bg-[#061321] border border-[#1C3A52] rounded-xl p-3 space-y-2">
+                  <div className="flex items-center justify-between">
+                    <span className="text-[11px] font-bold text-gold uppercase tracking-wider flex items-center gap-1.5">
+                      <Sparkles size={13} />
+                      <span>ઝડપી ઉમેરો (Quick Insert at Cursor):</span>
+                    </span>
+                    <span className="text-[10px] text-[#8495A9]">
+                      જ્યાં કર્સર છે ત્યાં એક ક્લિકમાં ઉમેરો
+                    </span>
+                  </div>
+
+                  <div className="flex flex-wrap items-center gap-1.5">
+                    <button
+                      type="button"
+                      onClick={() => insertSnippet('\n\n## હેડિંગ શીર્ષક અહીં લખો\n\n')}
+                      className="px-2.5 py-1 bg-[#142B40] hover:bg-[#1C3A52] text-gold border border-gold/30 rounded-lg text-xs font-semibold transition-colors"
+                      title="H2 મુખ્ય હેડિંગ ઉમેરો"
+                    >
+                      + H2 હેડિંગ
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => insertSnippet('\n\n### સબ-હેડિંગ અહીં લખો\n\n')}
+                      className="px-2.5 py-1 bg-[#142B40] hover:bg-[#1C3A52] text-[#FFD782] border border-[#FFD782]/30 rounded-lg text-xs font-semibold transition-colors"
+                      title="H3 સબ-હેડિંગ ઉમેરો"
+                    >
+                      + H3 સબ-હેડિંગ
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => insertSnippet('\n\nઅહીં તમારો કન્ટેન્ટ પેરાગ્રાફ લખો...\n\n')}
+                      className="px-2.5 py-1 bg-[#0B1D2D] hover:bg-[#142B40] text-white border border-[#1C3A52] rounded-lg text-xs font-medium transition-colors"
+                      title="પેરાગ્રાફ કન્ટેન્ટ ઉમેરો"
+                    >
+                      + પેરાગ્રાફ
+                    </button>
+                    <span className="text-[#1C3A52]">|</span>
+                    <button
+                      type="button"
+                      onClick={() => insertSnippet('\n\n:::card\nભાવપૂર્ણ શ્રદ્ધાંજલિ સંદેશ અહીં લખો...\n:::\n\n')}
+                      className="px-2.5 py-1 bg-[#F5C45E]/15 hover:bg-[#F5C45E]/25 text-gold border border-gold/40 rounded-lg text-xs font-bold transition-colors"
+                      title="1 ઇન્ડિવિડ્યુઅલ સંદેશ કાર્ડ ઉમેરો"
+                    >
+                      + ૧ સંદેશ કાર્ડ
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => insertBatchCards(5)}
+                      className="px-2.5 py-1 bg-[#F5C45E]/15 hover:bg-[#F5C45E]/25 text-gold border border-gold/40 rounded-lg text-xs font-bold transition-colors"
+                      title="૫ સંદેશ કાર્ડ્સ એકસાથે ઉમેરો"
+                    >
+                      + ૫ કાર્ડ્સ
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => insertBatchCards(10)}
+                      className="px-2.5 py-1 bg-[#F5C45E]/20 hover:bg-[#F5C45E]/30 text-gold border border-gold/60 rounded-lg text-xs font-bold transition-colors shadow-sm"
+                      title="૧૦ સંદેશ કાર્ડ્સ એકસાથે ઉમેરો"
+                    >
+                      + ૧૦ કાર્ડ્સ (Batch)
+                    </button>
+                  </div>
+                </div>
+
                 <textarea
-                  rows={10}
+                  ref={contentRef}
+                  rows={14}
                   value={content}
                   onChange={(e) => setContent(e.target.value)}
-                  placeholder="## હેડિંગ અહીં લખો&#10;&#10;કન્ટેન્ટનો પેરાગ્રાફ અહીં લખો..."
+                  placeholder="## હેડિંગ અહીં લખો&#10;&#10;કન્ટેન્ટનો પેરાગ્રાફ અહીં લખો...&#10;&#10;:::card&#10;શ્રદ્ધાંજલિ સંદેશ ૧...&#10;:::&#10;&#10;:::card&#10;શ્રદ્ધાંજલિ સંદેશ ૨...&#10;:::"
                   className="w-full bg-[#061321] border border-[#1C3A52] focus:border-gold rounded-xl p-4 text-xs sm:text-sm text-white placeholder-[#8495A9] focus:outline-none transition-colors font-mono leading-relaxed"
                 />
+
+                <div className="p-2.5 rounded-lg bg-[#061321]/60 border border-[#1C3A52]/60 text-[11px] text-[#8495A9] flex items-center justify-between">
+                  <span>
+                    💡 ટિપ: તમે <strong>પેરાગ્રાફ → હેડિંગ → પેરાગ્રાફ → 10 સંદેશ કાર્ડ્સ → હેડિંગ → કાર્ડ્સ</strong> ગમે તેટલી વાર પુનરાવર્તિત કરી શકો છો.
+                  </span>
+                  <span>{content.length} અક્ષરો</span>
+                </div>
               </div>
             ) : (
               <div className="bg-[#061321] border border-[#1C3A52] rounded-xl p-5 text-sm text-[#B9C6D6] leading-relaxed space-y-4 min-h-[220px]">
                 {content ? (
-                  content.split('\n\n').map((p, i) => {
-                    if (p.startsWith('## ')) return <h2 key={i} className="text-lg font-bold text-gold">{p.replace('## ', '')}</h2>;
-                    if (p.startsWith('### ')) return <h3 key={i} className="text-base font-semibold text-[#FFD782]">{p.replace('### ', '')}</h3>;
-                    return <p key={i}>{p}</p>;
+                  content.split(/(:::card[\s\S]*?:::)/g).map((chunk, idx) => {
+                    const trimmed = chunk.trim();
+                    if (!trimmed) return null;
+                    if (trimmed.startsWith(':::card') && trimmed.endsWith(':::')) {
+                      const text = trimmed.replace(/^:::card\s*/, '').replace(/\s*:::$/, '');
+                      return (
+                        <div key={idx} className="p-4 rounded-xl bg-[#0B1D2D] border border-gold/40 shadow-sm">
+                          <span className="text-[10px] text-gold font-bold uppercase tracking-wider block mb-1">
+                            ✨ શ્રદ્ધાંજલિ સંદેશ કાર્ડ પ્રિવ્યૂ
+                          </span>
+                          <p className="text-white text-xs sm:text-sm font-medium leading-relaxed">{text}</p>
+                          <div className="flex gap-2 mt-2 text-[10px] text-[#8495A9]">
+                            <span className="px-2 py-0.5 rounded bg-[#142B40] text-gold">Copy Button</span>
+                            <span className="px-2 py-0.5 rounded bg-[#128C7E] text-white">WhatsApp Share</span>
+                            <span className="px-2 py-0.5 rounded bg-[#1877F2] text-white">Facebook Share</span>
+                          </div>
+                        </div>
+                      );
+                    }
+                    return chunk.split('\n\n').map((p, pIdx) => {
+                      const pTrimmed = p.trim();
+                      if (!pTrimmed) return null;
+                      if (pTrimmed.startsWith('## ')) {
+                        return <h2 key={pIdx} className="text-lg font-bold text-gold border-b border-[#1C3A52] pb-1">{pTrimmed.replace('## ', '')}</h2>;
+                      }
+                      if (pTrimmed.startsWith('### ')) {
+                        return <h3 key={pIdx} className="text-base font-semibold text-[#FFD782]">{pTrimmed.replace('### ', '')}</h3>;
+                      }
+                      return <p key={pIdx}>{pTrimmed}</p>;
+                    });
                   })
                 ) : (
                   <p className="text-xs text-[#8495A9]">પ્રિવ્યૂ જોવા માટે લખાણ દાખલ કરો.</p>

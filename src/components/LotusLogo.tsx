@@ -79,10 +79,10 @@ export const LotusLogo: React.FC<LotusLogoProps> = ({
       className={`group inline-flex items-center gap-2.5 transition-opacity hover:opacity-95 select-none ${className}`}
       aria-label="Shradhanjali — હોમ"
     >
-      <LotusIcon size={iconSize} className="transition-transform duration-300 group-hover:scale-110 drop-shadow-md text-[#F5C45E] shrink-0" />
+      <LotusIcon size={iconSize} className="lotus-logo-icon transition-transform duration-300 group-hover:scale-110 drop-shadow-md shrink-0" />
       <div className="flex flex-col justify-center leading-tight">
         <span
-          className={`font-serif font-black tracking-wide text-transparent bg-clip-text bg-gradient-to-r from-[#F5C45E] via-[#FFEBB0] to-[#E5B54E] transition-all drop-shadow-sm ${titleSize}`}
+          className={`font-serif font-black tracking-wide logo-title-gradient transition-all drop-shadow-sm ${titleSize}`}
           style={{ letterSpacing: '0.02em' }}
         >
           Shradhanjali
