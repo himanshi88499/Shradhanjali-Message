@@ -1,0 +1,206 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --bg-main: #061321;
+    --bg-secondary: #0A1B2B;
+    --bg-card: #0B1D2D;
+    --bg-card-hover: #10263B;
+    --bg-alt: #0D2031;
+    --color-gold: #F5C45E;
+    --color-gold-light: #FFD782;
+    --color-gold-dark: #C99632;
+    --color-text-primary: #F4F6FA;
+    --color-text-secondary: #B9C6D6;
+    --color-text-muted: #8495A9;
+    --color-border: #1C3A52;
+    --color-border-light: #2A4F6E;
+    --color-whatsapp: #128C7E;
+    --color-facebook: #1877F2;
+    --color-error: #EF4444;
+    --color-success: #22C55E;
+  }
+
+  html.light {
+    --bg-main: #F8FAFC;
+    --bg-secondary: #FFFFFF;
+    --bg-card: #FFFFFF;
+    --bg-card-hover: #F1F5F9;
+    --bg-alt: #F1F5F9;
+    --color-gold: #B45309;
+    --color-gold-light: #D97706;
+    --color-gold-dark: #92400E;
+    --color-text-primary: #0F172A;
+    --color-text-secondary: #334155;
+    --color-text-muted: #64748B;
+    --color-border: #E2E8F0;
+    --color-border-light: #CBD5E1;
+  }
+}
+
+body {
+  background-color: var(--bg-main);
+  color: var(--color-text-primary);
+  font-family: var(--font-gujarati), var(--font-sans), system-ui, -apple-system, sans-serif;
+  overflow-x: hidden;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg-secondary);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-border);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-gold);
+}
+
+/* Typography & Accent utilities */
+.text-gold {
+  color: var(--color-gold);
+}
+.text-gold-light {
+  color: var(--color-gold-light);
+}
+.bg-gold {
+  background-color: var(--color-gold);
+}
+.border-gold {
+  border-color: var(--color-gold);
+}
+
+/* Card Glow and Shadows */
+.card-glow {
+  box-shadow: 0 4px 20px -2px rgba(6, 19, 33, 0.7), 0 0 15px -3px rgba(245, 196, 94, 0.05);
+}
+.card-glow:hover {
+  box-shadow: 0 8px 30px -4px rgba(6, 19, 33, 0.8), 0 0 20px -2px rgba(245, 196, 94, 0.15);
+}
+
+/* Light Theme Overrides for Components using Utility Classes */
+html.light body {
+  background-color: #F8FAFC !important;
+  color: #0F172A !important;
+}
+
+html.light .bg-\[\#061321\] {
+  background-color: #F8FAFC !important;
+}
+
+html.light .bg-\[\#061321\]\/95 {
+  background-color: rgba(255, 255, 255, 0.95) !important;
+  backdrop-filter: blur(8px) !important;
+}
+
+html.light .bg-\[\#061321\]\/80 {
+  background-color: rgba(255, 255, 255, 0.9) !important;
+}
+
+html.light .bg-\[\#061321\]\/60 {
+  background-color: rgba(241, 245, 249, 0.85) !important;
+}
+
+html.light .bg-\[\#061321\]\/50 {
+  background-color: rgba(241, 245, 249, 0.7) !important;
+}
+
+html.light .bg-\[\#0A1B2B\] {
+  background-color: #FFFFFF !important;
+}
+
+html.light .bg-\[\#0A1B2B\]\/90 {
+  background-color: rgba(255, 255, 255, 0.95) !important;
+}
+
+html.light .bg-\[\#0B1D2D\] {
+  background-color: #FFFFFF !important;
+}
+
+html.light .bg-\[\#10263B\] {
+  background-color: #F1F5F9 !important;
+}
+
+html.light .bg-\[\#0D2031\] {
+  background-color: #F1F5F9 !important;
+}
+
+html.light .bg-\[\#142B40\] {
+  background-color: #E2E8F0 !important;
+}
+
+html.light .border-\[\#1C3A52\] {
+  border-color: #E2E8F0 !important;
+}
+
+html.light .border-\[\#1C3A52\]\/70,
+html.light .border-\[\#1C3A52\]\/60,
+html.light .border-\[\#1C3A52\]\/50,
+html.light .border-\[\#1C3A52\]\/40 {
+  border-color: #E2E8F0 !important;
+}
+
+html.light .border-\[\#2A4F6E\],
+html.light .border-\[\#234768\] {
+  border-color: #CBD5E1 !important;
+}
+
+html.light .text-white {
+  color: #0F172A !important;
+}
+
+html.light .text-\[\#F4F6FA\] {
+  color: #0F172A !important;
+}
+
+html.light .text-\[\#B9C6D6\] {
+  color: #334155 !important;
+}
+
+html.light .text-\[\#8495A9\] {
+  color: #64748B !important;
+}
+
+html.light .card-glow {
+  box-shadow: 0 4px 15px -1px rgba(0, 0, 0, 0.05), 0 0 2px rgba(0, 0, 0, 0.05) !important;
+}
+html.light .card-glow:hover {
+  box-shadow: 0 10px 25px -3px rgba(0, 0, 0, 0.08), 0 0 2px rgba(0, 0, 0, 0.05) !important;
+}
+
+html.light .text-gold {
+  color: #B45309 !important;
+}
+
+html.light input,
+html.light textarea,
+html.light select {
+  background-color: #FFFFFF !important;
+  color: #0F172A !important;
+  border-color: #CBD5E1 !important;
+}
+
+html.light input::placeholder,
+html.light textarea::placeholder {
+  color: #94A3B8 !important;
+}
+
+html.light .prose {
+  color: #334155 !important;
+}
+
+/* Subtle animation */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(5px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
