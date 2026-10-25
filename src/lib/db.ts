@@ -89,22 +89,58 @@ export function searchPosts(query: string): Post[] {
   );
 }
 
-export function savePost(post: Post): Post {
+export function savePost(post: Partial<Post> & { id?: string }): Post {
   const db = getDb();
   const index = db.posts.findIndex((p) => p.id === post.id);
+  const now = new Date().toISOString();
+
   if (index >= 0) {
-    db.posts[index] = { ...post, updatedAt: new Date().toISOString() };
-  } else {
-    db.posts.unshift({
+    const existing = db.posts[index];
+    const updatedPost: Post = {
+      ...existing,
       ...post,
+      id: existing.id,
+      authorId: post.authorId || existing.authorId || 'author-1',
+      publishedAt: now, // Update date when post is updated as requested
+      updatedAt: now,
+      views: post.views !== undefined ? post.views : existing.views || 0,
+      tags: post.tags || existing.tags || ['ભાવપૂર્ણ'],
+      messageCards: post.messageCards !== undefined ? post.messageCards : existing.messageCards || [],
+      showTableOfContents: post.showTableOfContents !== undefined ? post.showTableOfContents : existing.showTableOfContents ?? true,
+    };
+    db.posts[index] = updatedPost;
+    saveDb(db);
+    return updatedPost;
+  } else {
+    const newPost: Post = {
       id: post.id || `post-${Date.now()}`,
+      title: post.title || '',
+      slug: post.slug || `post-${Date.now()}`,
+      excerpt: post.excerpt || '',
+      content: post.content || '',
+      quote: post.quote || '',
+      featuredImage: post.featuredImage || '/images/hero-candle.jpg',
+      imageAlt: post.imageAlt || post.title || '',
+      categoryId: post.categoryId || 'cat-1',
+      categoryName: post.categoryName || 'શ્રદ્ધાંજલિ સંદેશ',
+      categorySlug: post.categorySlug || 'shradhanjali',
+      authorId: post.authorId || 'author-1',
+      status: post.status || 'published',
       views: 0,
-      publishedAt: post.publishedAt || new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-    });
+      publishedAt: now,
+      updatedAt: now,
+      tags: post.tags || ['ભાવપૂર્ણ'],
+      messageCards: post.messageCards || [],
+      showTableOfContents: post.showTableOfContents ?? true,
+      seoTitle: post.seoTitle,
+      seoDescription: post.seoDescription,
+      focusKeyword: post.focusKeyword,
+      canonicalUrl: post.canonicalUrl,
+    };
+    db.posts.unshift(newPost);
+    saveDb(db);
+    return newPost;
   }
-  saveDb(db);
-  return post;
 }
 
 export function deletePost(id: string): boolean {
@@ -185,9 +221,10 @@ export function getAuthors(): Author[] {
   return db.authors;
 }
 
-export function getAuthorById(id: string): Author | undefined {
+export function getAuthorById(id?: string): Author | undefined {
   const db = getDb();
-  return db.authors.find((a) => a.id === id);
+  if (!id) return db.authors[0];
+  return db.authors.find((a) => a.id === id) || db.authors[0];
 }
 
 // ----------------- SETTINGS & MENUS -----------------

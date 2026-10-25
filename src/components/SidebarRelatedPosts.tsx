@@ -80,11 +80,15 @@ export function SidebarRelatedPosts({ currentPostId, initialPosts }: SidebarRela
               <div className="flex items-center gap-1 text-[10px] text-theme-muted mt-1">
                 <Calendar size={10} className="shrink-0" />
                 <span>
-                  {new Date(item.publishedAt).toLocaleDateString('en-US', {
-                    day: 'numeric',
-                    month: 'short',
-                    year: 'numeric',
-                  })}
+                  {(() => {
+                    const d = item.publishedAt ? new Date(item.publishedAt) : new Date();
+                    const valid = !isNaN(d.getTime()) ? d : new Date();
+                    return valid.toLocaleDateString('en-US', {
+                      day: 'numeric',
+                      month: 'short',
+                      year: 'numeric',
+                    });
+                  })()}
                 </span>
               </div>
             </div>

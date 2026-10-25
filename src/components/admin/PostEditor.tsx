@@ -286,6 +286,9 @@ export const PostEditor: React.FC<PostEditorProps> = ({
       seoDescription: seoDescription.trim() || excerpt.trim(),
       focusKeyword: focusKeyword.trim(),
       tags: initialPost?.tags || ['ભાવપૂર્ણ'],
+      authorId: initialPost?.authorId || 'author-1',
+      publishedAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
     };
 
     try {

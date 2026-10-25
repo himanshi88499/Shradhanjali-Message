@@ -209,11 +209,15 @@ export default async function SingleArticlePage({ params }: Props) {
               <div className="flex items-center gap-1.5 text-xs text-theme-secondary">
                 <Calendar size={13} className="text-theme-muted" />
                 <span>
-                  {new Date(post.publishedAt).toLocaleDateString('en-US', {
-                    day: 'numeric',
-                    month: 'long',
-                    year: 'numeric',
-                  })}
+                  {(() => {
+                    const d = post.publishedAt ? new Date(post.publishedAt) : new Date();
+                    const valid = !isNaN(d.getTime()) ? d : new Date();
+                    return valid.toLocaleDateString('en-US', {
+                      day: 'numeric',
+                      month: 'long',
+                      year: 'numeric',
+                    });
+                  })()}
                 </span>
               </div>
             </div>
