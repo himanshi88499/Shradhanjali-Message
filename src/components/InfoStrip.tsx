@@ -51,33 +51,33 @@ export const InfoStrip: React.FC<InfoStripProps> = ({ title, items }) => {
   const renderIcon = (iconName: string) => {
     switch (iconName) {
       case 'Heart':
-        return <Heart size={22} className="text-[#F5C45E]" />;
+        return <Heart size={22} className="text-gold" />;
       case 'BookOpen':
-        return <BookOpen size={22} className="text-[#F5C45E]" />;
+        return <BookOpen size={22} className="text-gold" />;
       case 'ShieldCheck':
-        return <ShieldCheck size={22} className="text-[#F5C45E]" />;
+        return <ShieldCheck size={22} className="text-gold" />;
       case 'Share2':
-        return <Share2 size={22} className="text-[#F5C45E]" />;
+        return <Share2 size={22} className="text-gold" />;
       default:
-        return <Heart size={22} className="text-[#F5C45E]" />;
+        return <Heart size={22} className="text-gold" />;
     }
   };
 
   return (
-    <section className="bg-[#0A1F32] border-y border-[#173A54] py-12" aria-label="અમારી વેબસાઇટ વિશે">
+    <section className="bg-theme-surface border-y border-theme py-12 transition-colors" aria-label="અમારી વેબસાઇટ વિશે">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {displayItems.map((item) => (
             <div
               key={item.id}
-              className="flex items-start gap-4 p-5 rounded-2xl bg-[#071A2B] border border-[#173A54] hover:border-[#F5C45E]/40 transition-all card-glow"
+              className="flex items-start gap-4 p-5 rounded-2xl bg-theme-card border border-theme hover:border-gold/40 transition-all card-glow"
             >
-              <div className="flex-shrink-0 w-12 h-12 rounded-xl bg-[#030B12] border border-[#173A54] flex items-center justify-center">
+              <div className="flex-shrink-0 w-12 h-12 rounded-xl bg-theme-main border border-theme flex items-center justify-center">
                 {renderIcon(item.icon)}
               </div>
               <div>
-                <h4 className="text-base font-bold text-white mb-1.5">{item.title}</h4>
-                <p className="text-xs text-[#C7D0DA] leading-relaxed">{item.description}</p>
+                <h4 className="text-base font-bold text-theme-primary mb-1.5">{item.title}</h4>
+                <p className="text-xs text-theme-secondary leading-relaxed">{item.description}</p>
               </div>
             </div>
           ))}

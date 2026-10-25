@@ -27,7 +27,7 @@ export const HomePageContent: React.FC<HomePageContentProps> = ({
   const { t } = useLanguage();
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#061625] text-[#F4F5F7] transition-colors">
+    <div className="min-h-screen flex flex-col bg-theme-main text-theme-primary transition-colors">
       <Header />
 
       <main className="flex-1">
@@ -42,24 +42,24 @@ export const HomePageContent: React.FC<HomePageContentProps> = ({
         />
 
         {/* B. Category Section: Featured Categories matching Reference Screenshot */}
-        <section className="py-14 border-b border-[#173A54] bg-[#061625] transition-colors" aria-label="Featured Categories">
+        <section className="py-14 border-b border-theme bg-theme-main transition-colors" aria-label="Featured Categories">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-8 gap-4">
               <div>
                 <div className="flex items-center gap-2.5">
-                  <LotusIcon size={22} className="text-[#F5C45E] shrink-0" />
-                  <h2 className="text-xl sm:text-2xl font-bold text-white tracking-tight">
+                  <LotusIcon size={22} className="text-gold shrink-0" />
+                  <h2 className="text-xl sm:text-2xl font-bold text-theme-primary tracking-tight">
                     {t('section_featured_categories')}
                   </h2>
                 </div>
-                <p className="text-xs sm:text-sm text-[#C7D0DA] mt-1.5 font-normal">
+                <p className="text-xs sm:text-sm text-theme-secondary mt-1.5 font-normal">
                   {t('section_categories_sub')}
                 </p>
               </div>
 
               <Link
                 href="/categories"
-                className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-semibold text-[#F5C45E] hover:text-[#E5B54E] transition-colors shrink-0"
+                className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-semibold text-gold hover:text-gold/80 transition-colors shrink-0"
               >
                 <span>{t('view_all_categories')}</span>
                 <ArrowRight size={14} />
@@ -76,24 +76,24 @@ export const HomePageContent: React.FC<HomePageContentProps> = ({
         </section>
 
         {/* C. Blog Posts Section: Blog Posts matching Reference Screenshot */}
-        <section className="py-16 bg-[#061625] transition-colors" aria-label="Latest Blog Posts">
+        <section className="py-16 bg-theme-main transition-colors" aria-label="Latest Blog Posts">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-10 gap-4">
               <div>
                 <div className="flex items-center gap-2.5">
-                  <BookOpen size={22} className="text-[#F5C45E] shrink-0" />
-                  <h2 className="text-xl sm:text-2xl font-bold text-white tracking-tight">
+                  <BookOpen size={22} className="text-gold shrink-0" />
+                  <h2 className="text-xl sm:text-2xl font-bold text-theme-primary tracking-tight">
                     {t('section_latest_posts')}
                   </h2>
                 </div>
-                <p className="text-xs sm:text-sm text-[#C7D0DA] mt-1.5 font-normal">
+                <p className="text-xs sm:text-sm text-theme-secondary mt-1.5 font-normal">
                   {t('section_posts_sub')}
                 </p>
               </div>
 
               <Link
                 href="/posts"
-                className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-semibold text-[#F5C45E] hover:text-[#E5B54E] transition-colors shrink-0"
+                className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-semibold text-gold hover:text-gold/80 transition-colors shrink-0"
               >
                 <span>{t('view_all_posts')}</span>
                 <ArrowRight size={14} />

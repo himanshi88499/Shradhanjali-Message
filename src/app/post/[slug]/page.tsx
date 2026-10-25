@@ -4,7 +4,7 @@ import Link from 'next/link';
 import type { Metadata } from 'next';
 import { Calendar, Clock, Sparkles } from 'lucide-react';
 import { TwitterIcon, InstagramIcon, YoutubeIcon } from '@/components/SocialIcons';
-import { getPostBySlug, getPosts, getAuthorById } from '@/lib/db';
+import { getPostBySlug, getPosts, getAuthorById, getCategories } from '@/lib/db';
 import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
 import { Breadcrumbs } from '@/components/Breadcrumbs';
@@ -12,6 +12,7 @@ import { TableOfContents } from '@/components/TableOfContents';
 import { MessageCardItem } from '@/components/MessageCardItem';
 import { ArticleQuickActions } from '@/components/ArticleQuickActions';
 import { SidebarRelatedPosts } from '@/components/SidebarRelatedPosts';
+import { SidebarCategories } from '@/components/SidebarCategories';
 import { BlogCard } from '@/components/BlogCard';
 import { LotusIcon } from '@/components/LotusLogo';
 import { ArticleLanguageBadge } from '@/components/ArticleLanguageBadge';
@@ -53,6 +54,7 @@ export default async function SingleArticlePage({ params }: Props) {
 
   const author = getAuthorById(post.authorId);
   const allPosts = getPosts('published');
+  const categories = getCategories();
 
   // Related posts: exclude current post, match category or general
   const relatedPosts = allPosts
@@ -134,17 +136,12 @@ export default async function SingleArticlePage({ params }: Props) {
         </div>
 
         {/* H1 Title */}
-        <h1 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-theme-primary leading-tight mb-4 tracking-tight">
+        <h1 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-theme-primary leading-tight mb-6 tracking-tight">
           {post.title}
         </h1>
 
-        {/* Introduction */}
-        <p className="text-base sm:text-lg text-theme-secondary leading-relaxed mb-8 max-w-4xl font-normal">
-          {post.excerpt}
-        </p>
-
         {/* Main 2-Column Layout */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-start">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-8 items-start">
           {/* Main Article Body (8 cols on lg) */}
           <article className="lg:col-span-8 flex flex-col">
             {/* Featured Image with Quote Card Overlay */}
@@ -306,10 +303,16 @@ export default async function SingleArticlePage({ params }: Props) {
 
           {/* Desktop Right Sidebar (4 cols on lg) */}
           <aside className="lg:col-span-4 flex flex-col space-y-6">
-            {/* Widget 1: Related posts */}
+            {/* Widget 1: Shradhanjali Categories */}
+            <SidebarCategories
+              categories={categories}
+              currentCategorySlug={post.categorySlug}
+            />
+
+            {/* Widget 2: Best Shradhanjali Messages */}
             <SidebarRelatedPosts currentPostId={post.id} initialPosts={allPosts} />
 
-            {/* Widget 2: Quick Actions */}
+            {/* Widget 3: ઝડપી ક્રિયાઓ */}
             <ArticleQuickActions
               title={post.title}
               excerpt={post.excerpt}

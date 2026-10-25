@@ -65,17 +65,17 @@ export const LotusLogo: React.FC<LotusLogoProps> = ({
     <Link
       href="/"
       className={`group inline-flex items-center gap-2.5 transition-opacity hover:opacity-95 ${className}`}
-      aria-label="શ્રદ્ધાંજલિ — હોમ"
+      aria-label="Shradhanjali — હોમ"
     >
       <LotusIcon size={iconSize} className="transition-transform duration-200 group-hover:scale-105 text-gold shrink-0" />
       <div className="flex flex-col justify-center leading-none">
         <span
-          className={`font-extrabold tracking-tight text-white transition-colors ${titleSize}`}
+          className={`font-extrabold tracking-tight text-theme-primary transition-colors ${titleSize}`}
         >
-          શ્રદ્ધાંજલિ
+          Shradhanjali
         </span>
         {showTagline && (
-          <span className={`text-[#C7D0DA] tracking-wide mt-1 font-normal ${tagSize}`}>
+          <span className={`text-theme-secondary tracking-wide mt-1 font-normal ${tagSize}`}>
             ભાવપૂર્ણ શ્રદ્ધાંજલિ સંદેશ
           </span>
         )}

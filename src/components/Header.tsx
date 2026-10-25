@@ -57,8 +57,8 @@ export const Header: React.FC<HeaderProps> = ({ navLinks }) => {
       <header
         className={`sticky top-0 z-50 transition-all duration-200 border-b ${
           scrolled
-            ? 'bg-[#030B12]/95 backdrop-blur-md shadow-lg border-[#173A54]'
-            : 'bg-[#030B12] border-[#173A54]'
+            ? 'bg-theme-main/95 backdrop-blur-md shadow-md border-theme'
+            : 'bg-theme-main border-theme'
         }`}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -82,20 +82,20 @@ export const Header: React.FC<HeaderProps> = ({ navLinks }) => {
                     href={link.url}
                     className={`relative px-3 py-1.5 text-[13px] xl:text-sm font-medium transition-colors duration-150 rounded-lg ${
                       isActive
-                        ? 'text-[#F5C45E] font-semibold'
-                        : 'text-[#C7D0DA] hover:text-[#F5C45E] hover:bg-[#071A2B]/60'
+                        ? 'text-gold font-semibold'
+                        : 'text-theme-secondary hover:text-gold hover:bg-theme-card-hover'
                     }`}
                   >
                     {link.label}
                     {isActive && (
-                      <span className="absolute bottom-0 left-3 right-3 h-[2px] bg-[#F5C45E] rounded-full" />
+                      <span className="absolute bottom-0 left-3 right-3 h-[2px] bg-gold rounded-full" />
                     )}
                   </Link>
                 );
               })}
 
               {/* Language Selector in Desktop Navigation */}
-              <div className="ml-2 pl-2 border-l border-[#173A54]">
+              <div className="ml-2 pl-2 border-l border-theme">
                 <LanguageDropdown />
               </div>
             </nav>
@@ -106,7 +106,7 @@ export const Header: React.FC<HeaderProps> = ({ navLinks }) => {
               <button
                 type="button"
                 onClick={() => setSearchOpen(!searchOpen)}
-                className="p-2 sm:p-2.5 rounded-full text-[#C7D0DA] hover:text-[#F5C45E] hover:bg-[#071A2B] border border-transparent hover:border-[#173A54] transition-colors"
+                className="p-2 sm:p-2.5 rounded-full text-theme-secondary hover:text-gold hover:bg-theme-card-hover border border-transparent hover:border-theme transition-colors"
                 aria-label={t('search_button')}
                 title={t('search_button')}
               >
@@ -117,14 +117,14 @@ export const Header: React.FC<HeaderProps> = ({ navLinks }) => {
               <button
                 type="button"
                 onClick={toggleTheme}
-                className="p-2 sm:p-2.5 rounded-full text-[#C7D0DA] hover:text-[#F5C45E] hover:bg-[#071A2B] border border-transparent hover:border-[#173A54] transition-colors"
+                className="p-2 sm:p-2.5 rounded-full text-theme-secondary hover:text-gold hover:bg-theme-card-hover border border-transparent hover:border-theme transition-colors"
                 aria-label={theme === 'dark' ? t('theme_switch_to_light') : t('theme_switch_to_dark')}
                 title={theme === 'dark' ? t('theme_light') : t('theme_dark')}
               >
                 {theme === 'dark' ? (
-                  <Sun size={18} className="text-[#F5C45E]" />
+                  <Sun size={18} className="text-gold" />
                 ) : (
-                  <Moon size={18} className="text-white" />
+                  <Moon size={18} className="text-theme-primary" />
                 )}
               </button>
 
@@ -132,7 +132,7 @@ export const Header: React.FC<HeaderProps> = ({ navLinks }) => {
               <button
                 type="button"
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                className="lg:hidden p-2 sm:p-2.5 rounded-lg text-[#C7D0DA] hover:text-[#F5C45E] hover:bg-[#071A2B] border border-[#173A54] transition-colors"
+                className="lg:hidden p-2 sm:p-2.5 rounded-lg text-theme-secondary hover:text-gold hover:bg-theme-card-hover border border-theme transition-colors"
                 aria-label="Toggle navigation menu"
               >
                 {mobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
@@ -143,7 +143,7 @@ export const Header: React.FC<HeaderProps> = ({ navLinks }) => {
 
         {/* Expandable Search Input Drawer */}
         {searchOpen && (
-          <div className="border-t border-[#173A54] bg-[#0A1F32] px-4 py-3 sm:px-6 animate-fade-in shadow-xl">
+          <div className="border-t border-theme bg-theme-surface px-4 py-3 sm:px-6 animate-fade-in shadow-xl">
             <div className="max-w-3xl mx-auto">
               <form onSubmit={handleSearchSubmit} className="relative flex items-center">
                 <input
@@ -151,12 +151,12 @@ export const Header: React.FC<HeaderProps> = ({ navLinks }) => {
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder={t('search_placeholder')}
-                  className="w-full bg-[#071A2B] text-white pl-4 pr-24 py-2.5 rounded-xl border border-[#173A54] focus:outline-none focus:border-[#F5C45E] text-sm transition-colors placeholder-[#8495A9]"
+                  className="w-full bg-theme-card text-theme-primary pl-4 pr-24 py-2.5 rounded-xl border border-theme focus:outline-none focus:border-gold text-sm transition-colors placeholder:text-theme-muted"
                   autoFocus
                 />
                 <button
                   type="submit"
-                  className="absolute right-1.5 px-4 py-1.5 bg-[#F5C45E] hover:bg-[#E5B54E] text-[#030B12] font-semibold text-xs rounded-lg transition-colors shadow-sm"
+                  className="absolute right-1.5 px-4 py-1.5 bg-gold hover:bg-gold/90 text-white font-semibold text-xs rounded-lg transition-colors shadow-sm"
                 >
                   {t('search_button')}
                 </button>
@@ -176,13 +176,13 @@ export const Header: React.FC<HeaderProps> = ({ navLinks }) => {
           />
 
           {/* Drawer content */}
-          <div className="relative ml-auto w-full max-w-xs bg-[#030B12] border-l border-[#173A54] h-full shadow-2xl flex flex-col p-6 z-10 overflow-y-auto">
-            <div className="flex items-center justify-between pb-4 border-b border-[#173A54]">
+          <div className="relative ml-auto w-full max-w-xs bg-theme-surface border-l border-theme h-full shadow-2xl flex flex-col p-6 z-10 overflow-y-auto">
+            <div className="flex items-center justify-between pb-4 border-b border-theme">
               <LotusLogo size="sm" />
               <button
                 type="button"
                 onClick={() => setMobileMenuOpen(false)}
-                className="p-1.5 rounded-lg text-[#8495A9] hover:text-white hover:bg-[#071A2B]"
+                className="p-1.5 rounded-lg text-theme-muted hover:text-theme-primary hover:bg-theme-card-hover"
                 aria-label="Close menu"
               >
                 <X size={20} />
@@ -204,8 +204,8 @@ export const Header: React.FC<HeaderProps> = ({ navLinks }) => {
                     onClick={() => setMobileMenuOpen(false)}
                     className={`px-3.5 py-2.5 rounded-xl text-sm font-medium transition-colors ${
                       isActive
-                        ? 'bg-[#071A2B] text-[#F5C45E] font-semibold border-l-2 border-[#F5C45E] pl-4'
-                        : 'text-[#C7D0DA] hover:bg-[#071A2B] hover:text-[#F5C45E]'
+                        ? 'bg-theme-card text-gold font-semibold border-l-2 border-gold pl-4'
+                        : 'text-theme-secondary hover:bg-theme-card-hover hover:text-gold'
                     }`}
                   >
                     {link.label}
@@ -214,8 +214,8 @@ export const Header: React.FC<HeaderProps> = ({ navLinks }) => {
               })}
 
               {/* Language Switcher in Mobile menu */}
-              <div className="pt-4 mt-2 border-t border-[#173A54]">
-                <span className="block text-xs font-semibold text-[#8495A9] mb-2 px-1">
+              <div className="pt-4 mt-2 border-t border-theme">
+                <span className="block text-xs font-semibold text-theme-muted mb-2 px-1">
                   {t('language_select')}
                 </span>
                 <LanguageDropdown isMobile={true} />
@@ -223,11 +223,11 @@ export const Header: React.FC<HeaderProps> = ({ navLinks }) => {
             </nav>
 
             {/* Mobile Footer Admin Link */}
-            <div className="mt-auto pt-6 border-t border-[#173A54]">
+            <div className="mt-auto pt-6 border-t border-theme">
               <Link
                 href="/admin"
                 onClick={() => setMobileMenuOpen(false)}
-                className="block text-center text-xs text-[#8495A9] hover:text-[#F5C45E] py-2"
+                className="block text-center text-xs text-theme-muted hover:text-gold py-2"
               >
                 {t('nav_admin')}
               </Link>

@@ -280,6 +280,23 @@ export function saveUser(user: User): User {
   return user;
 }
 
+export function deleteUser(id: string): boolean {
+  const db = getDb();
+  const initial = db.users.length;
+  const user = db.users.find((u) => u.id === id);
+  if (!user) return false;
+  const adminCount = db.users.filter((u) => u.role === 'admin').length;
+  if (user.role === 'admin' && adminCount <= 1) {
+    return false;
+  }
+  db.users = db.users.filter((u) => u.id !== id);
+  if (db.users.length !== initial) {
+    saveDb(db);
+    return true;
+  }
+  return false;
+}
+
 // ----------------- MEDIA -----------------
 export function getMedia(): MediaItem[] {
   const db = getDb();

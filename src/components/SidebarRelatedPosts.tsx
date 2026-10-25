@@ -39,7 +39,7 @@ export function SidebarRelatedPosts({ currentPostId, initialPosts }: SidebarRela
         <div className="flex items-center gap-2">
           <Sparkles className="w-4 h-4 text-gold" />
           <h3 className="text-theme-primary font-bold text-base tracking-wide">
-            Related Tributes
+            Best Shradhanjali Messages
           </h3>
         </div>
         <Link
