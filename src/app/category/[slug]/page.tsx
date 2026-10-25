@@ -1,7 +1,7 @@
 import React from 'react';
 import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
-import { getCategoryBySlug, getPostsByCategory, getCategories } from '@/lib/db';
+import { getCategoryBySlug, getPostsByCategory } from '@/lib/db';
 import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
 import { Breadcrumbs } from '@/components/Breadcrumbs';
@@ -15,10 +15,10 @@ interface Props {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   const category = getCategoryBySlug(slug);
-  if (!category) return { title: 'કેટેગરી મળી નથી | શ્રદ્ધાંજલિ' };
+  if (!category) return { title: 'Category Not Found | Shradhanjali Msg' };
 
   return {
-    title: `${category.name} | શ્રદ્ધાંજલિ સંદેશ અને લેખો`,
+    title: `${category.name} | Shradhanjali Msg`,
     description: category.description,
   };
 }
@@ -34,42 +34,40 @@ export default async function CategoryPage({ params }: Props) {
   const posts = getPostsByCategory(slug);
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#061321] text-[#F4F6FA]">
+    <div className="min-h-screen flex flex-col bg-theme-main text-theme-primary transition-colors">
       <Header />
 
       <main className="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full">
         {/* Breadcrumbs */}
         <Breadcrumbs
           items={[
-            { label: 'હોમ', url: '/' },
-            { label: 'કેટેગરીઝ', url: '/categories' },
+            { label: 'Home', url: '/' },
+            { label: 'Categories', url: '/categories' },
             { label: category.name },
           ]}
         />
 
         {/* Category Header Banner */}
-        <div className="relative rounded-3xl overflow-hidden border border-[#1C3A52] bg-gradient-to-r from-[#0B1D2D] via-[#0D2031] to-[#0B1D2D] p-8 sm:p-12 my-6 card-glow">
+        <div className="relative rounded-3xl overflow-hidden border border-theme bg-theme-card p-8 sm:p-12 my-6 card-glow transition-colors">
           <div className="max-w-3xl">
-            <div className="inline-flex items-center gap-2 text-gold text-xs font-semibold px-3 py-1 bg-[#061321]/60 rounded-full border border-[#1C3A52] mb-3">
+            <div className="inline-flex items-center gap-2 text-gold text-xs font-semibold px-3 py-1 bg-theme-surface rounded-full border border-theme mb-3">
               <Sparkles size={13} />
-              <span>કેટેગરી</span>
+              <span>Category Collection</span>
             </div>
-            <h1 className="text-2xl sm:text-4xl font-extrabold text-white mb-3">
+            <h1 className="text-2xl sm:text-4xl font-extrabold text-theme-primary mb-3">
               {category.name}
             </h1>
-            <p className="text-sm sm:text-base text-[#B9C6D6] leading-relaxed">
+            <p className="text-sm sm:text-base text-theme-secondary leading-relaxed">
               {category.description}
             </p>
           </div>
         </div>
 
         {/* Posts Grid */}
-        <section className="py-8">
-          <div className="flex items-center justify-between mb-8">
-            <h2 className="text-xl font-bold text-white">
-              કુલ લેખો ({posts.length})
-            </h2>
-          </div>
+        <div className="my-10">
+          <h2 className="text-lg sm:text-xl font-bold text-theme-primary mb-6">
+            Articles in &ldquo;{category.name}&rdquo; ({posts.length})
+          </h2>
 
           {posts.length > 0 ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -78,13 +76,13 @@ export default async function CategoryPage({ params }: Props) {
               ))}
             </div>
           ) : (
-            <div className="text-center py-16 bg-[#0B1D2D] border border-[#1C3A52] rounded-2xl p-8">
-              <p className="text-lg text-[#B9C6D6]">
-                આ કેટેગરીમાં હાલ કોઈ લેખો ઉપલબ્ધ નથી.
+            <div className="text-center py-16 bg-theme-card border border-theme rounded-2xl p-8">
+              <p className="text-theme-muted text-sm">
+                No published articles found in this category currently.
               </p>
             </div>
           )}
-        </section>
+        </div>
       </main>
 
       <Footer />

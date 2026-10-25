@@ -2,9 +2,9 @@ import React from 'react';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import type { Metadata } from 'next';
-import { Calendar, Clock, ChevronRight, Sparkles } from 'lucide-react';
+import { Calendar, Clock, Sparkles } from 'lucide-react';
 import { TwitterIcon, InstagramIcon, YoutubeIcon } from '@/components/SocialIcons';
-import { getPostBySlug, getPosts, getAuthorById, getCategoryBySlug } from '@/lib/db';
+import { getPostBySlug, getPosts, getAuthorById } from '@/lib/db';
 import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
 import { Breadcrumbs } from '@/components/Breadcrumbs';
@@ -14,6 +14,7 @@ import { ArticleQuickActions } from '@/components/ArticleQuickActions';
 import { SidebarRelatedPosts } from '@/components/SidebarRelatedPosts';
 import { BlogCard } from '@/components/BlogCard';
 import { LotusIcon } from '@/components/LotusLogo';
+import { ArticleLanguageBadge } from '@/components/ArticleLanguageBadge';
 
 interface Props {
   params: Promise<{ slug: string }>;
@@ -22,10 +23,10 @@ interface Props {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   const post = getPostBySlug(slug);
-  if (!post) return { title: 'લેખ મળ્યો નથી | શ્રદ્ધાંજલિ' };
+  if (!post) return { title: 'Article Not Found | Shradhanjali Msg' };
 
   return {
-    title: `${post.seoTitle || post.title} | શ્રદ્ધાંજલિ`,
+    title: `${post.seoTitle || post.title} | Shradhanjali Msg`,
     description: post.seoDescription || post.excerpt,
     keywords: post.tags,
     openGraph: {
@@ -34,6 +35,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       images: [post.featuredImage],
       type: 'article',
       publishedTime: post.publishedAt,
+      siteName: 'Shradhanjali Msg',
     },
     alternates: {
       canonical: post.canonicalUrl || `https://shradhanjali.in/post/${post.slug}`,
@@ -51,7 +53,7 @@ export default async function SingleArticlePage({ params }: Props) {
 
   const author = getAuthorById(post.authorId);
   const allPosts = getPosts('published');
-  
+
   // Related posts: exclude current post, match category or general
   const relatedPosts = allPosts
     .filter((p) => p.id !== post.id)
@@ -75,7 +77,7 @@ export default async function SingleArticlePage({ params }: Props) {
     },
     publisher: {
       '@type': 'Organization',
-      name: 'શ્રદ્ધાંજલિ',
+      name: 'Shradhanjali Msg',
       logo: {
         '@type': 'ImageObject',
         url: 'https://shradhanjali.in/images/lotus-logo.svg',
@@ -84,7 +86,7 @@ export default async function SingleArticlePage({ params }: Props) {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#061321] text-[#F4F6FA]">
+    <div className="min-h-screen flex flex-col bg-theme-main text-theme-primary transition-colors">
       <Header />
 
       <script
@@ -96,61 +98,67 @@ export default async function SingleArticlePage({ params }: Props) {
         {/* Breadcrumbs */}
         <Breadcrumbs
           items={[
-            { label: 'હોમ', url: '/' },
-            { label: post.categoryName || 'શ્રદ્ધાંજલિ સંદેશ', url: `/category/${post.categorySlug || 'shradhanjali'}` },
-            { label: post.tags[0] || 'વિશેષ' },
+            { label: 'Home', url: '/' },
+            {
+              label: post.categoryName || 'Shradhanjali',
+              url: `/category/${post.categorySlug || 'shradhanjali'}`,
+            },
+            { label: post.tags[0] || 'Tribute' },
             { label: post.title },
           ]}
         />
 
+        {/* Article Language Notice (Respectfully clarifies original Gujarati content) */}
+        <ArticleLanguageBadge />
+
         {/* Article Header Metadata */}
         <div className="flex flex-wrap items-center gap-3 my-3">
-          <span className="px-3.5 py-1 bg-gold text-[#061321] font-bold text-xs rounded-full">
-            {post.categoryName || 'માતાજી'}
+          <span className="px-3.5 py-1 bg-gold text-white font-bold text-xs rounded-full shadow-sm">
+            {post.categoryName || 'Tribute'}
           </span>
-          <div className="flex items-center gap-1.5 text-xs text-[#B9C6D6]">
-            <Calendar size={13} className="text-[#8495A9]" />
+          <div className="flex items-center gap-1.5 text-xs text-theme-secondary">
+            <Calendar size={13} className="text-theme-muted" />
             <span>
-              {new Date(post.publishedAt).toLocaleDateString('gu-IN', {
+              {new Date(post.publishedAt).toLocaleDateString('en-US', {
                 day: 'numeric',
                 month: 'long',
                 year: 'numeric',
               })}
             </span>
           </div>
-          <span className="text-[#8495A9]">•</span>
-          <div className="flex items-center gap-1.5 text-xs text-[#B9C6D6]">
-            <Clock size={13} className="text-[#8495A9]" />
-            <span>{post.readingTime || '5 મિનિટ વાંચો'}</span>
+          <span className="text-theme-muted">•</span>
+          <div className="flex items-center gap-1.5 text-xs text-theme-secondary">
+            <Clock size={13} className="text-theme-muted" />
+            <span>{post.readingTime || '5 min read'}</span>
           </div>
         </div>
 
         {/* H1 Title */}
-        <h1 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-white leading-tight mb-4 tracking-tight">
+        <h1 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-theme-primary leading-tight mb-4 tracking-tight">
           {post.title}
         </h1>
 
         {/* Introduction */}
-        <p className="text-base sm:text-lg text-[#B9C6D6] leading-relaxed mb-8 max-w-4xl font-normal">
+        <p className="text-base sm:text-lg text-theme-secondary leading-relaxed mb-8 max-w-4xl font-normal">
           {post.excerpt}
         </p>
 
-        {/* Main 2-Column Layout: Content Column & Sidebar */}
+        {/* Main 2-Column Layout */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-start">
           {/* Main Article Body (8 cols on lg) */}
           <article className="lg:col-span-8 flex flex-col">
             {/* Featured Image with Quote Card Overlay */}
-            <div className="relative rounded-2xl overflow-hidden border border-[#1C3A52] bg-[#0B1D2D] aspect-[16/9] mb-6 shadow-2xl">
+            <div className="relative rounded-2xl overflow-hidden border border-theme bg-theme-card aspect-[16/9] mb-6 shadow-xl">
               <img
                 src={post.featuredImage || '/images/hero-candle.jpg'}
                 alt={post.imageAlt || post.title}
                 className="w-full h-full object-cover"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#061321]/90 via-[#061321]/30 to-transparent" />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
 
               {/* Quote Card Overlay */}
               {post.quote && (
-                <div className="absolute top-6 right-6 max-w-xs sm:max-w-sm bg-[#061321]/80 backdrop-blur-md border border-[#1C3A52] rounded-2xl p-4 sm:p-5 shadow-2xl text-right">
+                <div className="absolute top-6 right-6 max-w-xs sm:max-w-sm bg-black/75 backdrop-blur-md border border-white/10 rounded-2xl p-4 sm:p-5 shadow-2xl text-right">
                   <p className="text-sm sm:text-base text-white italic font-medium leading-relaxed">
                     &ldquo;{post.quote}&rdquo;
                   </p>
@@ -172,7 +180,7 @@ export default async function SingleArticlePage({ params }: Props) {
                 <LotusIcon size={22} />
                 <span>{post.title}</span>
               </div>
-              <p className="text-sm sm:text-base text-[#B9C6D6] leading-relaxed">
+              <p className="text-sm sm:text-base text-theme-secondary leading-relaxed">
                 આપણા પ્રિયજનોનું જીવન પ્રેમ, ત્યાગ અને સંસ્કારોની ખાણ હતું. તેમના આશીર્વાદ અને સ્નેહ આજે પણ આપણા હૃદયમાં જીવંત છે. અહીં આપેલ સંદેશાઓ તમે તમારા પરિવાર અને સ્નેહીજનો સાથે શેર કરી શકો છો.
               </p>
             </div>
@@ -193,16 +201,18 @@ export default async function SingleArticlePage({ params }: Props) {
             )}
 
             {/* Main Rich Text Content */}
-            <div className="prose prose-invert max-w-none text-[#F4F6FA] text-base leading-relaxed mt-6 space-y-6">
+            <div className="prose prose-invert max-w-none text-theme-primary text-base leading-relaxed mt-6 space-y-6">
               {post.content.split('\n\n').map((paragraph, index) => {
                 if (paragraph.startsWith('## ')) {
                   const heading = paragraph.replace('## ', '');
-                  const id = heading.toLowerCase().replace(/[^a-z0-9\u0A80-\u0AFF]+/g, '-');
+                  const id = heading
+                    .toLowerCase()
+                    .replace(/[^a-z0-9\u0A80-\u0AFF]+/g, '-');
                   return (
                     <h2
                       key={index}
                       id={id}
-                      className="text-xl sm:text-2xl font-bold text-white border-b border-[#1C3A52] pb-2 mt-8 mb-4 text-gold flex items-center gap-2"
+                      className="text-xl sm:text-2xl font-bold text-theme-primary border-b border-theme pb-2 mt-8 mb-4 text-gold flex items-center gap-2"
                     >
                       <Sparkles size={18} />
                       <span>{heading}</span>
@@ -211,33 +221,35 @@ export default async function SingleArticlePage({ params }: Props) {
                 }
                 if (paragraph.startsWith('### ')) {
                   const heading = paragraph.replace('### ', '');
-                  const id = heading.toLowerCase().replace(/[^a-z0-9\u0A80-\u0AFF]+/g, '-');
+                  const id = heading
+                    .toLowerCase()
+                    .replace(/[^a-z0-9\u0A80-\u0AFF]+/g, '-');
                   return (
                     <h3
                       key={index}
                       id={id}
-                      className="text-lg sm:text-xl font-semibold text-[#FFD782] mt-6 mb-3"
+                      className="text-lg sm:text-xl font-semibold text-gold mt-6 mb-3"
                     >
                       {heading}
                     </h3>
                   );
                 }
                 return (
-                  <p key={index} className="text-[#B9C6D6] leading-relaxed text-base">
+                  <p key={index} className="text-theme-secondary leading-relaxed text-base">
                     {paragraph}
                   </p>
                 );
               })}
             </div>
 
-            {/* Author Information Box (લેખક વિશે) */}
+            {/* Author Information Box */}
             {author && (
-              <div className="mt-12 bg-[#0B1D2D] border border-[#1C3A52] rounded-2xl p-6 card-glow">
+              <div className="mt-12 bg-theme-card border border-theme rounded-2xl p-6 card-glow transition-colors">
                 <div className="text-sm font-semibold text-gold mb-4 flex items-center gap-2">
-                  <span>લેખક વિશે</span>
+                  <span>About the Author</span>
                 </div>
                 <div className="flex flex-col sm:flex-row items-center sm:items-start gap-5">
-                  <div className="relative w-20 h-20 rounded-full overflow-hidden border-2 border-gold shrink-0 shadow-lg bg-[#061321]">
+                  <div className="relative w-20 h-20 rounded-full overflow-hidden border-2 border-gold shrink-0 shadow-lg bg-theme-main">
                     <img
                       src={author.avatar || '/images/author-hina.jpg'}
                       alt={author.name}
@@ -247,23 +259,43 @@ export default async function SingleArticlePage({ params }: Props) {
                   <div className="flex-1 text-center sm:text-left">
                     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-2">
                       <div>
-                        <h4 className="text-lg font-bold text-white">{author.name}</h4>
+                        <h4 className="text-lg font-bold text-theme-primary">
+                          {author.name}
+                        </h4>
                         <p className="text-xs text-gold">{author.roleTitle}</p>
                       </div>
                       {/* Social icons */}
-                      <div className="flex items-center justify-center sm:justify-end space-x-2 text-[#8495A9]">
-                        <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" className="p-1 hover:text-gold transition-colors">
+                      <div className="flex items-center justify-center sm:justify-end space-x-2 text-theme-muted">
+                        <a
+                          href="https://x.com"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="p-1.5 rounded-full hover:text-gold transition-colors"
+                          aria-label="Twitter"
+                        >
                           <TwitterIcon size={16} />
                         </a>
-                        <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="p-1 hover:text-gold transition-colors">
+                        <a
+                          href="https://instagram.com"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="p-1.5 rounded-full hover:text-gold transition-colors"
+                          aria-label="Instagram"
+                        >
                           <InstagramIcon size={16} />
                         </a>
-                        <a href="https://youtube.com" target="_blank" rel="noopener noreferrer" className="p-1 hover:text-gold transition-colors">
+                        <a
+                          href="https://youtube.com"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="p-1.5 rounded-full hover:text-gold transition-colors"
+                          aria-label="YouTube"
+                        >
                           <YoutubeIcon size={16} />
                         </a>
                       </div>
                     </div>
-                    <p className="text-xs sm:text-sm text-[#B9C6D6] leading-relaxed">
+                    <p className="text-xs sm:text-sm text-theme-secondary leading-relaxed">
                       {author.bio}
                     </p>
                   </div>
@@ -274,10 +306,10 @@ export default async function SingleArticlePage({ params }: Props) {
 
           {/* Desktop Right Sidebar (4 cols on lg) */}
           <aside className="lg:col-span-4 flex flex-col space-y-6">
-            {/* Widget 1: સંબંધિત લેખો (6 randomly selected posts with thumbnails) */}
+            {/* Widget 1: Related posts */}
             <SidebarRelatedPosts currentPostId={post.id} initialPosts={allPosts} />
 
-            {/* Widget 2: ઝડપી ક્રિયાઓ (Quick Actions) */}
+            {/* Widget 2: Quick Actions */}
             <ArticleQuickActions
               title={post.title}
               excerpt={post.excerpt}
@@ -287,10 +319,10 @@ export default async function SingleArticlePage({ params }: Props) {
         </div>
 
         {/* Bottom Related Articles Grid (4 cards) */}
-        <section className="mt-16 pt-10 border-t border-[#1C3A52]">
+        <section className="mt-16 pt-10 border-t border-theme">
           <div className="flex items-center gap-2 text-gold text-lg sm:text-xl font-bold mb-6">
             <Sparkles size={20} />
-            <span>સંબંધિત લેખો</span>
+            <span>Related Memorial Articles</span>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">

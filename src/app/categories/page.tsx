@@ -8,35 +8,36 @@ import { CategoryCard } from '@/components/CategoryCard';
 import { Sparkles } from 'lucide-react';
 
 export const metadata: Metadata = {
-  title: 'પ્રમુખ કેટેગરીઝ | શ્રદ્ધાંજલિ',
-  description: 'શ્રદ્ધાંજલિ સંદેશ, પુણ્યતિથિ, શાયરી, વિધિ અને સંસ્કાર સંબંધિત મુખ્ય કેટેગરીઓ.',
+  title: 'Categories | Shradhanjali Msg — Memorial Collections',
+  description:
+    'Explore memorial message categories, condolences, punyatithi tributes, and memorial poetry.',
 };
 
 export default function CategoriesPage() {
   const categories = getCategories();
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#061321] text-[#F4F6FA]">
+    <div className="min-h-screen flex flex-col bg-theme-main text-theme-primary transition-colors">
       <Header />
 
       <main className="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full">
         <Breadcrumbs
           items={[
-            { label: 'હોમ', url: '/' },
-            { label: 'બધી કેટેગરીઝ' },
+            { label: 'Home', url: '/' },
+            { label: 'Categories' },
           ]}
         />
 
         <div className="my-6">
           <div className="flex items-center gap-2 text-gold text-sm font-semibold mb-1">
             <Sparkles size={18} />
-            <span>કેટેગરીઝ</span>
+            <span>Featured Categories</span>
           </div>
-          <h1 className="text-2xl sm:text-4xl font-extrabold text-white mb-3">
-            મુખ્ય કેટેગરી સંગ્રહ
+          <h1 className="text-2xl sm:text-4xl font-extrabold text-theme-primary mb-3">
+            Memorial Collections
           </h1>
-          <p className="text-sm sm:text-base text-[#B9C6D6] max-w-2xl">
-            તમારી લાગણીઓ અને જરૂરિયાત મુજબ કેટેગરી પસંદ કરીને સંબંધિત સંદેશાઓ મેળવો.
+          <p className="text-sm sm:text-base text-theme-secondary max-w-2xl">
+            Choose a category tailored to your thoughts and heartfelt memorial expressions.
           </p>
         </div>
 

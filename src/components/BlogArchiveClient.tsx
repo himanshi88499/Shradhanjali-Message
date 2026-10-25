@@ -44,11 +44,11 @@ export function BlogArchiveClient({ initialPosts, categories }: BlogArchiveClien
   return (
     <div className="space-y-8">
       {/* Search and Category Filter Toolbar */}
-      <div className="bg-[#0B1D2D]/90 border border-[#C5A880]/20 rounded-2xl p-4 sm:p-6 shadow-xl backdrop-blur-md">
+      <div className="bg-theme-card border border-theme rounded-2xl p-4 sm:p-6 shadow-xl backdrop-blur-md transition-colors">
         <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4">
           {/* Live Search Input */}
           <div className="relative flex-1 max-w-lg">
-            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#8A9EB5]" />
+            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-theme-muted" />
             <input
               type="text"
               value={searchQuery}
@@ -56,34 +56,34 @@ export function BlogArchiveClient({ initialPosts, categories }: BlogArchiveClien
                 setSearchQuery(e.target.value);
                 setVisibleCount(8);
               }}
-              placeholder="લેખનું શીર્ષક, વિષય અથવા કીવર્ડ શોધો..."
-              className="w-full bg-[#061321] text-white pl-10 pr-4 py-2.5 rounded-xl border border-[#1C3A52] focus:outline-none focus:border-[#D4AF37] text-sm placeholder-[#8495A9] transition-colors"
+              placeholder="Search title, category or memorial keywords..."
+              className="w-full bg-theme-main text-theme-primary pl-10 pr-16 py-2.5 rounded-xl border border-theme focus:outline-none focus:border-gold text-sm placeholder-theme-muted transition-colors"
             />
             {searchQuery && (
               <button
                 type="button"
                 onClick={() => setSearchQuery('')}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-[#8A9EB5] hover:text-white"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-theme-muted hover:text-theme-primary px-1.5 py-0.5 rounded"
               >
-                સાફ કરો
+                Clear
               </button>
             )}
           </div>
 
           {/* Result Count Info */}
-          <div className="text-xs text-[#8A9EB5] flex items-center gap-1.5 self-center md:self-auto">
-            <Sparkles className="w-3.5 h-3.5 text-[#D4AF37]" />
+          <div className="text-xs text-theme-muted flex items-center gap-1.5 self-center md:self-auto">
+            <Sparkles className="w-3.5 h-3.5 text-gold" />
             <span>
-              કુલ <strong className="text-white font-semibold">{filteredPosts.length}</strong> લેખો મળ્યા
+              Total <strong className="text-theme-primary font-semibold">{filteredPosts.length}</strong> articles found
             </span>
           </div>
         </div>
 
         {/* Category Pills */}
-        <div className="flex flex-wrap items-center gap-2 mt-5 pt-4 border-t border-[#1C3A52]/60">
-          <div className="flex items-center gap-1.5 text-xs text-[#D4AF37] font-semibold mr-1">
+        <div className="flex flex-wrap items-center gap-2 mt-5 pt-4 border-t border-theme-subtle">
+          <div className="flex items-center gap-1.5 text-xs text-gold font-semibold mr-1">
             <Filter className="w-3.5 h-3.5" />
-            <span>કેટેગરી:</span>
+            <span>Categories:</span>
           </div>
 
           <button
@@ -94,15 +94,17 @@ export function BlogArchiveClient({ initialPosts, categories }: BlogArchiveClien
             }}
             className={`px-3.5 py-1.5 rounded-full text-xs font-medium transition-all ${
               selectedCategory === 'all'
-                ? 'bg-[#D4AF37] text-[#061321] font-bold shadow-md shadow-[#D4AF37]/20'
-                : 'bg-[#061321] text-[#B9C6D6] border border-[#1C3A52] hover:border-[#D4AF37]/50 hover:text-white'
+                ? 'bg-gold text-white font-bold shadow-sm'
+                : 'bg-theme-main text-theme-secondary border border-theme hover:border-gold hover:text-gold'
             }`}
           >
-            બધા ({initialPosts.length})
+            All ({initialPosts.length})
           </button>
 
           {categories.map((cat) => {
-            const count = initialPosts.filter((p) => p.categoryId === cat.id || p.categorySlug === cat.slug).length;
+            const count = initialPosts.filter(
+              (p) => p.categoryId === cat.id || p.categorySlug === cat.slug
+            ).length;
             const isSelected = selectedCategory === cat.id || selectedCategory === cat.slug;
             return (
               <button
@@ -114,8 +116,8 @@ export function BlogArchiveClient({ initialPosts, categories }: BlogArchiveClien
                 }}
                 className={`px-3.5 py-1.5 rounded-full text-xs font-medium transition-all ${
                   isSelected
-                    ? 'bg-[#D4AF37] text-[#061321] font-bold shadow-md shadow-[#D4AF37]/20'
-                    : 'bg-[#061321] text-[#B9C6D6] border border-[#1C3A52] hover:border-[#D4AF37]/50 hover:text-white'
+                    ? 'bg-gold text-white font-bold shadow-sm'
+                    : 'bg-theme-main text-theme-secondary border border-theme hover:border-gold hover:text-gold'
                 }`}
               >
                 {cat.name} ({count})
@@ -134,13 +136,13 @@ export function BlogArchiveClient({ initialPosts, categories }: BlogArchiveClien
         </div>
       ) : (
         /* Empty State */
-        <div className="text-center py-16 bg-[#0B1D2D]/50 border border-[#1C3A52] rounded-2xl p-8">
-          <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-[#132A3E] border border-[#C5A880]/30 flex items-center justify-center text-[#D4AF37]">
+        <div className="text-center py-16 bg-theme-card border border-theme rounded-2xl p-8 transition-colors">
+          <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-theme-surface border border-theme flex items-center justify-center text-gold">
             <Search className="w-7 h-7" />
           </div>
-          <h3 className="text-lg font-bold text-white mb-2">કોઈ લેખ મળ્યો નથી</h3>
-          <p className="text-sm text-[#8A9EB5] max-w-md mx-auto mb-6">
-            તમારા શોધ માપદંડ &ldquo;{searchQuery}&rdquo; મુજબ કોઈ લેખ ઉપલબ્ધ નથી. કૃપા કરીને અન્ય શબ્દ અથવા કેટેગરી અજમાવી જુઓ.
+          <h3 className="text-lg font-bold text-theme-primary mb-2">No Articles Found</h3>
+          <p className="text-sm text-theme-muted max-w-md mx-auto mb-6">
+            No articles match your query &ldquo;{searchQuery}&rdquo;. Try another search keyword or select all categories.
           </p>
           <button
             type="button"
@@ -148,9 +150,9 @@ export function BlogArchiveClient({ initialPosts, categories }: BlogArchiveClien
               setSearchQuery('');
               setSelectedCategory('all');
             }}
-            className="px-5 py-2 rounded-xl bg-gradient-to-r from-[#C5A880] to-[#E5C158] text-[#061321] text-xs font-bold hover:opacity-95 transition-opacity"
+            className="px-5 py-2.5 rounded-xl bg-gold text-white text-xs font-bold hover:bg-gold/90 transition-colors shadow-sm"
           >
-            બધા ફિલ્ટર્સ સાફ કરો
+            Clear All Filters
           </button>
         </div>
       )}
@@ -161,9 +163,9 @@ export function BlogArchiveClient({ initialPosts, categories }: BlogArchiveClien
           <button
             type="button"
             onClick={handleLoadMore}
-            className="group flex items-center gap-2 px-6 py-3 rounded-full bg-[#0B1D2D] border border-[#C5A880]/40 text-[#D4AF37] font-semibold text-sm hover:bg-[#132A3E] hover:border-[#D4AF37] transition-all shadow-lg shadow-black/20"
+            className="group flex items-center gap-2 px-6 py-3 rounded-full bg-theme-card border border-theme text-gold font-semibold text-sm hover:bg-theme-card-hover hover:border-gold transition-all shadow-md"
           >
-            <span>વધુ લેખો જુઓ ({filteredPosts.length - visibleCount} બાકી)</span>
+            <span>Load More Articles ({filteredPosts.length - visibleCount} remaining)</span>
             <ChevronDown className="w-4 h-4 group-hover:translate-y-0.5 transition-transform" />
           </button>
         </div>

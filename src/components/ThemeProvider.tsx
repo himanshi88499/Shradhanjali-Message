@@ -17,35 +17,39 @@ const ThemeContext = createContext<ThemeContextType>({
 });
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
+  // Always initialize to dark mode by default
   const [theme, setThemeState] = useState<Theme>('dark');
-  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    setMounted(true);
     try {
-      const saved = (localStorage.getItem('shradhanjali-theme') || localStorage.getItem('theme')) as Theme | null;
-      if (saved === 'light' || saved === 'dark') {
-        setThemeState(saved);
-        document.documentElement.classList.toggle('light', saved === 'light');
+      const saved = (localStorage.getItem('shradhanjali-theme') ||
+        localStorage.getItem('theme')) as Theme | null;
+
+      // Dark mode is the strict default unless visitor has explicitly saved 'light'
+      if (saved === 'light') {
+        setThemeState('light');
+        document.documentElement.classList.add('light');
       } else {
-        const prefersLight = window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches;
-        if (prefersLight) {
-          setThemeState('light');
-          document.documentElement.classList.add('light');
-        } else {
-          setThemeState('dark');
-          document.documentElement.classList.remove('light');
-        }
+        setThemeState('dark');
+        document.documentElement.classList.remove('light');
       }
     } catch {
-      // fallback
+      // Safe fallback: stay dark
+      setThemeState('dark');
+      document.documentElement.classList.remove('light');
     }
   }, []);
 
   const setTheme = (newTheme: Theme) => {
     setThemeState(newTheme);
-    localStorage.setItem('shradhanjali-theme', newTheme);
-    document.documentElement.classList.toggle('light', newTheme === 'light');
+    try {
+      localStorage.setItem('shradhanjali-theme', newTheme);
+      if (newTheme === 'light') {
+        document.documentElement.classList.add('light');
+      } else {
+        document.documentElement.classList.remove('light');
+      }
+    } catch {}
   };
 
   const toggleTheme = () => {

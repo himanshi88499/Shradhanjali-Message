@@ -8,8 +8,9 @@ import { BlogArchiveClient } from '@/components/BlogArchiveClient';
 import { BookOpen } from 'lucide-react';
 
 export const metadata: Metadata = {
-  title: 'બધા લેખો | શ્રદ્ધાંજલિ સંદેશ, પુણ્યતિથિ અને શાયરી',
-  description: 'શ્રદ્ધાંજલિ પોર્ટલ પર પ્રકાશિત થયેલા તમામ ગુજરાતી શ્રદ્ધાંજલિ સંદેશ, પુણ્યતિથિ શુભેચ્છા અને ઉપયોગી માહિતી લેખો.',
+  title: 'Blog & Articles | Shradhanjali Msg — Memorial Tributes & Condolences',
+  description:
+    'Browse all memorial articles, condolences, punyatithi tributes, and memorial poetry published on Shradhanjali Msg.',
 };
 
 export default function PostsArchivePage() {
@@ -17,27 +18,27 @@ export default function PostsArchivePage() {
   const categories = getCategories();
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#061321] text-[#F4F6FA]">
+    <div className="min-h-screen flex flex-col bg-theme-main text-theme-primary transition-colors">
       <Header />
 
       <main className="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full">
         <Breadcrumbs
           items={[
-            { label: 'હોમ', url: '/' },
-            { label: 'બધા લેખો' },
+            { label: 'Home', url: '/' },
+            { label: 'Blog' },
           ]}
         />
 
         <div className="my-6">
-          <div className="flex items-center gap-2 text-[#D4AF37] text-sm font-semibold mb-1">
+          <div className="flex items-center gap-2 text-gold text-sm font-semibold mb-1">
             <BookOpen size={18} />
-            <span>લેખ સંગ્રહ</span>
+            <span>Latest Blog Posts</span>
           </div>
-          <h1 className="text-2xl sm:text-4xl font-extrabold text-white mb-2 font-gujarati tracking-tight">
-            બધા પ્રકાશિત લેખો
+          <h1 className="text-2xl sm:text-4xl font-extrabold text-theme-primary mb-2 tracking-tight">
+            All Memorial Articles
           </h1>
-          <p className="text-sm sm:text-base text-[#B9C6D6] max-w-2xl leading-relaxed">
-            શ્રદ્ધાંજલિ, પુણ્યતિથિ, શાયરી અને જીવન વિષયક ગુજરાતી લેખો વાંચો અને શેર કરો.
+          <p className="text-sm sm:text-base text-theme-secondary max-w-2xl leading-relaxed">
+            Read and share thoughtful memorial messages, condolences, punyatithi tributes, and reflections.
           </p>
         </div>
 

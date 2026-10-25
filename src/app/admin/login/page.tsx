@@ -99,9 +99,9 @@ export default function AdminLoginPage() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full mt-2 py-3 bg-gold hover:bg-[#ffd782] disabled:opacity-50 text-[#061321] font-bold text-sm rounded-xl transition-all shadow-md flex items-center justify-center gap-2"
+              className="w-full mt-2 py-3 bg-gold hover:bg-gold/90 disabled:opacity-50 text-white font-bold text-sm rounded-xl transition-all shadow-md flex items-center justify-center gap-2"
             >
-              <span>{loading ? 'ચકાસણી ચાલુ છે...' : 'લૉગિન કરો'}</span>
+              <span>{loading ? 'Authenticating...' : 'Login to Admin'}</span>
               <ArrowRight size={16} />
             </button>
           </form>

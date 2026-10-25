@@ -30,13 +30,13 @@ export const Breadcrumbs: React.FC<BreadcrumbsProps> = ({ items }) => {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
       <nav aria-label="Breadcrumb" className="py-4">
-        <ol className="flex flex-wrap items-center gap-1.5 text-xs text-[#8495A9]">
+        <ol className="flex flex-wrap items-center gap-1.5 text-xs text-theme-muted">
           {items.map((item, index) => {
             const isLast = index === items.length - 1;
 
             return (
               <li key={index} className="flex items-center gap-1.5">
-                {index === 0 && <Home size={13} className="text-[#8495A9]" />}
+                {index === 0 && <Home size={13} className="text-theme-muted" />}
                 {item.url && !isLast ? (
                   <Link
                     href={item.url}
@@ -45,11 +45,11 @@ export const Breadcrumbs: React.FC<BreadcrumbsProps> = ({ items }) => {
                     {item.label}
                   </Link>
                 ) : (
-                  <span className="text-[#B9C6D6] font-semibold truncate max-w-[240px]">
+                  <span className="text-theme-primary font-semibold truncate max-w-[240px]">
                     {item.label}
                   </span>
                 )}
-                {!isLast && <ChevronRight size={12} className="text-[#8495A9]" />}
+                {!isLast && <ChevronRight size={12} className="text-theme-muted" />}
               </li>
             );
           })}

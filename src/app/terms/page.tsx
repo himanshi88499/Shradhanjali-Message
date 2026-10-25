@@ -6,34 +6,34 @@ import { Breadcrumbs } from '@/components/Breadcrumbs';
 import { getPageBySlug } from '@/lib/db';
 
 export const metadata: Metadata = {
-  title: 'નિયમો અને શરતો (Terms and Conditions) | શ્રદ્ધાંજલિ',
-  description: 'શ્રદ્ધાંજલિ વેબસાઇટ ઉપયોગ કરવાના નિયમો, શરતો અને સામાજિક જવાબદારી.',
+  title: 'Terms & Conditions | Shradhanjali Msg',
+  description: 'Terms and Conditions of use for the Shradhanjali Msg platform.',
 };
 
 export default function TermsPage() {
   const page = getPageBySlug('terms');
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#061321] text-[#F4F6FA]">
+    <div className="min-h-screen flex flex-col bg-theme-main text-theme-primary transition-colors">
       <Header />
 
       <main className="flex-1 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full">
         <Breadcrumbs
           items={[
-            { label: 'હોમ', url: '/' },
-            { label: 'નિયમો અને શરતો' },
+            { label: 'Home', url: '/' },
+            { label: 'Terms & Conditions' },
           ]}
         />
 
-        <article className="mt-6 bg-[#0B1D2D] border border-[#1C3A52] rounded-2xl p-6 sm:p-10 card-glow">
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-white mb-2">
-            {page?.title || 'નિયમો અને શરતો (Terms and Conditions)'}
+        <article className="mt-6 bg-theme-card border border-theme rounded-2xl p-6 sm:p-10 card-glow transition-colors">
+          <h1 className="text-2xl sm:text-3xl font-extrabold text-theme-primary mb-2">
+            {page?.title || 'Terms & Conditions'}
           </h1>
-          <p className="text-xs text-[#8495A9] mb-8 pb-4 border-b border-[#1C3A52]">
-            છેલ્લે અપડેટ: 12 એપ્રિલ 2026
+          <p className="text-xs text-theme-muted mb-8 pb-4 border-b border-theme">
+            Last Updated: April 2026
           </p>
 
-          <div className="prose prose-invert max-w-none text-sm sm:text-base text-[#B9C6D6] leading-relaxed space-y-5">
+          <div className="prose prose-invert max-w-none text-sm sm:text-base text-theme-secondary leading-relaxed space-y-5">
             {page?.content.split('\n\n').map((paragraph, index) => {
               if (paragraph.startsWith('## ')) {
                 return (
@@ -44,7 +44,7 @@ export default function TermsPage() {
               }
               if (paragraph.startsWith('### ')) {
                 return (
-                  <h3 key={index} className="text-base font-semibold text-white mt-4 mb-2">
+                  <h3 key={index} className="text-base font-semibold text-theme-primary mt-4 mb-2">
                     {paragraph.replace('### ', '')}
                   </h3>
                 );

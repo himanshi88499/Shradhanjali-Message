@@ -2,13 +2,15 @@
 
 import React, { useState } from 'react';
 import { Send, CheckCircle2, AlertCircle } from 'lucide-react';
+import { useLanguage } from './LanguageContext';
 
 export const ContactForm: React.FC = () => {
+  const { t } = useLanguage();
   const [formData, setFormData] = useState({
     name: '',
     email: '',
     phone: '',
-    subject: 'સામાન્ય પૂછપરછ',
+    subject: 'General Inquiry',
     message: '',
   });
 
@@ -38,7 +40,7 @@ export const ContactForm: React.FC = () => {
       const data = await res.json();
 
       if (!res.ok) {
-        throw new Error(data.error || 'સંદેશ મોકલવામાં નિષ્ફળતા મળી.');
+        throw new Error(data.error || 'Failed to submit contact message.');
       }
 
       setStatus('success');
@@ -46,35 +48,35 @@ export const ContactForm: React.FC = () => {
         name: '',
         email: '',
         phone: '',
-        subject: 'સામાન્ય પૂછપરછ',
+        subject: 'General Inquiry',
         message: '',
       });
     } catch (err: any) {
       setStatus('error');
-      setErrorMessage(err.message || 'કંઈક ખોટું થયું.');
+      setErrorMessage(err.message || 'An error occurred.');
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="bg-[#0B1D2D] border border-[#1C3A52] rounded-2xl p-6 sm:p-8 card-glow">
-      <h3 className="text-xl font-bold text-white mb-2">સંદેશ મોકલો</h3>
-      <p className="text-xs sm:text-sm text-[#B9C6D6] mb-6">
-        તમારો સંદેશ અહીં લખો, અમે જરૂર સંપર્ક કરીશું.
+    <div className="bg-theme-card border border-theme rounded-2xl p-6 sm:p-8 card-glow transition-colors">
+      <h3 className="text-xl font-bold text-theme-primary mb-2">Send a Message</h3>
+      <p className="text-xs sm:text-sm text-theme-secondary mb-6">
+        Please share your message or inquiry below. We will get back to you promptly.
       </p>
 
       {status === 'success' && (
-        <div className="mb-6 p-4 rounded-xl bg-[#22C55E]/15 border border-[#22C55E]/40 text-[#22C55E] flex items-center gap-3">
+        <div className="mb-6 p-4 rounded-xl bg-green-500/15 border border-green-500/30 text-green-500 flex items-center gap-3">
           <CheckCircle2 size={20} className="shrink-0" />
           <p className="text-sm">
-            તમારો સંદેશ સફળતાપૂર્વક મોકલવામાં આવ્યો છે! અમે ટૂંક સમયમાં તમારો સંપર્ક કરીશું.
+            Your message has been sent successfully! Our team will respond shortly.
           </p>
         </div>
       )}
 
       {status === 'error' && (
-        <div className="mb-6 p-4 rounded-xl bg-[#EF4444]/15 border border-[#EF4444]/40 text-[#EF4444] flex items-center gap-3">
+        <div className="mb-6 p-4 rounded-xl bg-red-500/15 border border-red-500/30 text-red-500 flex items-center gap-3">
           <AlertCircle size={20} className="shrink-0" />
           <p className="text-sm">{errorMessage}</p>
         </div>
@@ -83,8 +85,8 @@ export const ContactForm: React.FC = () => {
       <form onSubmit={handleSubmit} className="space-y-4">
         {/* Name */}
         <div>
-          <label htmlFor="name" className="block text-xs font-medium text-[#B9C6D6] mb-1.5">
-            તમારું નામ <span className="text-gold">*</span>
+          <label htmlFor="name" className="block text-xs font-medium text-theme-secondary mb-1.5">
+            Your Name <span className="text-gold">*</span>
           </label>
           <input
             type="text"
@@ -93,15 +95,15 @@ export const ContactForm: React.FC = () => {
             required
             value={formData.name}
             onChange={handleChange}
-            placeholder="તમારું નામ લખો"
-            className="w-full bg-[#061321] border border-[#1C3A52] focus:border-gold rounded-xl px-4 py-3 text-sm text-white placeholder-[#8495A9] focus:outline-none transition-colors"
+            placeholder="Enter your name"
+            className="w-full bg-theme-main border border-theme focus:border-gold rounded-xl px-4 py-3 text-sm text-theme-primary placeholder-theme-muted focus:outline-none transition-colors"
           />
         </div>
 
         {/* Email */}
         <div>
-          <label htmlFor="email" className="block text-xs font-medium text-[#B9C6D6] mb-1.5">
-            ઇમેઇલ એડ્રેસ <span className="text-gold">*</span>
+          <label htmlFor="email" className="block text-xs font-medium text-theme-secondary mb-1.5">
+            Email Address <span className="text-gold">*</span>
           </label>
           <input
             type="email"
@@ -110,15 +112,15 @@ export const ContactForm: React.FC = () => {
             required
             value={formData.email}
             onChange={handleChange}
-            placeholder="તમારી ઇમેઇલ એડ્રેસ લખો"
-            className="w-full bg-[#061321] border border-[#1C3A52] focus:border-gold rounded-xl px-4 py-3 text-sm text-white placeholder-[#8495A9] focus:outline-none transition-colors"
+            placeholder="name@example.com"
+            className="w-full bg-theme-main border border-theme focus:border-gold rounded-xl px-4 py-3 text-sm text-theme-primary placeholder-theme-muted focus:outline-none transition-colors"
           />
         </div>
 
         {/* Phone */}
         <div>
-          <label htmlFor="phone" className="block text-xs font-medium text-[#B9C6D6] mb-1.5">
-            મોબાઇલ નંબર (વૈકલ્પિક)
+          <label htmlFor="phone" className="block text-xs font-medium text-theme-secondary mb-1.5">
+            Phone Number (Optional)
           </label>
           <input
             type="tel"
@@ -126,34 +128,34 @@ export const ContactForm: React.FC = () => {
             name="phone"
             value={formData.phone}
             onChange={handleChange}
-            placeholder="તમારો મોબાઇલ નંબર લખો"
-            className="w-full bg-[#061321] border border-[#1C3A52] focus:border-gold rounded-xl px-4 py-3 text-sm text-white placeholder-[#8495A9] focus:outline-none transition-colors"
+            placeholder="+91 98765 43210"
+            className="w-full bg-theme-main border border-theme focus:border-gold rounded-xl px-4 py-3 text-sm text-theme-primary placeholder-theme-muted focus:outline-none transition-colors"
           />
         </div>
 
         {/* Subject */}
         <div>
-          <label htmlFor="subject" className="block text-xs font-medium text-[#B9C6D6] mb-1.5">
-            વિષય પસંદ કરો
+          <label htmlFor="subject" className="block text-xs font-medium text-theme-secondary mb-1.5">
+            Subject
           </label>
           <select
             id="subject"
             name="subject"
             value={formData.subject}
             onChange={handleChange}
-            className="w-full bg-[#061321] border border-[#1C3A52] focus:border-gold rounded-xl px-4 py-3 text-sm text-white placeholder-[#8495A9] focus:outline-none transition-colors"
+            className="w-full bg-theme-main border border-theme focus:border-gold rounded-xl px-4 py-3 text-sm text-theme-primary focus:outline-none transition-colors"
           >
-            <option value="સામાન્ય પૂછપરછ">સામાન્ય પૂછપરછ</option>
-            <option value="કન્ટેન્ટ સંબંધિત સૂચન">કન્ટેન્ટ સંબંધિત સૂચન</option>
-            <option value="ટેકનિકલ સહાય">ટેકનિકલ સહાય</option>
-            <option value="અન્ય">અન્ય</option>
+            <option value="General Inquiry">General Inquiry</option>
+            <option value="Memorial Message Suggestion">Memorial Message Suggestion</option>
+            <option value="Correction or Update">Correction or Update</option>
+            <option value="Editorial Contribution">Editorial Contribution</option>
           </select>
         </div>
 
         {/* Message */}
         <div>
-          <label htmlFor="message" className="block text-xs font-medium text-[#B9C6D6] mb-1.5">
-            તમારો સંદેશ <span className="text-gold">*</span>
+          <label htmlFor="message" className="block text-xs font-medium text-theme-secondary mb-1.5">
+            Your Message <span className="text-gold">*</span>
           </label>
           <textarea
             id="message"
@@ -162,19 +164,19 @@ export const ContactForm: React.FC = () => {
             rows={4}
             value={formData.message}
             onChange={handleChange}
-            placeholder="તમારો સંદેશ લખો..."
-            className="w-full bg-[#061321] border border-[#1C3A52] focus:border-gold rounded-xl px-4 py-3 text-sm text-white placeholder-[#8495A9] focus:outline-none transition-colors resize-none"
+            placeholder="Write your message here..."
+            className="w-full bg-theme-main border border-theme focus:border-gold rounded-xl px-4 py-3 text-sm text-theme-primary placeholder-theme-muted focus:outline-none transition-colors resize-none"
           />
         </div>
 
-        {/* Submit Button */}
+        {/* Submit Button: Crisp white text on gold, strong contrast */}
         <button
           type="submit"
           disabled={loading}
-          className="w-full py-3.5 px-6 bg-gold hover:bg-[#ffd782] disabled:opacity-50 text-[#061321] font-bold text-sm rounded-xl transition-all shadow-md flex items-center justify-center gap-2"
+          className="w-full py-3.5 px-6 bg-gold hover:bg-gold/90 disabled:opacity-50 text-white font-bold text-sm rounded-xl transition-all shadow-md flex items-center justify-center gap-2"
         >
           <Send size={16} />
-          <span>{loading ? 'મોકલી રહ્યાં છીએ...' : 'સંદેશ મોકલો'}</span>
+          <span>{loading ? 'Sending...' : 'Send Message'}</span>
         </button>
       </form>
     </div>

@@ -32,19 +32,19 @@ export const CategoryCard: React.FC<CategoryCardProps> = ({ category }) => {
   return (
     <Link
       href={targetUrl}
-      className="group relative flex flex-col bg-[#0B1D2D] hover:bg-[#10263B] border border-[#1C3A52] hover:border-gold/50 rounded-2xl overflow-hidden transition-all duration-300 card-glow"
+      className="group relative flex flex-col bg-theme-card hover:bg-theme-card-hover border border-theme hover:border-gold/50 rounded-2xl overflow-hidden transition-all duration-300 card-glow"
     >
-      {/* Category Image Header */}
-      <div className="relative h-32 w-full overflow-hidden bg-[#061321]">
+      {/* Category Image Container */}
+      <div className="relative h-32 w-full overflow-hidden bg-theme-main">
         <img
           src={category.image || '/images/hero-candle.jpg'}
           alt={category.name}
           className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-[#0B1D2D] via-[#0B1D2D]/60 to-transparent" />
-        
+        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
+
         {/* Floating Gold Icon */}
-        <div className="absolute -bottom-3 left-4 w-9 h-9 rounded-xl bg-[#061321] border border-[#1C3A52] flex items-center justify-center shadow-lg group-hover:border-gold transition-colors">
+        <div className="absolute -bottom-3 left-4 w-9 h-9 rounded-xl bg-theme-surface border border-theme flex items-center justify-center shadow-lg group-hover:border-gold transition-colors">
           {getIcon(category.icon)}
         </div>
       </div>
@@ -52,14 +52,14 @@ export const CategoryCard: React.FC<CategoryCardProps> = ({ category }) => {
       {/* Content */}
       <div className="p-5 pt-6 flex flex-col flex-1">
         <div className="flex items-center justify-between">
-          <h3 className="text-base font-bold text-white group-hover:text-gold transition-colors">
+          <h3 className="text-base font-bold text-theme-primary group-hover:text-gold transition-colors">
             {category.name}
           </h3>
-          <span className="w-6 h-6 rounded-full bg-[#061321] text-[#8495A9] group-hover:text-gold group-hover:bg-[#142B40] flex items-center justify-center text-xs transition-colors">
+          <span className="w-6 h-6 rounded-full bg-theme-surface text-theme-muted group-hover:text-gold group-hover:bg-theme-card flex items-center justify-center text-xs transition-colors border border-theme">
             <ChevronRight size={14} />
           </span>
         </div>
-        <p className="mt-2 text-xs text-[#B9C6D6] line-clamp-2 leading-relaxed">
+        <p className="mt-2 text-xs text-theme-secondary line-clamp-2 leading-relaxed">
           {category.description}
         </p>
       </div>
