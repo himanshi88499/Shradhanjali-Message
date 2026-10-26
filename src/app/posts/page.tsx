@@ -8,9 +8,12 @@ import { BlogArchiveClient } from '@/components/BlogArchiveClient';
 import { BookOpen } from 'lucide-react';
 
 export const metadata: Metadata = {
-  title: 'Blog & Articles | Shradhanjali Msg — Memorial Tributes & Condolences',
+  title: 'શ્રદ્ધાંજલિ સંદેશની પોસ્ટ્સ | Shradhanjali Msg',
   description:
     'Browse all memorial articles, condolences, punyatithi tributes, and memorial poetry published on Shradhanjali Msg.',
+  alternates: {
+    canonical: '/posts',
+  },
 };
 
 export default function PostsArchivePage() {
@@ -32,13 +35,13 @@ export default function PostsArchivePage() {
         <div className="my-6">
           <div className="flex items-center gap-2 text-gold text-sm font-semibold mb-1">
             <BookOpen size={18} />
-            <span>Latest Blog Posts</span>
+            <span>તાજેતરની બ્લોગ પોસ્ટ્સ</span>
           </div>
           <h1 className="text-2xl sm:text-4xl font-extrabold text-theme-primary mb-2 tracking-tight">
-            All Memorial Articles
+            શ્રદ્ધાંજલિ સંદેશની પોસ્ટ્સ
           </h1>
           <p className="text-sm sm:text-base text-theme-secondary max-w-2xl leading-relaxed">
-            Read and share thoughtful memorial messages, condolences, punyatithi tributes, and reflections.
+            પ્રિયજનોની પવિત્ર સ્મૃતિમાં પુણ્યતિથિ અને શ્રદ્ધાંજલિ સંદેશાઓ વાંચો અને સ્નેહીજનો સાથે શેર કરો.
           </p>
         </div>
 

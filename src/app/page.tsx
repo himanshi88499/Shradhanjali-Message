@@ -7,6 +7,9 @@ export const metadata: Metadata = {
   title: 'શ્રદ્ધાંજલિ — પ્રિયજનોની સ્મૃતિઓ ક્યારેય ભૂલાતી નથી | Shradhanjali Msg',
   description:
     'શ્રદ્ધાંજલિ સંદેશ, પુણ્યતિથિ, શાયરી અને સંવેદનશીલ માહિતી માટેનું વિશ્વસનીય અને સન્માનનીય ગુજરાતી મંચ.',
+  alternates: {
+    canonical: '/',
+  },
 };
 
 export const dynamic = 'force-dynamic';

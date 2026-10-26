@@ -11,6 +11,9 @@ export const metadata: Metadata = {
   title: 'Contact Us | Shradhanjali Msg — We Are Here For You',
   description:
     'Contact Shradhanjali Msg with any questions, tribute suggestions, or memorial guidance.',
+  alternates: {
+    canonical: '/contact',
+  },
 };
 
 export default function ContactPage() {

@@ -8,6 +8,9 @@ import { getPageBySlug } from '@/lib/db';
 export const metadata: Metadata = {
   title: 'Disclaimer | Shradhanjali Msg',
   description: 'Legal disclaimer and usage guidance for Shradhanjali Msg.',
+  alternates: {
+    canonical: '/disclaimer',
+  },
 };
 
 export default function DisclaimerPage() {

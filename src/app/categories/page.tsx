@@ -8,9 +8,12 @@ import { CategoryCard } from '@/components/CategoryCard';
 import { Sparkles } from 'lucide-react';
 
 export const metadata: Metadata = {
-  title: 'Categories | Shradhanjali Msg — Memorial Collections',
+  title: 'શ્રદ્ધાંજલિ કેટેગરીઝ | Shradhanjali Msg',
   description:
     'Explore memorial message categories, condolences, punyatithi tributes, and memorial poetry.',
+  alternates: {
+    canonical: '/categories',
+  },
 };
 
 export default function CategoriesPage() {
@@ -31,13 +34,13 @@ export default function CategoriesPage() {
         <div className="my-6">
           <div className="flex items-center gap-2 text-gold text-sm font-semibold mb-1">
             <Sparkles size={18} />
-            <span>Featured Categories</span>
+            <span>વિશેષ કેટેગરીઝ</span>
           </div>
           <h1 className="text-2xl sm:text-4xl font-extrabold text-theme-primary mb-3">
-            Memorial Collections
+            શ્રદ્ધાંજલિ કેટેગરી
           </h1>
           <p className="text-sm sm:text-base text-theme-secondary max-w-2xl">
-            Choose a category tailored to your thoughts and heartfelt memorial expressions.
+            તમારા સ્નેહીજનોને યાદ કરતા શ્રેષ્ઠ સંદેશાઓ અને લાગણીઓને અનુરૂપ કેટેગરી પસંદ કરો.
           </p>
         </div>
 

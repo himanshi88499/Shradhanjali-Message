@@ -11,6 +11,9 @@ import { getPageBySlug } from '@/lib/db';
 export const metadata: Metadata = {
   title: 'અમારા વિશે | શ્રદ્ધાંજલિ - એક ભાવનાત્મક પ્રયાસ',
   description: 'શ્રદ્ધાંજલિ એક એવું મંચ છે, જ્યાં પ્રિયજનોની યાદોને શબ્દોમાં વ્યક્ત કરવા, સંવેદનશીલ સંદેશ શોધવા અને જીવન તથા સ્મૃતિઓ સંબંધિત ઉપયોગી માહિતી મેળવવા માટે સામગ્રી રજૂ કરવામાં આવે છે.',
+  alternates: {
+    canonical: '/about',
+  },
 };
 
 export default function AboutPage() {

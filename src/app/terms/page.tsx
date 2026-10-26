@@ -8,6 +8,9 @@ import { getPageBySlug } from '@/lib/db';
 export const metadata: Metadata = {
   title: 'Terms & Conditions | Shradhanjali Msg',
   description: 'Terms and Conditions of use for the Shradhanjali Msg platform.',
+  alternates: {
+    canonical: '/terms',
+  },
 };
 
 export default function TermsPage() {

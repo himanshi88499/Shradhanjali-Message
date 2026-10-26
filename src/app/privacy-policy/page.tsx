@@ -8,6 +8,9 @@ import { getPageBySlug } from '@/lib/db';
 export const metadata: Metadata = {
   title: 'Privacy Policy | Shradhanjali Msg',
   description: 'Privacy Policy and data protection standards for Shradhanjali Msg.',
+  alternates: {
+    canonical: '/privacy-policy',
+  },
 };
 
 export default function PrivacyPolicyPage() {

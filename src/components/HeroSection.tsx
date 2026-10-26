@@ -60,7 +60,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
         <div className="absolute inset-0 bg-[#030B12]/50 md:hidden" />
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 pt-16 sm:pt-20 lg:pt-22 pb-12 sm:pb-16 lg:pb-20">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 pt-16 sm:pt-20 lg:pt-22 pb-14 sm:pb-20 lg:pb-24">
         <div className="flex flex-col lg:flex-row items-center justify-between gap-8">
           {/* Left Column: Heading, Subtitle, Pill-shaped Search Bar */}
           <div className="w-full max-w-3xl flex flex-col justify-center">

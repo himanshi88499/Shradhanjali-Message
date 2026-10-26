@@ -10,6 +10,18 @@ interface SidebarRelatedPostsProps {
   initialPosts: Post[];
 }
 
+const PranamHandsIcon: React.FC<{ className?: string }> = ({ className = 'w-4.5 h-4.5 text-gold' }) => (
+  <svg
+    viewBox="0 0 24 24"
+    fill="currentColor"
+    className={className}
+    aria-hidden="true"
+  >
+    {/* Folded Hands (Pranam / Namaste) respectful memorial icon */}
+    <path d="M12 2.5a1.2 1.2 0 0 0-1 .6L8.8 6.8c-.4.7-.5 1.5-.3 2.3l1 4c.2.7.7 1.2 1.4 1.4l1.1.3 1.1-.3c.7-.2 1.2-.7 1.4-1.4l1-4c.2-.8.1-1.6-.3-2.3L13 3.1a1.2 1.2 0 0 0-1-.6zm-.1 2.5l1.6 3.2c.2.4.2.8 0 1.2l-.9 3.4c-.1.3-.3.4-.6.4s-.5-.1-.6-.4l-.9-3.4c-.2-.4-.2-.8 0-1.2l1.6-3.2h.4zM6 10c-.3 0-.6.2-.6.5l-1.2 4.5c-.3 1.2.2 2.4 1.1 3.2l3.4 2.6c.7.5 1.5.7 2.3.7h2c.8 0 1.6-.2 2.3-.7l3.4-2.6c.9-.8 1.4-2 1.1-3.2L18.6 10.5c-.1-.3-.4-.5-.7-.5s-.5.3-.4.6l1.1 4.2c.2.8-.2 1.6-.8 2.2l-3.4 2.6c-.5.4-1.1.5-1.7.5h-2c-.6 0-1.2-.1-1.7-.5L6.9 17c-.6-.6-1-1.4-.8-2.2l1.1-4.2c.1-.3-.1-.6-.4-.6H6z" />
+  </svg>
+);
+
 export function SidebarRelatedPosts({ currentPostId, initialPosts }: SidebarRelatedPostsProps) {
   const eligible = initialPosts.filter((p) => p.id !== currentPostId);
 
@@ -37,7 +49,7 @@ export function SidebarRelatedPosts({ currentPostId, initialPosts }: SidebarRela
       {/* Widget Header */}
       <div className="flex items-center justify-between pb-3.5 border-b border-theme">
         <div className="flex items-center gap-2">
-          <Sparkles className="w-4 h-4 text-gold" />
+          <PranamHandsIcon className="w-5 h-5 text-gold shrink-0" />
           <h3 className="text-theme-primary font-bold text-base tracking-wide">
             Shradhanjali Messages
           </h3>

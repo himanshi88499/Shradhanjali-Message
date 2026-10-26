@@ -150,8 +150,8 @@ export default async function SingleArticlePage({ params }: Props) {
   };
 
   const renderRecommendationBox = (recPost: typeof post) => (
-    <div className="my-4 sm:my-4.5 p-4 sm:p-5 rounded-2xl bg-theme-surface border border-theme hover:border-[#F5C45E]/60 transition-all card-glow group">
-      <div className="flex items-center gap-2 text-xs font-bold text-[#F5C45E] uppercase tracking-wider mb-3">
+    <div className="mt-3.5 mb-2.5 sm:mt-4 sm:mb-2.5 p-4 sm:p-5 rounded-2xl bg-theme-surface border border-theme hover:border-[#F5C45E]/60 transition-all card-glow group">
+      <div className="flex items-center gap-2 text-xs font-bold text-[#F5C45E] uppercase tracking-wider mb-2.5">
         <Sparkles size={15} className="text-[#F5C45E]" />
         <span>આ પણ વાંચો</span>
       </div>
@@ -175,7 +175,7 @@ export default async function SingleArticlePage({ params }: Props) {
           <h4 className="text-sm sm:text-base font-bold text-theme-primary group-hover:text-[#F5C45E] transition-colors line-clamp-2 leading-snug">
             {recPost.title}
           </h4>
-          <span className="inline-flex items-center gap-1 text-xs text-[#F5C45E] font-semibold mt-2">
+          <span className="inline-flex items-center gap-1 text-xs text-[#F5C45E] font-semibold mt-1.5">
             <span>સંપૂર્ણ લેખ વાંચો</span>
             <span>→</span>
           </span>
@@ -234,8 +234,8 @@ export default async function SingleArticlePage({ params }: Props) {
               </div>
             </div>
 
-            {/* H1 Title */}
-            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-theme-primary leading-tight mb-5 tracking-tight">
+            {/* H1 Title - Slightly reduced size for refined balance */}
+            <h1 className="text-xl sm:text-2xl lg:text-[1.8rem] font-extrabold text-theme-primary leading-snug mb-4 tracking-tight">
               {post.title}
             </h1>
 
@@ -469,8 +469,8 @@ export default async function SingleArticlePage({ params }: Props) {
 
             {/* Auto Internal Link 2: End-of-Article Do-Follow Recommendation */}
             {endPostRecommendation && (
-              <div className="my-8 p-5 sm:p-6 rounded-2xl bg-gradient-to-r from-theme-card to-theme-surface border border-theme hover:border-[#F5C45E]/70 transition-all card-glow group">
-                <div className="flex items-center justify-between pb-3 mb-3 border-b border-theme">
+              <div className="mt-4 mb-2.5 sm:mt-5 sm:mb-2.5 p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-theme-card to-theme-surface border border-theme hover:border-[#F5C45E]/70 transition-all card-glow group">
+                <div className="flex items-center justify-between pb-2.5 mb-2.5 border-b border-theme">
                   <span className="text-xs font-bold text-[#F5C45E] uppercase tracking-wider flex items-center gap-1.5">
                     <LotusIcon size={18} className="text-[#F5C45E]" />
                     <span>આ પણ વાંચો</span>
@@ -514,8 +514,8 @@ export default async function SingleArticlePage({ params }: Props) {
 
             {/* Author Information Box */}
             {author && (
-              <div className="mt-12 bg-theme-card border border-theme rounded-2xl p-6 card-glow transition-colors">
-                <div className="text-sm font-semibold text-gold mb-4 flex items-center gap-2">
+              <div className="mt-4 sm:mt-5 bg-theme-card border border-theme rounded-2xl p-5 sm:p-6 card-glow transition-colors">
+                <div className="text-sm font-semibold text-gold mb-3 flex items-center gap-2">
                   <span>About the Author</span>
                 </div>
                 <div className="flex flex-col sm:flex-row items-center sm:items-start gap-5">
