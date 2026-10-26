@@ -38,10 +38,14 @@ export const PostEditor: React.FC<PostEditorProps> = ({
   const [categoryId, setCategoryId] = useState(initialPost?.categoryId || (categories[0]?.id || 'cat-1'));
   const [excerpt, setExcerpt] = useState(initialPost?.excerpt || '');
   const [quote, setQuote] = useState(initialPost?.quote || '');
+  const [introHeading, setIntroHeading] = useState(initialPost?.introHeading || '');
+  const [introText, setIntroText] = useState(initialPost?.introText || '');
   const [featuredImage, setFeaturedImage] = useState(initialPost?.featuredImage || '/images/hero-candle.jpg');
   const [imageAlt, setImageAlt] = useState(initialPost?.imageAlt || '');
   const [uploadingImage, setUploadingImage] = useState(false);
+  const [uploadingContentImg, setUploadingContentImg] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const contentImageInputRef = useRef<HTMLInputElement>(null);
   const contentRef = useRef<HTMLTextAreaElement>(null);
 
   const insertSnippet = (snippet: string) => {
@@ -166,6 +170,74 @@ export const PostEditor: React.FC<PostEditorProps> = ({
     setFeaturedImage('');
   };
 
+  // In-Article Image Upload from computer
+  const handleContentImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setUploadingContentImg(true);
+    const fd = new FormData();
+    fd.append('file', file);
+    fd.append('title', file.name.replace(/\.[^/.]+$/, ''));
+    fd.append('altText', file.name.replace(/\.[^/.]+$/, ''));
+
+    try {
+      const res = await fetch('/api/admin/media', {
+        method: 'POST',
+        body: fd,
+      });
+      const data = await res.json();
+      if (res.ok && data.url) {
+        const alt = prompt('ઇમેજ Alt ટેગ / વિવરણ (Image Alt text):', file.name.replace(/\.[^/.]+$/, '')) || 'શ્રદ્ધાંજલિ ફોટો';
+        const imgMarkdown = `\n\n![${alt}](${data.url})\n\n`;
+        insertSnippet(imgMarkdown);
+        setNotification({ type: 'success', message: 'ઇમેજ સફળતાપૂર્વક લેખમાં દાખલ થઈ ગઈ!' });
+        setTimeout(() => setNotification(null), 3000);
+      } else {
+        alert(data.error || 'ઇમેજ અપલોડ નિષ્ફળ ગયું.');
+      }
+    } catch (err) {
+      console.error(err);
+      alert('ઇમેજ અપલોડ કરવામાં એરર આવી.');
+    } finally {
+      setUploadingContentImg(false);
+      if (contentImageInputRef.current) contentImageInputRef.current.value = '';
+    }
+  };
+
+  const handleInsertImageUrl = () => {
+    const url = prompt('ઇમેજ URL દાખલ કરો (Image URL):');
+    if (!url || !url.trim()) return;
+    const alt = prompt('ઇમેજ Alt ટેગ (Image Alt Text):', 'શ્રદ્ધાંજલિ ફોટો') || 'શ્રદ્ધાંજલિ ફોટો';
+    insertSnippet(`\n\n![${alt.trim()}](${url.trim()})\n\n`);
+  };
+
+  // Extract all embedded images from content
+  const articleImages = React.useMemo(() => {
+    const regex = /!\[(.*?)\]\((.*?)\)/g;
+    const matches: { alt: string; url: string; raw: string }[] = [];
+    let match;
+    while ((match = regex.exec(content)) !== null) {
+      matches.push({ alt: match[1], url: match[2], raw: match[0] });
+    }
+    return matches;
+  }, [content]);
+
+  const handleRemoveArticleImage = (rawSnippet: string) => {
+    if (confirm('શું તમે આ ઇમેજ લેખમાંથી હટાવવા માંગો છો? (Remove image from article)')) {
+      setContent((prev) => prev.replace(rawSnippet, '').trim());
+    }
+  };
+
+  const handleEditArticleImage = (img: { alt: string; url: string; raw: string }) => {
+    const newAlt = prompt('ઇમેજ Alt ટેગ સુધારો (Image Alt text):', img.alt);
+    if (newAlt === null) return;
+    const newUrl = prompt('ઇમેજ URL સુધારો (Image URL):', img.url);
+    if (newUrl === null) return;
+    const newSnippet = `![${newAlt.trim()}](${newUrl.trim()})`;
+    setContent((prev) => prev.replace(img.raw, newSnippet));
+  };
+
   // 100-point SEO checklist calculations
   const calculateSeoScore = () => {
     let score = 0;
@@ -276,6 +348,8 @@ export const PostEditor: React.FC<PostEditorProps> = ({
       categorySlug: selectedCategory?.slug || 'shradhanjali',
       excerpt: excerpt.trim(),
       quote: quote.trim(),
+      introHeading: introHeading.trim(),
+      introText: introText.trim(),
       featuredImage: featuredImage.trim(),
       imageAlt: imageAlt.trim() || title.trim(),
       status,
@@ -383,7 +457,7 @@ export const PostEditor: React.FC<PostEditorProps> = ({
           <div className="bg-[#0B1D2D] border border-[#1C3A52] rounded-2xl p-5 card-glow space-y-4">
             <div>
               <label className="block text-xs font-semibold text-[#B9C6D6] mb-1.5">
-                લેખનું શીર્ષક (Gujarati Title) <span className="text-gold">*</span>
+                Post Title <span className="text-gold">*</span>
               </label>
               <input
                 type="text"
@@ -391,49 +465,78 @@ export const PostEditor: React.FC<PostEditorProps> = ({
                 value={title}
                 onChange={(e) => handleTitleChange(e.target.value)}
                 placeholder="દા.ત. માતાજીની પુણ્યતિથિ પર શ્રદ્ધાંજલિ સંદેશ..."
-                className="w-full bg-[#061321] border border-[#1C3A52] focus:border-gold rounded-xl px-4 py-3 text-sm sm:text-base text-white placeholder-[#8495A9] focus:outline-none transition-colors"
+                className="w-full bg-[#061321] border border-[#1C3A52] focus:border-gold rounded-xl px-4 py-3 text-base sm:text-lg font-medium text-white placeholder-[#8495A9] focus:outline-none transition-colors"
               />
             </div>
 
             <div>
               <label className="block text-xs font-semibold text-[#B9C6D6] mb-1.5">
-                URL સ્લગ (Slug)
+                URL Slug
               </label>
-              <div className="flex items-center bg-[#061321] border border-[#1C3A52] focus-within:border-gold rounded-xl px-3 py-2 text-xs">
-                <span className="text-[#8495A9] mr-1">/post/</span>
+              <div className="flex items-center bg-[#061321] border border-[#1C3A52] focus-within:border-gold rounded-xl px-3.5 py-2 text-sm">
+                <span className="text-[#8495A9] mr-1 text-xs">/post/</span>
                 <input
                   type="text"
                   value={slug}
                   onChange={(e) => setSlug(e.target.value)}
-                  className="w-full bg-transparent text-gold font-mono focus:outline-none"
+                  className="w-full bg-transparent text-gold font-mono text-sm focus:outline-none"
                 />
               </div>
             </div>
 
             <div>
               <label className="block text-xs font-semibold text-[#B9C6D6] mb-1.5">
-                ટૂંકો સારાંશ (Excerpt)
+                Excerpt
               </label>
               <textarea
                 rows={2}
                 value={excerpt}
                 onChange={(e) => setExcerpt(e.target.value)}
                 placeholder="લેખનો ટૂંકો સારાંશ જે કાર્ડમાં અને સોશિયલ મીડિયા પર દેખાશે..."
-                className="w-full bg-[#061321] border border-[#1C3A52] focus:border-gold rounded-xl p-3 text-xs text-white placeholder-[#8495A9] focus:outline-none transition-colors resize-none"
+                className="w-full bg-[#061321] border border-[#1C3A52] focus:border-gold rounded-xl p-3.5 text-sm sm:text-base text-white placeholder-[#8495A9] focus:outline-none transition-colors resize-none leading-relaxed"
               />
             </div>
 
             <div>
               <label className="block text-xs font-semibold text-[#B9C6D6] mb-1.5">
-                ઇમેજ પર ક્વોટ (Quote Overlay Text)
+                Quote on Image
               </label>
               <input
                 type="text"
                 value={quote}
                 onChange={(e) => setQuote(e.target.value)}
                 placeholder="દા.ત. માતાનો પ્રેમ કદી ભુલાય નહિ... એ તો જીવનભરનું આશીર્વાદ છે."
-                className="w-full bg-[#061321] border border-[#1C3A52] focus:border-gold rounded-xl px-4 py-2.5 text-xs text-white placeholder-[#8495A9] focus:outline-none transition-colors"
+                className="w-full bg-[#061321] border border-[#1C3A52] focus:border-gold rounded-xl px-4 py-2.5 text-sm sm:text-base text-white placeholder-[#8495A9] focus:outline-none transition-colors"
               />
+            </div>
+
+            {/* Intro Section below Table of Contents */}
+            <div className="pt-3 border-t border-[#1C3A52]/60 space-y-3">
+              <div>
+                <label className="block text-xs font-semibold text-[#B9C6D6] mb-1.5">
+                  TOC Intro Subheading (Table of Contents પછીનું હેડિંગ)
+                </label>
+                <input
+                  type="text"
+                  value={introHeading}
+                  onChange={(e) => setIntroHeading(e.target.value)}
+                  placeholder="દા.ત. પિતાશ્રીની પુણ્યતિથિ પર શ્રદ્ધાંજલિ સંદેશ"
+                  className="w-full bg-[#061321] border border-[#1C3A52] focus:border-gold rounded-xl px-4 py-2.5 text-sm sm:text-base text-white placeholder-[#8495A9] focus:outline-none transition-colors"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-semibold text-[#B9C6D6] mb-1.5">
+                  TOC Intro Paragraph (Table of Contents પછીનું લખાણ)
+                </label>
+                <textarea
+                  rows={3}
+                  value={introText}
+                  onChange={(e) => setIntroText(e.target.value)}
+                  placeholder="દા.ત. આપણા પ્રિયજનોનું જીવન પ્રેમ, ત્યાગ અને સંસ્કારોની ખાણ હતું. તેમના આશીર્વાદ અને સ્નેહ આજે પણ આપણા હૃદયમાં જીવંત છે..."
+                  className="w-full bg-[#061321] border border-[#1C3A52] focus:border-gold rounded-xl p-3.5 text-sm sm:text-base text-white placeholder-[#8495A9] focus:outline-none transition-colors resize-none leading-relaxed"
+                />
+              </div>
             </div>
           </div>
 
@@ -443,13 +546,13 @@ export const PostEditor: React.FC<PostEditorProps> = ({
               <div>
                 <h3 className="text-sm font-bold text-white flex items-center gap-1.5">
                   <Sparkles size={16} className="text-gold" />
-                  <span>શ્રદ્ધાંજલિ સંદેશ કાર્ડ્સ (Individual Message Cards)</span>
+                  <span>Individual Message Cards</span>
                   <span className="text-xs bg-[#142B40] text-gold px-2 py-0.5 rounded-full font-mono font-bold">
                     {messageCards.length}
                   </span>
                 </h3>
-                <p className="text-[11px] text-[#8495A9] mt-0.5">
-                  દરેક સંદેશ કાર્ડ માટે અલગ Copy અને WhatsApp/Facebook શેર બટન આપમેળે જનરેટ થશે.
+                <p className="text-xs text-[#8495A9] mt-0.5 font-medium">
+                  Individual Message Cards with Copy & Share buttons
                 </p>
               </div>
 
@@ -519,7 +622,7 @@ export const PostEditor: React.FC<PostEditorProps> = ({
                       value={card.text}
                       onChange={(e) => handleCardTextChange(card.id, e.target.value)}
                       placeholder="ગુજરાતી શ્રદ્ધાંજલિ સંદેશ અહીં લખો..."
-                      className="w-full bg-[#030B12] border border-[#1C3A52]/60 focus:border-gold rounded-lg p-2.5 text-xs text-white placeholder-[#8495A9] focus:outline-none resize-none leading-relaxed"
+                      className="w-full bg-[#030B12] border border-[#1C3A52]/60 focus:border-gold rounded-lg p-3 text-sm sm:text-base text-white placeholder-[#8495A9] focus:outline-none resize-none leading-relaxed"
                     />
 
                     <div className="flex items-center justify-between text-[11px] text-[#8495A9] pt-1">
@@ -647,21 +750,95 @@ export const PostEditor: React.FC<PostEditorProps> = ({
                     >
                       + ૧૦ કાર્ડ્સ (Batch)
                     </button>
+                    <span className="text-[#1C3A52]">|</span>
+                    {/* In-Article Image Upload & Insert Buttons */}
+                    <input
+                      type="file"
+                      ref={contentImageInputRef}
+                      onChange={handleContentImageUpload}
+                      accept="image/*"
+                      className="hidden"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => contentImageInputRef.current?.click()}
+                      disabled={uploadingContentImg}
+                      className="px-2.5 py-1 bg-[#128C7E]/25 hover:bg-[#128C7E]/40 text-[#25D366] border border-[#128C7E]/50 rounded-lg text-xs font-bold transition-colors flex items-center gap-1 shadow-sm"
+                      title="લેખમાં ગમે ત્યાં નવી ઇમેજ અપલોડ કરી દાખલ કરો"
+                    >
+                      <UploadCloud size={13} />
+                      <span>{uploadingContentImg ? 'અપલોડ...' : '+ Upload Image'}</span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={handleInsertImageUrl}
+                      className="px-2.5 py-1 bg-[#142B40] hover:bg-[#1C3A52] text-white border border-[#1C3A52] rounded-lg text-xs font-medium transition-colors flex items-center gap-1"
+                      title="ઇમેજ URL દાખલ કરો"
+                    >
+                      <ImageIcon size={13} />
+                      <span>+ Image URL</span>
+                    </button>
                   </div>
                 </div>
 
                 <textarea
                   ref={contentRef}
-                  rows={14}
+                  rows={15}
                   value={content}
                   onChange={(e) => setContent(e.target.value)}
                   placeholder="## હેડિંગ અહીં લખો&#10;&#10;કન્ટેન્ટનો પેરાગ્રાફ અહીં લખો...&#10;&#10;:::card&#10;શ્રદ્ધાંજલિ સંદેશ ૧...&#10;:::&#10;&#10;:::card&#10;શ્રદ્ધાંજલિ સંદેશ ૨...&#10;:::"
-                  className="w-full bg-[#061321] border border-[#1C3A52] focus:border-gold rounded-xl p-4 text-xs sm:text-sm text-white placeholder-[#8495A9] focus:outline-none transition-colors font-mono leading-relaxed"
+                  className="w-full bg-[#061321] border border-[#1C3A52] focus:border-gold rounded-xl p-4 text-sm sm:text-base text-white placeholder-[#8495A9] focus:outline-none transition-colors font-sans leading-relaxed"
                 />
+
+                {/* Article Images Management (Upload, Edit, Remove) */}
+                {articleImages.length > 0 && (
+                  <div className="p-4 rounded-xl bg-[#061321] border border-[#1C3A52] space-y-3">
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs font-bold text-gold flex items-center gap-1.5">
+                        <ImageIcon size={14} />
+                        <span>Article Images in Content ({articleImages.length})</span>
+                      </span>
+                      <span className="text-[11px] text-[#8495A9]">
+                        લેખમાં રહેલી ઇમેજો: Alt લખાણ/URL સુધારો (Edit) અથવા લેખમાંથી હટાવો (Remove)
+                      </span>
+                    </div>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                      {articleImages.map((img, i) => (
+                        <div key={i} className="flex items-center gap-3 p-2.5 rounded-lg bg-[#0B1D2D] border border-[#1C3A52]">
+                          <img
+                            src={img.url}
+                            alt={img.alt}
+                            className="w-12 h-12 rounded object-cover border border-[#1C3A52] shrink-0 bg-[#061321]"
+                          />
+                          <div className="flex-1 min-w-0 text-xs">
+                            <p className="text-white font-medium truncate">{img.alt || 'Untitled Image'}</p>
+                            <p className="text-[#8495A9] text-[10px] truncate">{img.url}</p>
+                            <div className="flex items-center gap-3 mt-1.5">
+                              <button
+                                type="button"
+                                onClick={() => handleEditArticleImage(img)}
+                                className="text-[11px] text-gold hover:underline flex items-center gap-1 font-semibold"
+                              >
+                                <Edit3 size={11} /> Edit Alt/URL
+                              </button>
+                              <button
+                                type="button"
+                                onClick={() => handleRemoveArticleImage(img.raw)}
+                                className="text-[11px] text-[#EF4444] hover:underline flex items-center gap-1 font-semibold"
+                              >
+                                <Trash2 size={11} /> Remove
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
 
                 <div className="p-2.5 rounded-lg bg-[#061321]/60 border border-[#1C3A52]/60 text-[11px] text-[#8495A9] flex items-center justify-between">
                   <span>
-                    💡 ટિપ: તમે <strong>પેરાગ્રાફ → હેડિંગ → પેરાગ્રાફ → 10 સંદેશ કાર્ડ્સ → હેડિંગ → કાર્ડ્સ</strong> ગમે તેટલી વાર પુનરાવર્તિત કરી શકો છો.
+                    💡 ટિપ: તમે <strong>પેરાગ્રાફ → હેડિંગ → ઇમેજ → 10 સંદેશ કાર્ડ્સ → હેડિંગ → કાર્ડ્સ</strong> ગમે તેટલી વાર પુનરાવર્તિત કરી શકો છો.
                   </span>
                   <span>{content.length} અક્ષરો</span>
                 </div>
@@ -737,17 +914,17 @@ export const PostEditor: React.FC<PostEditorProps> = ({
             {/* Featured Image Management */}
             <div className="space-y-3">
               <div className="flex items-center justify-between">
-                <label className="block text-xs font-medium text-[#B9C6D6]">
-                  મુખ્ય ફોટો (Featured Image)
+                <label className="block text-xs font-semibold text-[#B9C6D6]">
+                  Featured Image
                 </label>
                 {featuredImage && (
                   <button
                     type="button"
                     onClick={handleRemoveImage}
-                    className="text-[11px] text-[#EF4444] hover:underline flex items-center gap-1"
+                    className="text-[11px] text-[#EF4444] hover:underline flex items-center gap-1 font-semibold"
                   >
                     <Trash2 size={12} />
-                    <span>ઇમેજ હટાવો</span>
+                    <span>Remove Image</span>
                   </button>
                 )}
               </div>

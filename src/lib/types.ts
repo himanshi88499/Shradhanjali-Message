@@ -64,6 +64,8 @@ export interface Post {
   publishedAt: string;
   updatedAt: string;
   tags: string[];
+  introHeading?: string;
+  introText?: string;
   messageCards?: MessageCard[];
   showTableOfContents?: boolean;
   seoTitle?: string;

@@ -80,19 +80,12 @@ export const LotusLogo: React.FC<LotusLogoProps> = ({
       aria-label="Shradhanjali — હોમ"
     >
       <LotusIcon size={iconSize} className="lotus-logo-icon transition-transform duration-300 group-hover:scale-110 drop-shadow-md shrink-0" />
-      <div className="flex flex-col justify-center leading-tight">
-        <span
-          className={`font-serif font-black tracking-wide logo-title-gradient transition-all drop-shadow-sm ${titleSize}`}
-          style={{ letterSpacing: '0.02em' }}
-        >
-          Shradhanjali
-        </span>
-        {showTagline && (
-          <span className={`text-theme-secondary tracking-wider font-medium opacity-90 ${tagSize}`}>
-            ભાવપૂર્ણ શ્રદ્ધાંજલિ સંદેશ
-          </span>
-        )}
-      </div>
+      <span
+        className={`font-serif font-black tracking-wide logo-title-gradient transition-all drop-shadow-sm ${titleSize}`}
+        style={{ letterSpacing: '0.02em' }}
+      >
+        Shradhanjali
+      </span>
     </Link>
   );
 };

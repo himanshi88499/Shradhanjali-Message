@@ -213,13 +213,30 @@ html.light .lotus-logo-icon path {
 }
 
 /* Form Controls in Light/Dark Theme */
-input, textarea, select {
+input:not(.hero-search-input), textarea, select {
   background-color: var(--bg-card) !important;
   color: var(--text-primary) !important;
   border-color: var(--color-border) !important;
 }
 input::placeholder, textarea::placeholder {
   color: var(--text-muted) !important;
+}
+
+/* Hero Search Input Override (Always seamless transparent inside pill bar) */
+.hero-search-input,
+input.hero-search-input,
+input.hero-search-input:focus,
+input.hero-search-input:active,
+input.hero-search-input:hover {
+  background-color: transparent !important;
+  background: transparent !important;
+  color: #FFFFFF !important;
+  border: none !important;
+  box-shadow: none !important;
+  outline: none !important;
+}
+input.hero-search-input::placeholder {
+  color: #8495A9 !important;
 }
 
 /* Animations */

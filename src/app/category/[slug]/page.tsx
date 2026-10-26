@@ -48,16 +48,16 @@ export default async function CategoryPage({ params }: Props) {
         />
 
         {/* Category Header Banner */}
-        <div className="relative rounded-3xl overflow-hidden border border-theme bg-theme-card p-8 sm:p-12 my-6 card-glow transition-colors">
+        <div className="relative rounded-2xl overflow-hidden border border-theme bg-theme-card p-5 sm:p-7 my-4 sm:my-5 card-glow transition-colors">
           <div className="max-w-3xl">
-            <div className="inline-flex items-center gap-2 text-gold text-xs font-semibold px-3 py-1 bg-theme-surface rounded-full border border-theme mb-3">
-              <Sparkles size={13} />
+            <div className="inline-flex items-center gap-1.5 text-gold text-xs font-semibold px-2.5 py-1 bg-theme-surface rounded-full border border-theme mb-2">
+              <Sparkles size={12} />
               <span>Category Collection</span>
             </div>
-            <h1 className="text-2xl sm:text-4xl font-extrabold text-theme-primary mb-3">
+            <h1 className="text-xl sm:text-3xl font-extrabold text-theme-primary mb-2">
               {category.name}
             </h1>
-            <p className="text-sm sm:text-base text-theme-secondary leading-relaxed">
+            <p className="text-xs sm:text-sm text-theme-secondary leading-relaxed">
               {category.description}
             </p>
           </div>

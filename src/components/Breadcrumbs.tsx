@@ -54,7 +54,7 @@ export const Breadcrumbs: React.FC<BreadcrumbsProps> = ({ items }) => {
                   </Link>
                 ) : (
                   <span
-                    className="text-theme-primary font-semibold truncate block max-w-[160px] sm:max-w-[280px]"
+                    className="text-theme-muted font-normal truncate block max-w-[160px] sm:max-w-[280px]"
                     title={item.label}
                   >
                     {displayLabel}

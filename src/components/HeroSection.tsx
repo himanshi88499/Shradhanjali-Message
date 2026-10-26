@@ -102,8 +102,8 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                   onChange={(e) => setQuery(e.target.value)}
                   placeholder={displayPlaceholder}
                   aria-label="Search memorial messages"
-                  className="w-full bg-transparent px-3 sm:px-4 py-2 sm:py-2.5 text-xs sm:text-sm focus:outline-none placeholder:text-[#8495A9]"
-                  style={{ color: '#FFFFFF' }}
+                  className="hero-search-input w-full !bg-transparent px-3 sm:px-4 py-2 sm:py-2.5 text-xs sm:text-sm focus:outline-none !text-white placeholder:text-[#8495A9] border-none shadow-none"
+                  style={{ backgroundColor: 'transparent', color: '#FFFFFF' }}
                 />
                 <button
                   type="submit"

@@ -53,8 +53,12 @@ export function saveDb(data: DatabaseSchema): boolean {
 // ----------------- POSTS -----------------
 export function getPosts(status?: 'published' | 'draft'): Post[] {
   const db = getDb();
-  if (!status) return db.posts;
-  return db.posts.filter((p) => p.status === status);
+  const list = !status ? [...db.posts] : db.posts.filter((p) => p.status === status);
+  return list.sort((a, b) => {
+    const timeB = new Date(b.publishedAt || b.updatedAt || 0).getTime();
+    const timeA = new Date(a.publishedAt || a.updatedAt || 0).getTime();
+    return timeB - timeA;
+  });
 }
 
 export function getPostBySlug(slug: string): Post | undefined {
@@ -105,6 +109,8 @@ export function savePost(post: Partial<Post> & { id?: string }): Post {
       updatedAt: now,
       views: post.views !== undefined ? post.views : existing.views || 0,
       tags: post.tags || existing.tags || ['ભાવપૂર્ણ'],
+      introHeading: post.introHeading !== undefined ? post.introHeading : existing.introHeading,
+      introText: post.introText !== undefined ? post.introText : existing.introText,
       messageCards: post.messageCards !== undefined ? post.messageCards : existing.messageCards || [],
       showTableOfContents: post.showTableOfContents !== undefined ? post.showTableOfContents : existing.showTableOfContents ?? true,
     };
@@ -117,6 +123,8 @@ export function savePost(post: Partial<Post> & { id?: string }): Post {
       title: post.title || '',
       slug: post.slug || `post-${Date.now()}`,
       excerpt: post.excerpt || '',
+      introHeading: post.introHeading || '',
+      introText: post.introText || '',
       content: post.content || '',
       quote: post.quote || '',
       featuredImage: post.featuredImage || '/images/hero-candle.jpg',

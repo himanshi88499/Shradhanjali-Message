@@ -3,8 +3,9 @@
 import React, { useState, useEffect } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 import { AdminSidebar } from './AdminSidebar';
-import { Menu, Bell, User as UserIcon } from 'lucide-react';
+import { Menu, Bell, User as UserIcon, Sun, Moon } from 'lucide-react';
 import { SessionData } from '@/lib/auth';
+import { useTheme } from '@/components/ThemeProvider';
 
 interface AdminLayoutClientProps {
   children: React.ReactNode;
@@ -16,6 +17,7 @@ export const AdminLayoutClient: React.FC<AdminLayoutClientProps> = ({ children, 
   const router = useRouter();
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
+  const { theme, toggleTheme } = useTheme();
   const isLoginPage = pathname === '/admin/login';
 
   useEffect(() => {
@@ -63,6 +65,16 @@ export const AdminLayoutClient: React.FC<AdminLayoutClientProps> = ({ children, 
           </div>
 
           <div className="flex items-center gap-3">
+            <button
+              type="button"
+              onClick={toggleTheme}
+              className="p-2 rounded-lg bg-[#0B1D2D] border border-[#1C3A52] hover:border-gold text-gold transition-colors flex items-center justify-center"
+              title={theme === 'dark' ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
+              aria-label="Toggle Theme"
+            >
+              {theme === 'dark' ? <Sun size={17} /> : <Moon size={17} />}
+            </button>
+
             <a
               href="/"
               target="_blank"

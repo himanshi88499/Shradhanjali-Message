@@ -52,9 +52,6 @@ export const HomePageContent: React.FC<HomePageContentProps> = ({
                     {t('section_featured_categories')}
                   </h2>
                 </div>
-                <p className="text-xs sm:text-sm text-theme-secondary mt-1.5 font-normal">
-                  {t('section_categories_sub')}
-                </p>
               </div>
 
               <Link
@@ -86,9 +83,6 @@ export const HomePageContent: React.FC<HomePageContentProps> = ({
                     {t('section_latest_posts')}
                   </h2>
                 </div>
-                <p className="text-xs sm:text-sm text-theme-secondary mt-1.5 font-normal">
-                  {t('section_posts_sub')}
-                </p>
               </div>
 
               <Link

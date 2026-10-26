@@ -254,16 +254,22 @@ export default async function SingleArticlePage({ params }: Props) {
               <TableOfContents content={post.content} />
             )}
 
-            {/* Sub-heading & Intro before messages */}
-            <div className="mt-4 mb-6">
-              <div className="flex items-center gap-2 text-gold text-lg sm:text-xl font-bold mb-2">
-                <LotusIcon size={22} />
-                <span>{post.title}</span>
+            {/* Sub-heading & Intro before messages (Configurable in Post Editor) */}
+            {(post.introHeading || post.introText) && (
+              <div className="mt-4 mb-6">
+                {post.introHeading && (
+                  <div className="flex items-center gap-2 text-gold text-lg sm:text-xl font-bold mb-2">
+                    <LotusIcon size={22} />
+                    <span>{post.introHeading}</span>
+                  </div>
+                )}
+                {post.introText && (
+                  <p className="text-sm sm:text-base text-theme-secondary leading-relaxed">
+                    {post.introText}
+                  </p>
+                )}
               </div>
-              <p className="text-sm sm:text-base text-theme-secondary leading-relaxed">
-                આપણા પ્રિયજનોનું જીવન પ્રેમ, ત્યાગ અને સંસ્કારોની ખાણ હતું. તેમના આશીર્વાદ અને સ્નેહ આજે પણ આપણા હૃદયમાં જીવંત છે. અહીં આપેલ સંદેશાઓ તમે તમારા પરિવાર અને સ્નેહીજનો સાથે શેર કરી શકો છો.
-              </p>
-            </div>
+            )}
 
             {/* Content Display: Interweaved Message Cards & Headings OR Classic Mode */}
             {hasEmbeddedCards ? (
