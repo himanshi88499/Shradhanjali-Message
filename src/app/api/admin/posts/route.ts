@@ -9,7 +9,8 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
-  const posts = getPosts();
+  const statusParam = req.nextUrl.searchParams.get('status') as any;
+  const posts = getPosts(statusParam || 'all');
   return NextResponse.json(posts);
 }
 

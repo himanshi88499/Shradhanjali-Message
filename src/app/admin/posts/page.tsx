@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { PlusCircle, Search, Edit2, Trash2, ArrowUpRight, CheckCircle, Clock } from 'lucide-react';
+import { PlusCircle, Search, Edit2, Trash2, ArrowUpRight, CheckCircle, Clock, RotateCcw } from 'lucide-react';
 import { Post, Category } from '@/lib/types';
 
 export default function AdminPostsPage() {
@@ -16,7 +16,7 @@ export default function AdminPostsPage() {
   const fetchPosts = async () => {
     try {
       const [resPosts, resCats] = await Promise.all([
-        fetch('/api/admin/posts'),
+        fetch('/api/admin/posts?status=all'),
         fetch('/api/admin/categories'),
       ]);
       const dataPosts = await resPosts.json();
@@ -34,15 +34,45 @@ export default function AdminPostsPage() {
     fetchPosts();
   }, []);
 
-  const handleDelete = async (id: string, title: string) => {
-    if (!window.confirm(`Are you sure you want to delete post "${title}"?`)) return;
+  const handleDelete = async (id: string, title: string, isTrash: boolean) => {
+    if (isTrash) {
+      if (!window.confirm(`Permanently delete post "${title}"? This cannot be undone.`)) return;
+      try {
+        const res = await fetch(`/api/admin/posts/${id}?permanent=true`, { method: 'DELETE' });
+        if (res.ok) {
+          setPosts(posts.filter((p) => p.id !== id));
+        } else {
+          alert('Failed to delete post.');
+        }
+      } catch (err) {
+        console.error(err);
+      }
+    } else {
+      if (!window.confirm(`Move post "${title}" to Trash?`)) return;
+      try {
+        const res = await fetch(`/api/admin/posts/${id}`, { method: 'DELETE' });
+        if (res.ok) {
+          setPosts(posts.map((p) => (p.id === id ? { ...p, status: 'trash' as const } : p)));
+        } else {
+          alert('Failed to move post to trash.');
+        }
+      } catch (err) {
+        console.error(err);
+      }
+    }
+  };
 
+  const handleRestore = async (id: string) => {
     try {
-      const res = await fetch(`/api/admin/posts/${id}`, { method: 'DELETE' });
+      const res = await fetch(`/api/admin/posts/${id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'restore' }),
+      });
       if (res.ok) {
-        setPosts(posts.filter((p) => p.id !== id));
+        setPosts(posts.map((p) => (p.id === id ? { ...p, status: 'draft' as const } : p)));
       } else {
-        alert('Failed to delete post.');
+        alert('Failed to restore post.');
       }
     } catch (err) {
       console.error(err);
@@ -54,7 +84,17 @@ export default function AdminPostsPage() {
       post.title.toLowerCase().includes(search.toLowerCase()) ||
       post.slug.toLowerCase().includes(search.toLowerCase());
     const matchesCat = selectedCat === 'all' || post.categoryId === selectedCat;
-    const matchesStatus = selectedStatus === 'all' || post.status === selectedStatus;
+    
+    // Status filter:
+    // 'all' shows active posts (published & draft, excluding trash)
+    // 'trash' shows trash posts
+    // 'published' or 'draft' shows their respective posts
+    let matchesStatus = false;
+    if (selectedStatus === 'all') {
+      matchesStatus = post.status !== 'trash';
+    } else {
+      matchesStatus = post.status === selectedStatus;
+    }
     return matchesSearch && matchesCat && matchesStatus;
   });
 
@@ -114,9 +154,10 @@ export default function AdminPostsPage() {
             onChange={(e) => setSelectedStatus(e.target.value)}
             className="bg-[#061321] border border-[#1C3A52] focus:border-gold rounded-xl px-3 py-2 text-xs text-[#B9C6D6] focus:outline-none transition-colors"
           >
-            <option value="all">All Statuses</option>
+            <option value="all">All Active Posts</option>
             <option value="published">Published</option>
             <option value="draft">Draft</option>
+            <option value="trash">Trash</option>
           </select>
         </div>
       </div>
@@ -166,10 +207,16 @@ export default function AdminPostsPage() {
                       className={`inline-block px-2.5 py-0.5 rounded-full text-[10px] font-bold ${
                         post.status === 'published'
                           ? 'bg-[#22C55E]/15 text-[#22C55E] border border-[#22C55E]/30'
+                          : post.status === 'trash'
+                          ? 'bg-[#EF4444]/15 text-[#EF4444] border border-[#EF4444]/30'
                           : 'bg-[#FFD782]/15 text-[#FFD782] border border-[#FFD782]/30'
                       }`}
                     >
-                      {post.status === 'published' ? 'Published' : 'Draft'}
+                      {post.status === 'published'
+                        ? 'Published'
+                        : post.status === 'trash'
+                        ? 'Trash'
+                        : 'Draft'}
                     </span>
                   </td>
                   <td className="py-3 px-4 text-[#8495A9]">
@@ -181,30 +228,53 @@ export default function AdminPostsPage() {
                   </td>
                   <td className="py-3 px-4 text-right">
                     <div className="flex items-center justify-end gap-2">
-                      <Link
-                        href={`/admin/posts/edit/${post.id}`}
-                        className="p-1.5 rounded-lg bg-[#061321] hover:bg-[#142B40] text-gold border border-[#1C3A52] hover:border-gold transition-colors"
-                        title="Edit"
-                      >
-                        <Edit2 size={13} />
-                      </Link>
-                      <a
-                        href={`/post/${post.slug}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="p-1.5 rounded-lg bg-[#061321] hover:bg-[#142B40] text-[#B9C6D6] hover:text-white border border-[#1C3A52] transition-colors"
-                        title="View Live"
-                      >
-                        <ArrowUpRight size={13} />
-                      </a>
-                      <button
-                        type="button"
-                        onClick={() => handleDelete(post.id, post.title)}
-                        className="p-1.5 rounded-lg bg-[#061321] hover:bg-[#EF4444]/20 text-[#EF4444] border border-[#1C3A52] transition-colors"
-                        title="Delete"
-                      >
-                        <Trash2 size={13} />
-                      </button>
+                      {post.status === 'trash' ? (
+                        <>
+                          <button
+                            type="button"
+                            onClick={() => handleRestore(post.id)}
+                            className="p-1.5 rounded-lg bg-[#061321] hover:bg-[#22C55E]/20 text-[#22C55E] border border-[#1C3A52] hover:border-[#22C55E] transition-colors"
+                            title="Restore to Draft"
+                          >
+                            <RotateCcw size={13} />
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => handleDelete(post.id, post.title, true)}
+                            className="p-1.5 rounded-lg bg-[#061321] hover:bg-[#EF4444]/20 text-[#EF4444] border border-[#1C3A52] hover:border-[#EF4444] transition-colors"
+                            title="Delete Permanently"
+                          >
+                            <Trash2 size={13} />
+                          </button>
+                        </>
+                      ) : (
+                        <>
+                          <Link
+                            href={`/admin/posts/edit/${post.id}`}
+                            className="p-1.5 rounded-lg bg-[#061321] hover:bg-[#142B40] text-gold border border-[#1C3A52] hover:border-gold transition-colors"
+                            title="Edit"
+                          >
+                            <Edit2 size={13} />
+                          </Link>
+                          <a
+                            href={`/post/${post.slug}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="p-1.5 rounded-lg bg-[#061321] hover:bg-[#142B40] text-[#B9C6D6] hover:text-white border border-[#1C3A52] transition-colors"
+                            title="View Live"
+                          >
+                            <ArrowUpRight size={13} />
+                          </a>
+                          <button
+                            type="button"
+                            onClick={() => handleDelete(post.id, post.title, false)}
+                            className="p-1.5 rounded-lg bg-[#061321] hover:bg-[#EF4444]/20 text-[#EF4444] border border-[#1C3A52] transition-colors"
+                            title="Move to Trash"
+                          >
+                            <Trash2 size={13} />
+                          </button>
+                        </>
+                      )}
                     </div>
                   </td>
                 </tr>

@@ -58,7 +58,7 @@ export interface Post {
   categoryName?: string;
   categorySlug?: string;
   authorId: string;
-  status: 'published' | 'draft' | 'scheduled';
+  status: 'published' | 'draft' | 'scheduled' | 'trash';
   readingTime?: string;
   views: number;
   publishedAt: string;

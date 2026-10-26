@@ -51,9 +51,15 @@ export function saveDb(data: DatabaseSchema): boolean {
 }
 
 // ----------------- POSTS -----------------
-export function getPosts(status?: 'published' | 'draft'): Post[] {
+export function getPosts(status?: 'published' | 'draft' | 'trash' | 'all'): Post[] {
   const db = getDb();
-  const list = !status ? [...db.posts] : db.posts.filter((p) => p.status === status);
+  let list = [...db.posts];
+  if (status === 'published' || status === 'draft' || status === 'trash') {
+    list = list.filter((p) => p.status === status);
+  } else if (status !== 'all') {
+    // Default excludes trash
+    list = list.filter((p) => p.status !== 'trash');
+  }
   return list.sort((a, b) => {
     const timeB = new Date(b.publishedAt || b.updatedAt || 0).getTime();
     const timeA = new Date(a.publishedAt || a.updatedAt || 0).getTime();
@@ -63,7 +69,7 @@ export function getPosts(status?: 'published' | 'draft'): Post[] {
 
 export function getPostBySlug(slug: string): Post | undefined {
   const db = getDb();
-  return db.posts.find((p) => p.slug === slug);
+  return db.posts.find((p) => p.slug === slug && p.status !== 'trash');
 }
 
 export function getPostById(id: string): Post | undefined {
@@ -173,15 +179,32 @@ export function savePost(post: Partial<Post> & { id?: string }): Post {
   }
 }
 
-export function deletePost(id: string): boolean {
+export function deletePost(id: string, permanent = false): boolean {
   const db = getDb();
-  const initialLen = db.posts.length;
-  db.posts = db.posts.filter((p) => p.id !== id);
-  if (db.posts.length !== initialLen) {
+  const index = db.posts.findIndex((p) => p.id === id);
+  if (index === -1) return false;
+
+  if (permanent) {
+    db.posts.splice(index, 1);
     saveDb(db);
     return true;
   }
-  return false;
+
+  // Soft delete to trash
+  db.posts[index].status = 'trash';
+  db.posts[index].updatedAt = new Date().toISOString();
+  saveDb(db);
+  return true;
+}
+
+export function restorePost(id: string): boolean {
+  const db = getDb();
+  const index = db.posts.findIndex((p) => p.id === id);
+  if (index === -1) return false;
+  db.posts[index].status = 'draft';
+  db.posts[index].updatedAt = new Date().toISOString();
+  saveDb(db);
+  return true;
 }
 
 // ----------------- CATEGORIES -----------------

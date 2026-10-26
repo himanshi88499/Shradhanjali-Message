@@ -150,17 +150,23 @@ export default async function SingleArticlePage({ params }: Props) {
   };
 
   const renderRecommendationBox = (recPost: typeof post) => (
-    <div className="mt-3.5 mb-2.5 sm:mt-4 sm:mb-2.5 p-4 sm:p-5 rounded-2xl bg-theme-surface border border-theme hover:border-[#F5C45E]/60 transition-all card-glow group">
-      <div className="flex items-center gap-2 text-xs font-bold text-[#F5C45E] uppercase tracking-wider mb-2.5">
-        <Sparkles size={15} className="text-[#F5C45E]" />
-        <span>આ પણ વાંચો</span>
+    <div className="mt-3.5 mb-2 sm:mt-4 sm:mb-2 rounded-2xl bg-theme-card border border-theme hover:border-gold/60 transition-all p-4 sm:p-5 card-glow group">
+      {/* Top Header: Lotus Icon + આ પણ વાંચો + Divider */}
+      <div className="flex items-center gap-2 pb-2.5 mb-3 border-b border-theme">
+        <LotusIcon size={18} className="text-gold shrink-0" />
+        <span className="text-sm sm:text-base font-bold text-gold tracking-wide">
+          આ પણ વાંચો
+        </span>
       </div>
+
+      {/* Main Content Link */}
       <a
         href={`/post/${recPost.slug}`}
         rel="dofollow"
-        className="flex items-center gap-4 group-hover:opacity-95 transition-opacity"
+        className="flex flex-col sm:flex-row items-start sm:items-center gap-4"
       >
-        <div className="relative w-20 h-20 sm:w-24 sm:h-20 rounded-xl overflow-hidden shrink-0 border border-theme bg-theme-main">
+        {/* Left Thumbnail */}
+        <div className="relative w-full sm:w-36 h-24 sm:h-20 rounded-xl overflow-hidden shrink-0 border border-theme bg-theme-main">
           <img
             src={recPost.featuredImage || '/images/hero-candle.jpg'}
             alt={recPost.title}
@@ -168,16 +174,24 @@ export default async function SingleArticlePage({ params }: Props) {
             loading="lazy"
           />
         </div>
+
+        {/* Center Details */}
         <div className="flex-1 min-w-0">
-          <span className="text-[10px] font-bold text-[#F5C45E] uppercase tracking-wider block mb-1">
-            {recPost.categoryName || 'Shradhanjali'}
+          <span className="text-xs font-semibold text-gold block mb-1">
+            {recPost.categoryName || 'શ્રદ્ધાંજલિ સંદેશ'}
           </span>
-          <h4 className="text-sm sm:text-base font-bold text-theme-primary group-hover:text-[#F5C45E] transition-colors line-clamp-2 leading-snug">
+          <h4 className="text-base sm:text-lg font-bold text-theme-primary group-hover:text-gold transition-colors line-clamp-1 sm:line-clamp-2 leading-snug mb-1">
             {recPost.title}
           </h4>
-          <span className="inline-flex items-center gap-1 text-xs text-[#F5C45E] font-semibold mt-1.5">
-            <span>સંપૂર્ણ લેખ વાંચો</span>
-            <span>→</span>
+          <p className="text-xs sm:text-sm text-theme-secondary line-clamp-1 sm:line-clamp-2 leading-relaxed">
+            {recPost.excerpt || recPost.introText || ''}
+          </p>
+        </div>
+
+        {/* Right Action Button (Gold Pill) */}
+        <div className="hidden sm:flex shrink-0 self-center ml-2">
+          <span className="inline-flex items-center justify-center px-5 py-2 rounded-full bg-gold hover:bg-[#ffd782] text-[#061321] font-bold text-xs shadow-md transition-all">
+            વાંચો →
           </span>
         </div>
       </a>
@@ -468,46 +482,7 @@ export default async function SingleArticlePage({ params }: Props) {
             )}
 
             {/* Auto Internal Link 2: End-of-Article Do-Follow Recommendation */}
-            {endPostRecommendation && (
-              <div className="mt-4 mb-2.5 sm:mt-5 sm:mb-2.5 p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-theme-card to-theme-surface border border-theme hover:border-[#F5C45E]/70 transition-all card-glow group">
-                <div className="flex items-center justify-between pb-2.5 mb-2.5 border-b border-theme">
-                  <span className="text-xs font-bold text-[#F5C45E] uppercase tracking-wider flex items-center gap-1.5">
-                    <LotusIcon size={18} className="text-[#F5C45E]" />
-                    <span>આ પણ વાંચો</span>
-                  </span>
-                </div>
-                <a
-                  href={`/post/${endPostRecommendation.slug}`}
-                  rel="dofollow"
-                  className="flex flex-col sm:flex-row items-start sm:items-center gap-4"
-                >
-                  <div className="relative w-full sm:w-32 h-24 rounded-xl overflow-hidden shrink-0 border border-theme bg-theme-main">
-                    <img
-                      src={endPostRecommendation.featuredImage || '/images/hero-candle.jpg'}
-                      alt={endPostRecommendation.title}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                      loading="lazy"
-                    />
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <span className="text-[10px] font-bold text-[#F5C45E] uppercase tracking-wider block mb-1">
-                      {endPostRecommendation.categoryName || 'Tribute'}
-                    </span>
-                    <h4 className="text-base sm:text-lg font-bold text-theme-primary group-hover:text-[#F5C45E] transition-colors line-clamp-2 leading-snug mb-1">
-                      {endPostRecommendation.title}
-                    </h4>
-                    <p className="text-xs text-theme-secondary line-clamp-1">
-                      {endPostRecommendation.excerpt}
-                    </p>
-                  </div>
-                  <div className="hidden sm:flex shrink-0">
-                    <span className="px-4 py-2 rounded-xl bg-gold text-[#030B12] font-bold text-xs group-hover:bg-[#E5B54E] transition-colors shadow-md">
-                      વાંચો →
-                    </span>
-                  </div>
-                </a>
-              </div>
-            )}
+            {endPostRecommendation && renderRecommendationBox(endPostRecommendation)}
 
             {/* Dynamic Contextual FAQ Section (5 Helpful Search-Focused Q&A) */}
             <PostFaqAccordion post={post} />
@@ -575,7 +550,7 @@ export default async function SingleArticlePage({ params }: Props) {
           </article>
 
           {/* Desktop Right Sidebar starting flush with breadcrumbs */}
-          <aside className="lg:col-span-4 flex flex-col space-y-6">
+          <aside className="lg:col-span-4 flex flex-col space-y-6 pt-2.5 sm:pt-3">
             {/* Widget 1: Best Shradhanjali Messages */}
             <SidebarRelatedPosts currentPostId={post.id} initialPosts={allPosts} />
 
@@ -595,7 +570,7 @@ export default async function SingleArticlePage({ params }: Props) {
         </div>
 
         {/* Bottom Related Articles Grid (4 cards) */}
-        <section className="mt-16 pt-10 border-t border-theme">
+        <section className="mt-14 pt-8 pb-10 sm:pb-14 border-t border-theme">
           <div className="flex items-center gap-2 text-gold text-lg sm:text-xl font-bold mb-6">
             <Sparkles size={20} />
             <span>Related Articles</span>

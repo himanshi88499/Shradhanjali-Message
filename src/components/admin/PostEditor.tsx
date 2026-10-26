@@ -17,6 +17,7 @@ import {
   ArrowUp,
   ArrowDown,
   Image as ImageIcon,
+  Clock,
 } from 'lucide-react';
 import { Post, Category, MessageCard } from '@/lib/types';
 
@@ -76,7 +77,7 @@ export const PostEditor: React.FC<PostEditorProps> = ({
     insertSnippet(snippet);
   };
 
-  const [status, setStatus] = useState<'published' | 'draft' | 'scheduled'>(initialPost?.status || 'published');
+  const [status, setStatus] = useState<'published' | 'draft' | 'scheduled' | 'trash'>(initialPost?.status || 'draft');
   const [showTableOfContents, setShowTableOfContents] = useState(initialPost?.showTableOfContents ?? true);
   const [content, setContent] = useState(initialPost?.content || '');
   const [messageCards, setMessageCards] = useState<MessageCard[]>(
@@ -317,12 +318,17 @@ export const PostEditor: React.FC<PostEditorProps> = ({
 
   const seoEvaluation = calculateSeoScore();
 
-  // Save form handler
-  const handleSave = async (e: React.FormEvent) => {
-    e.preventDefault();
+  // Save form handler with draft or publish target
+  const handleSave = async (e?: React.FormEvent, targetStatus?: 'published' | 'draft') => {
+    if (e) e.preventDefault();
     if (!title.trim()) {
       setNotification({ type: 'error', message: 'Please enter a post title.' });
       return;
+    }
+
+    const finalStatus = targetStatus || status;
+    if (targetStatus && targetStatus !== status) {
+      setStatus(targetStatus);
     }
 
     setLoading(true);
@@ -375,7 +381,7 @@ export const PostEditor: React.FC<PostEditorProps> = ({
       cardsParagraph: cardsParagraph.trim(),
       featuredImage: featuredImage.trim(),
       imageAlt: imageAlt.trim() || title.trim(),
-      status,
+      status: finalStatus,
       showTableOfContents,
       content,
       messageCards: finalCards,
@@ -401,7 +407,10 @@ export const PostEditor: React.FC<PostEditorProps> = ({
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Failed to save post.');
 
-      setNotification({ type: 'success', message: 'Post saved successfully!' });
+      setNotification({
+        type: 'success',
+        message: finalStatus === 'draft' ? 'Post saved as Draft!' : 'Post published successfully!',
+      });
       setTimeout(() => {
         setNotification(null);
       }, 4000);
@@ -420,7 +429,7 @@ export const PostEditor: React.FC<PostEditorProps> = ({
   };
 
   return (
-    <form onSubmit={handleSave} className="space-y-6">
+    <form onSubmit={(e) => handleSave(e)} className="space-y-6">
       {/* Top action header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-5 border-b border-[#1C3A52]">
         <div className="flex items-center gap-3">
@@ -441,26 +450,53 @@ export const PostEditor: React.FC<PostEditorProps> = ({
           </div>
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex flex-wrap items-center gap-2.5">
+          {/* Status selector tabs */}
+          <div className="flex items-center bg-[#061321] border border-[#1C3A52] rounded-xl p-0.5 text-xs">
+            <button
+              type="button"
+              onClick={() => setStatus('draft')}
+              className={`px-3 py-1.5 rounded-lg font-bold transition-all ${
+                status === 'draft'
+                  ? 'bg-[#FFD782]/20 text-[#FFD782] border border-[#FFD782]/40 shadow-sm'
+                  : 'text-[#8495A9] hover:text-white'
+              }`}
+            >
+              Draft
+            </button>
+            <button
+              type="button"
+              onClick={() => setStatus('published')}
+              className={`px-3 py-1.5 rounded-lg font-bold transition-all ${
+                status === 'published'
+                  ? 'bg-[#22C55E]/20 text-[#22C55E] border border-[#22C55E]/40 shadow-sm'
+                  : 'text-[#8495A9] hover:text-white'
+              }`}
+            >
+              Published
+            </button>
+          </div>
+
+          {/* Save as Draft Button */}
           <button
             type="button"
-            onClick={() => setStatus(status === 'published' ? 'draft' : 'published')}
-            className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all border ${
-              status === 'published'
-                ? 'bg-[#22C55E]/15 text-[#22C55E] border-[#22C55E]/40'
-                : 'bg-[#FFD782]/15 text-[#FFD782] border-[#FFD782]/40'
-            }`}
+            disabled={loading}
+            onClick={() => handleSave(undefined, 'draft')}
+            className="flex items-center gap-1.5 px-3.5 py-2 bg-[#0B1D2D] hover:bg-[#142B40] text-[#FFD782] border border-[#FFD782]/40 hover:border-[#FFD782] text-xs font-bold rounded-xl transition-all shadow-sm disabled:opacity-50"
           >
-            {status === 'published' ? 'Published' : 'Draft'}
+            <Clock size={14} />
+            <span>Save Draft</span>
           </button>
 
+          {/* Primary Save / Publish Button */}
           <button
-            type="submit"
+            type="button"
             disabled={loading}
-            className="flex items-center gap-2 px-5 py-2.5 bg-gold hover:bg-[#ffd782] text-[#061321] text-xs font-bold rounded-xl transition-all shadow-md disabled:opacity-50"
+            onClick={() => handleSave(undefined, 'published')}
+            className="flex items-center gap-2 px-5 py-2 bg-gold hover:bg-[#ffd782] text-[#061321] text-xs font-bold rounded-xl transition-all shadow-md disabled:opacity-50"
           >
             <Save size={15} />
-            <span>{loading ? 'Saving...' : 'Save Post'}</span>
+            <span>{loading ? 'Saving...' : status === 'published' ? 'Update Post' : 'Publish Post'}</span>
           </button>
         </div>
       </div>
