@@ -44,22 +44,20 @@ export const HomePageContent: React.FC<HomePageContentProps> = ({
         {/* B. Category Section: Featured Categories matching Reference Screenshot */}
         <section className="py-14 border-b border-theme bg-theme-main transition-colors" aria-label="Featured Categories">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-8 gap-4">
-              <div>
-                <div className="flex items-center gap-2.5">
-                  <LotusIcon size={22} className="text-gold shrink-0" />
-                  <h2 className="text-xl sm:text-2xl font-bold text-theme-primary tracking-tight">
-                    {t('section_featured_categories')}
-                  </h2>
-                </div>
+            <div className="flex items-center justify-between mb-6 sm:mb-8 gap-3">
+              <div className="flex items-center gap-2 sm:gap-2.5 min-w-0">
+                <LotusIcon size={20} className="text-gold shrink-0 sm:w-[22px] sm:h-[22px]" />
+                <h2 className="text-lg sm:text-2xl font-bold text-theme-primary tracking-tight truncate">
+                  {t('section_featured_categories')}
+                </h2>
               </div>
 
               <Link
                 href="/categories"
-                className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-semibold text-gold hover:text-gold/80 transition-colors shrink-0"
+                className="inline-flex items-center gap-1 text-xs sm:text-sm font-semibold text-gold hover:text-gold/80 transition-colors shrink-0 whitespace-nowrap"
               >
                 <span>{t('view_all_categories')}</span>
-                <ArrowRight size={14} />
+                <ArrowRight size={13} />
               </Link>
             </div>
 
@@ -73,24 +71,22 @@ export const HomePageContent: React.FC<HomePageContentProps> = ({
         </section>
 
         {/* C. Blog Posts Section: Blog Posts matching Reference Screenshot */}
-        <section className="py-16 bg-theme-main transition-colors" aria-label="Latest Blog Posts">
+        <section className="py-12 sm:py-16 bg-theme-main transition-colors" aria-label="Latest Blog Posts">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-10 gap-4">
-              <div>
-                <div className="flex items-center gap-2.5">
-                  <BookOpen size={22} className="text-gold shrink-0" />
-                  <h2 className="text-xl sm:text-2xl font-bold text-theme-primary tracking-tight">
-                    {t('section_latest_posts')}
-                  </h2>
-                </div>
+            <div className="flex items-center justify-between mb-6 sm:mb-10 gap-3">
+              <div className="flex items-center gap-2 sm:gap-2.5 min-w-0">
+                <BookOpen size={20} className="text-gold shrink-0 sm:w-[22px] sm:h-[22px]" />
+                <h2 className="text-lg sm:text-2xl font-bold text-theme-primary tracking-tight truncate">
+                  {t('section_latest_posts')}
+                </h2>
               </div>
 
               <Link
                 href="/posts"
-                className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-semibold text-gold hover:text-gold/80 transition-colors shrink-0"
+                className="inline-flex items-center gap-1 text-xs sm:text-sm font-semibold text-gold hover:text-gold/80 transition-colors shrink-0 whitespace-nowrap"
               >
                 <span>{t('view_all_posts')}</span>
-                <ArrowRight size={14} />
+                <ArrowRight size={13} />
               </Link>
             </div>
 

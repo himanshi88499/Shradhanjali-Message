@@ -816,50 +816,42 @@ export const PostEditor: React.FC<PostEditorProps> = ({
                   </div>
                 </div>
 
-                <textarea
-                  ref={contentRef}
-                  rows={15}
-                  value={content}
-                  onChange={(e) => setContent(e.target.value)}
-                  placeholder="## હેડિંગ અહીં લખો&#10;&#10;કન્ટેન્ટનો પેરાગ્રાફ અહીં લખો...&#10;&#10;:::card&#10;શ્રદ્ધાંજલિ સંદેશ ૧...&#10;:::&#10;&#10;:::card&#10;શ્રદ્ધાંજલિ સંદેશ ૨...&#10;:::"
-                  className="w-full bg-[#061321] border border-[#1C3A52] focus:border-gold rounded-xl p-4 text-sm sm:text-base text-white placeholder-[#8495A9] focus:outline-none transition-colors font-sans leading-relaxed"
-                />
-
-                {/* Article Images Management (Upload, Edit, Remove) */}
+                {/* In-Article Embedded Images Visual Preview Banner */}
                 {articleImages.length > 0 && (
-                  <div className="p-4 rounded-xl bg-[#061321] border border-[#1C3A52] space-y-3">
+                  <div className="p-3.5 rounded-xl bg-[#061321] border border-gold/40 shadow-sm space-y-2.5">
                     <div className="flex items-center justify-between">
                       <span className="text-xs font-bold text-gold flex items-center gap-1.5">
                         <ImageIcon size={14} />
-                        <span>Article Images in Content ({articleImages.length})</span>
+                        <span>લેખમાં ઉમેરેલ ઇમેજો (Embedded Images in Article: {articleImages.length})</span>
                       </span>
                       <span className="text-[11px] text-[#8495A9]">
-                        લેખમાં રહેલી ઇમેજો: Alt લખાણ/URL સુધારો (Edit) અથવા લેખમાંથી હટાવો (Remove)
+                        આ ઇમેજો લેખમાં નીચે દર્શાવેલ સ્થાન પર લાઈવ દેખાશે
                       </span>
                     </div>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
                       {articleImages.map((img, i) => (
                         <div key={i} className="flex items-center gap-3 p-2.5 rounded-lg bg-[#0B1D2D] border border-[#1C3A52]">
                           <img
                             src={img.url}
                             alt={img.alt}
-                            className="w-12 h-12 rounded object-cover border border-[#1C3A52] shrink-0 bg-[#061321]"
+                            className="w-14 h-14 rounded-md object-cover border border-[#1C3A52] shrink-0 bg-[#061321]"
                           />
                           <div className="flex-1 min-w-0 text-xs">
                             <p className="text-white font-medium truncate">{img.alt || 'Untitled Image'}</p>
                             <p className="text-[#8495A9] text-[10px] truncate">{img.url}</p>
-                            <div className="flex items-center gap-3 mt-1.5">
+                            <div className="flex items-center gap-2 mt-1">
                               <button
                                 type="button"
                                 onClick={() => handleEditArticleImage(img)}
-                                className="text-[11px] text-gold hover:underline flex items-center gap-1 font-semibold"
+                                className="text-[10px] text-gold hover:underline flex items-center gap-1 font-semibold"
                               >
                                 <Edit3 size={11} /> Edit Alt/URL
                               </button>
+                              <span className="text-[#1C3A52]">|</span>
                               <button
                                 type="button"
                                 onClick={() => handleRemoveArticleImage(img.raw)}
-                                className="text-[11px] text-[#EF4444] hover:underline flex items-center gap-1 font-semibold"
+                                className="text-[10px] text-[#EF4444] hover:underline flex items-center gap-1 font-semibold"
                               >
                                 <Trash2 size={11} /> Remove
                               </button>
@@ -870,6 +862,15 @@ export const PostEditor: React.FC<PostEditorProps> = ({
                     </div>
                   </div>
                 )}
+
+                <textarea
+                  ref={contentRef}
+                  rows={15}
+                  value={content}
+                  onChange={(e) => setContent(e.target.value)}
+                  placeholder="## હેડિંગ અહીં લખો&#10;&#10;કન્ટેન્ટનો પેરાગ્રાફ અહીં લખો...&#10;&#10;:::card&#10;શ્રદ્ધાંજલિ સંદેશ ૧...&#10;:::&#10;&#10;:::card&#10;શ્રદ્ધાંજલિ સંદેશ ૨...&#10;:::"
+                  className="w-full bg-[#061321] border border-[#1C3A52] focus:border-gold rounded-xl p-4 text-sm sm:text-base text-white placeholder-[#8495A9] focus:outline-none transition-colors font-sans leading-relaxed"
+                />
 
                 <div className="p-2.5 rounded-lg bg-[#061321]/60 border border-[#1C3A52]/60 text-[11px] text-[#8495A9] flex items-center justify-between">
                   <span>
@@ -903,6 +904,15 @@ export const PostEditor: React.FC<PostEditorProps> = ({
                     return chunk.split('\n\n').map((p, pIdx) => {
                       const pTrimmed = p.trim();
                       if (!pTrimmed) return null;
+                      const imgMatch = pTrimmed.match(/^!\[(.*?)\]\((.*?)\)$/);
+                      if (imgMatch) {
+                        return (
+                          <div key={pIdx} className="my-3 rounded-xl overflow-hidden border border-[#1C3A52] bg-[#0B1D2D]">
+                            <img src={imgMatch[2]} alt={imgMatch[1]} className="w-full max-h-[350px] object-cover" />
+                            {imgMatch[1] && <p className="text-[11px] text-[#8495A9] text-center p-2 italic">{imgMatch[1]}</p>}
+                          </div>
+                        );
+                      }
                       if (pTrimmed.startsWith('## ')) {
                         return <h2 key={pIdx} className="text-lg font-bold text-gold border-b border-[#1C3A52] pb-1">{pTrimmed.replace('## ', '')}</h2>;
                       }

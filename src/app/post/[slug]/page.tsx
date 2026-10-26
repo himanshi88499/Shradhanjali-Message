@@ -45,8 +45,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 interface ContentBlock {
-  type: 'h2' | 'h3' | 'paragraph' | 'card';
+  type: 'h2' | 'h3' | 'paragraph' | 'card' | 'image';
   text: string;
+  url?: string;
+  alt?: string;
 }
 
 function parseContentBlocks(content: string): ContentBlock[] {
@@ -70,7 +72,16 @@ function parseContentBlocks(content: string): ContentBlock[] {
       for (const p of paras) {
         const pTrimmed = p.trim();
         if (!pTrimmed) continue;
-        if (pTrimmed.startsWith('## ')) {
+
+        const imgMatch = pTrimmed.match(/^!\[(.*?)\]\((.*?)\)$/);
+        if (imgMatch) {
+          blocks.push({
+            type: 'image',
+            text: '',
+            alt: imgMatch[1],
+            url: imgMatch[2],
+          });
+        } else if (pTrimmed.startsWith('## ')) {
           blocks.push({ type: 'h2', text: pTrimmed.replace(/^##\s+/, '') });
         } else if (pTrimmed.startsWith('### ')) {
           blocks.push({ type: 'h3', text: pTrimmed.replace(/^###\s+/, '') });
@@ -203,7 +214,7 @@ export default async function SingleArticlePage({ params }: Props) {
 
             {/* Article Header Metadata without reading time */}
             <div className="flex flex-wrap items-center gap-3 my-2.5">
-              <span className="px-3.5 py-1 bg-gold !text-white font-bold text-xs rounded-full shadow-sm">
+              <span className="px-3.5 py-1 bg-gold category-badge-pill font-bold text-xs rounded-full shadow-sm">
                 {post.categoryName || 'Tribute'}
               </span>
               <div className="flex items-center gap-1.5 text-xs text-theme-secondary">
@@ -331,6 +342,29 @@ export default async function SingleArticlePage({ params }: Props) {
                     );
                   }
 
+                  if (block.type === 'image' && block.url) {
+                    return (
+                      <React.Fragment key={idx}>
+                        <figure className="not-prose my-6 rounded-2xl overflow-hidden border border-theme bg-theme-surface shadow-md">
+                          <img
+                            src={block.url}
+                            alt={block.alt || post.title}
+                            className="w-full max-h-[500px] object-cover"
+                            loading="lazy"
+                          />
+                          {block.alt && (
+                            <figcaption className="text-xs sm:text-sm text-theme-muted text-center py-2.5 px-4 italic bg-theme-main/60 border-t border-theme-subtle">
+                              {block.alt}
+                            </figcaption>
+                          )}
+                        </figure>
+                        {shouldInsertMidRec && (
+                          <div className="not-prose">{renderRecommendationBox(midPostRecommendation)}</div>
+                        )}
+                      </React.Fragment>
+                    );
+                  }
+
                   return (
                     <React.Fragment key={idx}>
                       <p className="text-theme-secondary leading-relaxed text-base">
@@ -386,6 +420,25 @@ export default async function SingleArticlePage({ params }: Props) {
                 {/* Main Rich Text Content */}
                 <div className="prose prose-invert max-w-none text-theme-primary text-base leading-relaxed mt-6 space-y-6">
                   {post.content.split('\n\n').map((paragraph, index) => {
+                    const pTrimmed = paragraph.trim();
+                    const imgMatch = pTrimmed.match(/^!\[(.*?)\]\((.*?)\)$/);
+                    if (imgMatch) {
+                      return (
+                        <figure key={index} className="not-prose my-6 rounded-2xl overflow-hidden border border-theme bg-theme-surface shadow-md">
+                          <img
+                            src={imgMatch[2]}
+                            alt={imgMatch[1] || post.title}
+                            className="w-full max-h-[500px] object-cover"
+                            loading="lazy"
+                          />
+                          {imgMatch[1] && (
+                            <figcaption className="text-xs sm:text-sm text-theme-muted text-center py-2.5 px-4 italic bg-theme-main/60 border-t border-theme-subtle">
+                              {imgMatch[1]}
+                            </figcaption>
+                          )}
+                        </figure>
+                      );
+                    }
                     if (paragraph.startsWith('## ')) {
                       const heading = paragraph.replace('## ', '');
                       const id = heading.toLowerCase().replace(/[^a-z0-9\u0A80-\u0AFF]+/g, '-');

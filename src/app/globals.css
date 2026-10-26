@@ -263,6 +263,14 @@ body {
   box-shadow: none !important;
 }
 
+/* Post View Category Badge: Black in Dark Mode, White in Light Mode */
+.category-badge-pill {
+  color: #061321 !important;
+}
+html.light .category-badge-pill {
+  color: #FFFFFF !important;
+}
+
 /* ========================================================
    ADMIN PANEL LIGHT MODE - ULTRA PREMIUM & HIGH CONTRAST
    Fixes washed out fonts, invisible numbers, and greyish tints
