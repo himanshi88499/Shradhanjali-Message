@@ -384,11 +384,17 @@ export const PostEditor: React.FC<PostEditorProps> = ({
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'સેવ કરવામાં ભૂલ આવી.');
 
-      setNotification({ type: 'success', message: 'લેખ સફળતાપૂર્વક સેવ થયો!' });
+      setNotification({ type: 'success', message: 'લેખ સફળતાપૂર્વક સેવ થઈ ગયો છે!' });
       setTimeout(() => {
-        router.push('/admin/posts');
-        router.refresh();
-      }, 1000);
+        setNotification(null);
+      }, 4000);
+
+      // If new post created, seamlessly switch URL to edit route so subsequent clicks update the post
+      if (!isEdit && (data.id || data.post?.id)) {
+        const newId = data.id || data.post?.id;
+        window.history.replaceState(null, '', `/admin/posts/edit/${newId}`);
+      }
+      router.refresh();
     } catch (err: any) {
       setNotification({ type: 'error', message: err.message || 'સેવ કરવામાં ભૂલ આવી.' });
     } finally {
@@ -909,7 +915,6 @@ export const PostEditor: React.FC<PostEditorProps> = ({
                         return (
                           <div key={pIdx} className="my-3 rounded-xl overflow-hidden border border-[#1C3A52] bg-[#0B1D2D]">
                             <img src={imgMatch[2]} alt={imgMatch[1]} className="w-full max-h-[350px] object-cover" />
-                            {imgMatch[1] && <p className="text-[11px] text-[#8495A9] text-center p-2 italic">{imgMatch[1]}</p>}
                           </div>
                         );
                       }

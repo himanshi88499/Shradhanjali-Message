@@ -345,19 +345,14 @@ export default async function SingleArticlePage({ params }: Props) {
                   if (block.type === 'image' && block.url) {
                     return (
                       <React.Fragment key={idx}>
-                        <figure className="not-prose my-6 rounded-2xl overflow-hidden border border-theme bg-theme-surface shadow-md">
+                        <div className="not-prose my-6 rounded-2xl overflow-hidden border border-theme bg-theme-surface shadow-md">
                           <img
                             src={block.url}
                             alt={block.alt || post.title}
                             className="w-full max-h-[500px] object-cover"
                             loading="lazy"
                           />
-                          {block.alt && (
-                            <figcaption className="text-xs sm:text-sm text-theme-muted text-center py-2.5 px-4 italic bg-theme-main/60 border-t border-theme-subtle">
-                              {block.alt}
-                            </figcaption>
-                          )}
-                        </figure>
+                        </div>
                         {shouldInsertMidRec && (
                           <div className="not-prose">{renderRecommendationBox(midPostRecommendation)}</div>
                         )}
@@ -424,19 +419,14 @@ export default async function SingleArticlePage({ params }: Props) {
                     const imgMatch = pTrimmed.match(/^!\[(.*?)\]\((.*?)\)$/);
                     if (imgMatch) {
                       return (
-                        <figure key={index} className="not-prose my-6 rounded-2xl overflow-hidden border border-theme bg-theme-surface shadow-md">
+                        <div key={index} className="not-prose my-6 rounded-2xl overflow-hidden border border-theme bg-theme-surface shadow-md">
                           <img
                             src={imgMatch[2]}
                             alt={imgMatch[1] || post.title}
                             className="w-full max-h-[500px] object-cover"
                             loading="lazy"
                           />
-                          {imgMatch[1] && (
-                            <figcaption className="text-xs sm:text-sm text-theme-muted text-center py-2.5 px-4 italic bg-theme-main/60 border-t border-theme-subtle">
-                              {imgMatch[1]}
-                            </figcaption>
-                          )}
-                        </figure>
+                        </div>
                       );
                     }
                     if (paragraph.startsWith('## ')) {
