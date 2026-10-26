@@ -40,7 +40,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       siteName: 'Shradhanjali Msg',
     },
     alternates: {
-      canonical: post.canonicalUrl || `https://shradhanjali.in/post/${post.slug}`,
+      canonical: post.canonicalUrl || `https://shradhanjalimsg.com/post/${post.slug}`,
     },
   };
 }
@@ -144,7 +144,7 @@ export default async function SingleArticlePage({ params }: Props) {
       name: 'Shradhanjali Msg',
       logo: {
         '@type': 'ImageObject',
-        url: 'https://shradhanjali.in/images/lotus-logo.svg',
+        url: 'https://shradhanjalimsg.com/images/lotus-logo.svg',
       },
     },
   };
@@ -297,7 +297,7 @@ export default async function SingleArticlePage({ params }: Props) {
                           <MessageCardItem
                             id={currentNum}
                             text={block.text}
-                            articleUrl={`https://shradhanjali.in/post/${post.slug}`}
+                            articleUrl={`https://shradhanjalimsg.com/post/${post.slug}`}
                             articleTitle={post.title}
                           />
                         </div>
@@ -403,7 +403,7 @@ export default async function SingleArticlePage({ params }: Props) {
                         key={card.id}
                         id={card.id}
                         text={card.text}
-                        articleUrl={`https://shradhanjali.in/post/${post.slug}`}
+                        articleUrl={`https://shradhanjalimsg.com/post/${post.slug}`}
                         articleTitle={post.title}
                       />
                     ))}

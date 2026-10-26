@@ -38,7 +38,7 @@ export default async function SearchPage({ searchParams }: Props) {
 
         {/* Search header & input */}
         <div className="my-6 max-w-3xl">
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-theme-primary mb-4">
+          <h1 className="text-xl sm:text-2xl font-extrabold text-theme-primary mb-4">
             Search Results
           </h1>
 

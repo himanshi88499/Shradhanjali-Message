@@ -28,6 +28,7 @@ export interface TranslationDictionary {
   nav_contact: string;
   nav_privacy: string;
   nav_terms: string;
+  nav_terms_short: string;
   nav_disclaimer: string;
   nav_admin: string;
 
@@ -111,6 +112,7 @@ export const translations: Record<LanguageCode, TranslationDictionary> = {
     nav_contact: 'સંપર્ક',
     nav_privacy: 'પ્રાઈવસી પોલિસી',
     nav_terms: 'નિયમો અને શરતો',
+    nav_terms_short: 'નિયમો',
     nav_disclaimer: 'ડિસ્ક્લેમર',
     nav_admin: 'વ્યવસ્થાપક લૉગિન',
 
@@ -192,6 +194,7 @@ export const translations: Record<LanguageCode, TranslationDictionary> = {
     nav_contact: 'Contact Us',
     nav_privacy: 'Privacy Policy',
     nav_terms: 'Terms & Conditions',
+    nav_terms_short: 'Terms',
     nav_disclaimer: 'Disclaimer',
     nav_admin: 'Admin Login',
 
@@ -273,6 +276,7 @@ export const translations: Record<LanguageCode, TranslationDictionary> = {
     nav_contact: 'संपर्क करें',
     nav_privacy: 'गोपनीयता नीति',
     nav_terms: 'नियम और शर्तें',
+    nav_terms_short: 'નિયમો',
     nav_disclaimer: 'अस्वीकरण',
     nav_admin: 'एडमिन लॉगिन',
 
@@ -354,6 +358,7 @@ export const translations: Record<LanguageCode, TranslationDictionary> = {
     nav_contact: 'संपर्क',
     nav_privacy: 'गोपनीयता धोरण',
     nav_terms: 'नियम आणि अटी',
+    nav_terms_short: 'નિયમો',
     nav_disclaimer: 'अस्वीकरण',
     nav_admin: 'व्यवस्थापक लॉगिन',
 

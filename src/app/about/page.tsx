@@ -37,7 +37,7 @@ export default function AboutPage() {
           <span className="text-gold font-bold tracking-widest text-sm uppercase">
             શ્રદ્ધાંજલિ
           </span>
-          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white mt-2 mb-3">
+          <h1 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-white mt-2 mb-3">
             અમારા વિશે
           </h1>
           <h2 className="text-xl sm:text-2xl font-bold text-gold mb-6">

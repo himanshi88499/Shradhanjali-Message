@@ -54,7 +54,7 @@ export const MessageCardItem: React.FC<MessageCardItemProps> = ({
   };
 
   const getFullShareText = () => {
-    const siteUrl = articleUrl || (typeof window !== 'undefined' ? window.location.href : 'https://shradhanjali.in');
+    const siteUrl = articleUrl || (typeof window !== 'undefined' ? window.location.href : 'https://shradhanjalimsg.com');
     return `${text}\n\n- ${articleTitle}\nRead more: ${siteUrl}`;
   };
 
@@ -65,7 +65,7 @@ export const MessageCardItem: React.FC<MessageCardItemProps> = ({
   };
 
   const handleFacebookShare = () => {
-    const siteUrl = articleUrl || (typeof window !== 'undefined' ? window.location.href : 'https://shradhanjali.in');
+    const siteUrl = articleUrl || (typeof window !== 'undefined' ? window.location.href : 'https://shradhanjalimsg.com');
     const url = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(siteUrl)}`;
     window.open(url, '_blank', 'noopener,noreferrer,width=600,height=400');
   };

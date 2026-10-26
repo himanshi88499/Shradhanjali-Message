@@ -8,6 +8,30 @@ interface BlogCardProps {
   priority?: boolean;
 }
 
+/**
+ * Extract clean, readable starting words from post content or intro text for homepage and archive cards
+ */
+export function getStartingExcerpt(post: Post, maxChars = 135): string {
+  const raw = (post.introText && post.introText.trim())
+    ? post.introText
+    : (post.content && post.content.trim())
+    ? post.content
+    : post.excerpt || post.messageCards?.[0]?.text || '';
+
+  const clean = raw
+    .replace(/:::card[\s\S]*?:::/g, '')
+    .replace(/!\[.*?\]\(.*?\)/g, '')
+    .replace(/\[([^\]]+)\]\(.*?\)/g, '$1')
+    .replace(/#{1,6}\s+[^\n]*/g, '')
+    .replace(/[*_~`]/g, '')
+    .replace(/\s+/g, ' ')
+    .trim();
+
+  if (!clean) return post.excerpt || '';
+  if (clean.length <= maxChars) return clean;
+  return clean.slice(0, maxChars).trim() + '...';
+}
+
 export const BlogCard: React.FC<BlogCardProps> = ({ post, priority = false }) => {
   return (
     <article className="group flex flex-col bg-theme-card hover:bg-theme-card-hover border border-theme hover:border-gold/50 rounded-2xl overflow-hidden transition-all duration-300 card-glow h-full">
@@ -41,7 +65,7 @@ export const BlogCard: React.FC<BlogCardProps> = ({ post, priority = false }) =>
         </h3>
 
         <p className="text-xs sm:text-sm text-theme-secondary line-clamp-2 leading-relaxed mb-4 flex-1">
-          {post.excerpt}
+          {getStartingExcerpt(post)}
         </p>
 
         {/* Card Footer: Metadata (Date only) */}

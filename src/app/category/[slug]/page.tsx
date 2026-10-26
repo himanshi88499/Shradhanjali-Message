@@ -52,7 +52,7 @@ export default async function CategoryPage({ params }: Props) {
         {/* Category Header Banner */}
         <div className="relative rounded-2xl overflow-hidden border border-theme bg-theme-card p-5 sm:p-7 my-4 sm:my-5 card-glow transition-colors">
           <div className="max-w-3xl">
-            <h1 className="text-xl sm:text-3xl font-extrabold text-gold mb-2">
+            <h1 className="text-xl sm:text-2xl font-extrabold text-gold mb-2">
               {category.name}
             </h1>
             <p className="text-xs sm:text-sm text-theme-secondary leading-relaxed">

@@ -93,6 +93,21 @@ export function searchPosts(query: string): Post[] {
   );
 }
 
+function autoExtractExcerpt(content?: string, introText?: string, existingExcerpt?: string): string {
+  if (existingExcerpt && existingExcerpt.trim()) return existingExcerpt.trim();
+  const raw = (introText && introText.trim()) ? introText.trim() : (content || '');
+  const clean = raw
+    .replace(/:::card[\s\S]*?:::/g, '')
+    .replace(/!\[.*?\]\(.*?\)/g, '')
+    .replace(/\[([^\]]+)\]\(.*?\)/g, '$1')
+    .replace(/#{1,6}\s+[^\n]*/g, '')
+    .replace(/[*_~`]/g, '')
+    .replace(/\s+/g, ' ')
+    .trim();
+  if (!clean) return '';
+  return clean.length <= 150 ? clean : clean.slice(0, 147).trim() + '...';
+}
+
 export function savePost(post: Partial<Post> & { id?: string }): Post {
   const db = getDb();
   const index = db.posts.findIndex((p) => p.id === post.id);
@@ -100,10 +115,12 @@ export function savePost(post: Partial<Post> & { id?: string }): Post {
 
   if (index >= 0) {
     const existing = db.posts[index];
+    const derivedExcerpt = autoExtractExcerpt(post.content || existing.content, post.introText || existing.introText, post.excerpt || existing.excerpt);
     const updatedPost: Post = {
       ...existing,
       ...post,
       id: existing.id,
+      excerpt: derivedExcerpt,
       authorId: post.authorId || existing.authorId || 'author-1',
       publishedAt: now, // Update date when post is updated as requested
       updatedAt: now,
@@ -120,11 +137,12 @@ export function savePost(post: Partial<Post> & { id?: string }): Post {
     saveDb(db);
     return updatedPost;
   } else {
+    const derivedExcerpt = autoExtractExcerpt(post.content, post.introText, post.excerpt);
     const newPost: Post = {
       id: post.id || `post-${Date.now()}`,
       title: post.title || '',
       slug: post.slug || `post-${Date.now()}`,
-      excerpt: post.excerpt || '',
+      excerpt: derivedExcerpt,
       introHeading: post.introHeading || '',
       introText: post.introText || '',
       cardsH2Heading: post.cardsH2Heading || '',

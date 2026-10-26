@@ -29,7 +29,7 @@ export default function DisclaimerPage() {
         />
 
         <article className="mt-6 bg-theme-card border border-theme rounded-2xl p-6 sm:p-10 card-glow transition-colors">
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-theme-primary mb-2">
+          <h1 className="text-xl sm:text-2xl font-extrabold text-theme-primary mb-2">
             {page?.title || 'Disclaimer'}
           </h1>
           <p className="text-xs text-theme-muted mb-8 pb-4 border-b border-theme">

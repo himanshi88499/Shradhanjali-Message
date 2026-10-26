@@ -37,7 +37,7 @@ export default function PostsArchivePage() {
             <BookOpen size={18} />
             <span>તાજેતરની બ્લોગ પોસ્ટ્સ</span>
           </div>
-          <h1 className="text-2xl sm:text-4xl font-extrabold text-theme-primary mb-2 tracking-tight">
+          <h1 className="text-xl sm:text-2xl lg:text-3xl font-extrabold text-theme-primary mb-2 tracking-tight">
             શ્રદ્ધાંજલિ સંદેશની પોસ્ટ્સ
           </h1>
           <p className="text-sm sm:text-base text-theme-secondary max-w-2xl leading-relaxed">

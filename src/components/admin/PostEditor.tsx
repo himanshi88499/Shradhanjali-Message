@@ -343,6 +343,23 @@ export const PostEditor: React.FC<PostEditorProps> = ({
     }
     const finalCards = extractedCards.length > 0 ? extractedCards : messageCards;
 
+    // Auto-extract starting content words for excerpt
+    const deriveExcerpt = (rawContent: string, rawIntro?: string) => {
+      const src = (rawIntro && rawIntro.trim()) ? rawIntro.trim() : rawContent;
+      const clean = src
+        .replace(/:::card[\s\S]*?:::/g, '')
+        .replace(/!\[.*?\]\(.*?\)/g, '')
+        .replace(/\[([^\]]+)\]\(.*?\)/g, '$1')
+        .replace(/#{1,6}\s+[^\n]*/g, '')
+        .replace(/[*_~`]/g, '')
+        .replace(/\s+/g, ' ')
+        .trim();
+      if (!clean) return '';
+      return clean.length <= 150 ? clean : clean.slice(0, 147).trim() + '...';
+    };
+
+    const autoExcerpt = deriveExcerpt(content, introText) || excerpt.trim() || (finalCards[0]?.text?.slice(0, 147) || '');
+
     const postData: Partial<Post> = {
       id: initialPost?.id,
       title: title.trim(),
@@ -350,9 +367,9 @@ export const PostEditor: React.FC<PostEditorProps> = ({
       categoryId,
       categoryName: selectedCategory?.name || 'General',
       categorySlug: selectedCategory?.slug || 'shradhanjali',
-      excerpt: excerpt.trim(),
+      excerpt: autoExcerpt,
       quote: quote.trim(),
-      introHeading: introHeading.trim(),
+      introHeading: '',
       introText: introText.trim(),
       cardsH2Heading: cardsH2Heading.trim(),
       cardsParagraph: cardsParagraph.trim(),
@@ -363,7 +380,7 @@ export const PostEditor: React.FC<PostEditorProps> = ({
       content,
       messageCards: finalCards,
       seoTitle: seoTitle.trim() || title.trim(),
-      seoDescription: seoDescription.trim() || excerpt.trim(),
+      seoDescription: seoDescription.trim() || autoExcerpt,
       focusKeyword: focusKeyword.trim(),
       tags: initialPost?.tags || ['Memorial'],
       authorId: initialPost?.authorId || 'author-1',
@@ -498,19 +515,6 @@ export const PostEditor: React.FC<PostEditorProps> = ({
 
             <div>
               <label className="block text-xs font-semibold text-[#B9C6D6] mb-1.5">
-                Excerpt
-              </label>
-              <textarea
-                rows={2}
-                value={excerpt}
-                onChange={(e) => setExcerpt(e.target.value)}
-                placeholder="Short summary displayed on cards and search engines..."
-                className="w-full bg-[#061321] border border-[#1C3A52] focus:border-gold rounded-xl p-3.5 text-sm sm:text-base text-white placeholder-[#8495A9] focus:outline-none transition-colors resize-none leading-relaxed"
-              />
-            </div>
-
-            <div>
-              <label className="block text-xs font-semibold text-[#B9C6D6] mb-1.5">
                 Quote on Image
               </label>
               <input
@@ -524,19 +528,6 @@ export const PostEditor: React.FC<PostEditorProps> = ({
 
             {/* Intro Section below Table of Contents */}
             <div className="pt-3 border-t border-[#1C3A52]/60 space-y-3">
-              <div>
-                <label className="block text-xs font-semibold text-[#B9C6D6] mb-1.5">
-                  TOC Intro Subheading (Heading after Table of Contents)
-                </label>
-                <input
-                  type="text"
-                  value={introHeading}
-                  onChange={(e) => setIntroHeading(e.target.value)}
-                  placeholder="e.g. Memorial Tribute & Condolence Wishes"
-                  className="w-full bg-[#061321] border border-[#1C3A52] focus:border-gold rounded-xl px-4 py-2.5 text-sm sm:text-base text-white placeholder-[#8495A9] focus:outline-none transition-colors"
-                />
-              </div>
-
               <div>
                 <label className="block text-xs font-semibold text-[#B9C6D6] mb-1.5">
                   TOC Intro Paragraph (Paragraph after Table of Contents)

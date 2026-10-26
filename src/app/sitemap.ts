@@ -2,7 +2,7 @@ import { MetadataRoute } from 'next';
 import { getPosts, getCategories, getPages } from '@/lib/db';
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = 'https://shradhanjali.in';
+  const baseUrl = 'https://shradhanjalimsg.com';
   const defaultDate = new Date('2026-04-12T10:00:00.000Z');
   const posts = getPosts('published');
   const categories = getCategories();

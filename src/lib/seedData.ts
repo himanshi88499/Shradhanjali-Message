@@ -33,7 +33,7 @@ export const initialDatabase: DatabaseSchema = {
       bio: 'આપણા સમાજ અને સંસ્કૃતિના સાચા મૂલ્યોને ઉજાગર કરતા, સ્મૃતિઓ અને સંતોષજનક વિચારો લોકો સુધી પહોંચાડવા માટે કાર્યરત ટીમ.',
       avatar: '/images/author-team.jpg',
       socials: {
-        website: 'https://shradhanjali.in',
+        website: 'https://shradhanjalimsg.com',
       },
     },
   ],
@@ -727,7 +727,7 @@ export const initialDatabase: DatabaseSchema = {
     tagline: 'Everlasting in Loving Memories...',
     logoUrl: '/images/lotus-logo.svg',
     faviconUrl: '/favicon.ico',
-    contactEmail: 'info@shradhanjali.in',
+    contactEmail: 'info@shradhanjalimsg.com',
     contactPhone: '+91 98765 43210',
     contactAddress: 'અમદાવાદ, ગુજરાત - 380001 ભારત',
     copyrightText: '© 2026 Shradhanjali Msg. All rights reserved.',

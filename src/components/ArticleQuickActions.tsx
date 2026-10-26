@@ -23,7 +23,7 @@ export const ArticleQuickActions: React.FC<ArticleQuickActionsProps> = ({
     if (typeof window !== 'undefined') {
       return window.location.href;
     }
-    return `https://shradhanjali.in/post/${slug}`;
+    return `https://shradhanjalimsg.com/post/${slug}`;
   };
 
   const handleCopyLink = async () => {

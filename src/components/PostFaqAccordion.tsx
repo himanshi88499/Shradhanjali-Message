@@ -132,7 +132,7 @@ export function generateContextualFaqs(post: Post): FaqItem[] {
 
 export const PostFaqAccordion: React.FC<PostFaqAccordionProps> = ({ post }) => {
   const faqs = generateContextualFaqs(post);
-  const [openIndex, setOpenIndex] = useState<number | null>(0); // First open by default
+  const [openIndex, setOpenIndex] = useState<number | null>(null); // Closed by default
 
   const toggle = (idx: number) => {
     setOpenIndex(openIndex === idx ? null : idx);

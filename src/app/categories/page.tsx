@@ -36,7 +36,7 @@ export default function CategoriesPage() {
             <Sparkles size={18} />
             <span>વિશેષ કેટેગરીઝ</span>
           </div>
-          <h1 className="text-2xl sm:text-4xl font-extrabold text-theme-primary mb-3">
+          <h1 className="text-xl sm:text-2xl lg:text-3xl font-extrabold text-theme-primary mb-3">
             શ્રદ્ધાંજલિ કેટેગરી
           </h1>
           <p className="text-sm sm:text-base text-theme-secondary max-w-2xl">
