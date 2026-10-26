@@ -54,7 +54,7 @@ export async function POST(req: NextRequest) {
     };
 
     saveMedia(mediaItem);
-    return NextResponse.json({ success: true, media: mediaItem });
+    return NextResponse.json({ success: true, url: mediaItem.url, media: mediaItem });
   } catch (err: any) {
     console.error('Upload error:', err);
     return NextResponse.json({ error: err.message || 'અપલોડમાં સમસ્યા આવી.' }, { status: 500 });

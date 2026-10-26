@@ -112,10 +112,6 @@ export const Footer: React.FC<FooterProps> = ({ footerLinks, copyright }) => {
             <Link href="/contact" className="hover:text-gold transition-colors">
               {t('nav_contact')}
             </Link>
-            <span className="text-theme-muted opacity-50">|</span>
-            <Link href="/admin" className="hover:text-gold transition-colors">
-              {t('nav_admin')}
-            </Link>
           </div>
         </div>
       </div>

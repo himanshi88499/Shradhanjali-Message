@@ -7,8 +7,8 @@ import { Lock, Mail, ArrowRight, AlertCircle } from 'lucide-react';
 
 export default function AdminLoginPage() {
   const router = useRouter();
-  const [email, setEmail] = useState('admin@shradhanjali.in');
-  const [password, setPassword] = useState('Admin@12345');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
@@ -74,7 +74,7 @@ export default function AdminLoginPage() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   className="w-full bg-[#061321] border border-[#1C3A52] focus:border-gold rounded-xl pl-10 pr-4 py-2.5 text-sm text-white focus:outline-none transition-colors"
-                  placeholder="admin@shradhanjali.in"
+                  placeholder="Admin@Shradhanjalimsg.com"
                 />
               </div>
             </div>
@@ -105,15 +105,6 @@ export default function AdminLoginPage() {
               <ArrowRight size={16} />
             </button>
           </form>
-
-          {/* Initial Demo Credentials Info */}
-          <div className="mt-6 pt-5 border-t border-[#1C3A52]/70 text-center">
-            <p className="text-[11px] text-[#8495A9] mb-1 font-medium">પ્રારંભિક એડમિન વિગતો (Demo Credentials):</p>
-            <div className="bg-[#061321] p-2 rounded-lg text-xs font-mono text-[#FFD782] border border-[#1C3A52]">
-              <div>ઇમેઇલ: admin@shradhanjali.in</div>
-              <div>પાસવર્ડ: Admin@12345</div>
-            </div>
-          </div>
         </div>
 
         <div className="text-center mt-6">

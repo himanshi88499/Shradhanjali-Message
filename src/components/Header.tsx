@@ -62,10 +62,10 @@ export const Header: React.FC<HeaderProps> = ({ navLinks }) => {
         }`}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-20">
+          <div className="flex items-center justify-between h-16 sm:h-[66px]">
             {/* Brand Logo matching Reference Screenshot */}
             <div className="flex-shrink-0">
-              <LotusLogo />
+              <LotusLogo size="md" />
             </div>
 
             {/* Desktop Navigation */}
@@ -221,17 +221,6 @@ export const Header: React.FC<HeaderProps> = ({ navLinks }) => {
                 <LanguageDropdown isMobile={true} />
               </div>
             </nav>
-
-            {/* Mobile Footer Admin Link */}
-            <div className="mt-auto pt-6 border-t border-theme">
-              <Link
-                href="/admin"
-                onClick={() => setMobileMenuOpen(false)}
-                className="block text-center text-xs text-theme-muted hover:text-gold py-2"
-              >
-                {t('nav_admin')}
-              </Link>
-            </div>
           </div>
         </div>
       )}

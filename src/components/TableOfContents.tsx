@@ -73,7 +73,7 @@ export const TableOfContents: React.FC<TableOfContentsProps> = ({
   };
 
   return (
-    <div className="bg-theme-card border border-theme rounded-2xl p-4 sm:p-5 card-glow my-6 transition-colors">
+    <div className="bg-theme-card border border-theme rounded-2xl p-4 sm:p-5 card-glow mt-2.5 mb-5 transition-colors">
       <div className="flex items-center justify-between pb-3 border-b border-theme">
         <div className="flex items-center gap-2 text-theme-primary font-semibold text-base">
           <ListOrdered size={18} className="text-gold" />

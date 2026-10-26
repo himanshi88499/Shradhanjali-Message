@@ -111,6 +111,8 @@ export function savePost(post: Partial<Post> & { id?: string }): Post {
       tags: post.tags || existing.tags || ['ભાવપૂર્ણ'],
       introHeading: post.introHeading !== undefined ? post.introHeading : existing.introHeading,
       introText: post.introText !== undefined ? post.introText : existing.introText,
+      cardsH2Heading: post.cardsH2Heading !== undefined ? post.cardsH2Heading : existing.cardsH2Heading,
+      cardsParagraph: post.cardsParagraph !== undefined ? post.cardsParagraph : existing.cardsParagraph,
       messageCards: post.messageCards !== undefined ? post.messageCards : existing.messageCards || [],
       showTableOfContents: post.showTableOfContents !== undefined ? post.showTableOfContents : existing.showTableOfContents ?? true,
     };
@@ -125,6 +127,8 @@ export function savePost(post: Partial<Post> & { id?: string }): Post {
       excerpt: post.excerpt || '',
       introHeading: post.introHeading || '',
       introText: post.introText || '',
+      cardsH2Heading: post.cardsH2Heading || '',
+      cardsParagraph: post.cardsParagraph || '',
       content: post.content || '',
       quote: post.quote || '',
       featuredImage: post.featuredImage || '/images/hero-candle.jpg',

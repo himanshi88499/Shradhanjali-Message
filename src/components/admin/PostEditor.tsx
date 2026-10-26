@@ -40,6 +40,8 @@ export const PostEditor: React.FC<PostEditorProps> = ({
   const [quote, setQuote] = useState(initialPost?.quote || '');
   const [introHeading, setIntroHeading] = useState(initialPost?.introHeading || '');
   const [introText, setIntroText] = useState(initialPost?.introText || '');
+  const [cardsH2Heading, setCardsH2Heading] = useState(initialPost?.cardsH2Heading || '');
+  const [cardsParagraph, setCardsParagraph] = useState(initialPost?.cardsParagraph || '');
   const [featuredImage, setFeaturedImage] = useState(initialPost?.featuredImage || '/images/hero-candle.jpg');
   const [imageAlt, setImageAlt] = useState(initialPost?.imageAlt || '');
   const [uploadingImage, setUploadingImage] = useState(false);
@@ -150,8 +152,9 @@ export const PostEditor: React.FC<PostEditorProps> = ({
         body: fd,
       });
       const data = await res.json();
-      if (res.ok && data.url) {
-        setFeaturedImage(data.url);
+      const uploadedUrl = data.url || data.media?.url;
+      if (res.ok && uploadedUrl) {
+        setFeaturedImage(uploadedUrl);
         setNotification({ type: 'success', message: 'ઇમેજ સફળતાપૂર્વક અપલોડ થઈ!' });
         setTimeout(() => setNotification(null), 3000);
       } else {
@@ -187,9 +190,10 @@ export const PostEditor: React.FC<PostEditorProps> = ({
         body: fd,
       });
       const data = await res.json();
-      if (res.ok && data.url) {
+      const uploadedUrl = data.url || data.media?.url;
+      if (res.ok && uploadedUrl) {
         const alt = prompt('ઇમેજ Alt ટેગ / વિવરણ (Image Alt text):', file.name.replace(/\.[^/.]+$/, '')) || 'શ્રદ્ધાંજલિ ફોટો';
-        const imgMarkdown = `\n\n![${alt}](${data.url})\n\n`;
+        const imgMarkdown = `\n\n![${alt}](${uploadedUrl})\n\n`;
         insertSnippet(imgMarkdown);
         setNotification({ type: 'success', message: 'ઇમેજ સફળતાપૂર્વક લેખમાં દાખલ થઈ ગઈ!' });
         setTimeout(() => setNotification(null), 3000);
@@ -350,6 +354,8 @@ export const PostEditor: React.FC<PostEditorProps> = ({
       quote: quote.trim(),
       introHeading: introHeading.trim(),
       introText: introText.trim(),
+      cardsH2Heading: cardsH2Heading.trim(),
+      cardsParagraph: cardsParagraph.trim(),
       featuredImage: featuredImage.trim(),
       imageAlt: imageAlt.trim() || title.trim(),
       status,
@@ -564,6 +570,35 @@ export const PostEditor: React.FC<PostEditorProps> = ({
                 <Plus size={14} />
                 <span>નવો કાર્ડ ઉમેરો</span>
               </button>
+            </div>
+
+            {/* H2 Heading & Paragraph before Individual Message Cards */}
+            <div className="space-y-3 pb-4 border-b border-[#1C3A52]/60 mb-4 bg-[#061321]/40 p-3.5 rounded-xl border border-[#1C3A52]/40">
+              <div>
+                <label className="block text-xs font-semibold text-[#B9C6D6] mb-1.5">
+                  Message Cards Section H2 Heading (કાર્ડ્સ પહેલાંનું મુખ્ય H2 હેડિંગ)
+                </label>
+                <input
+                  type="text"
+                  value={cardsH2Heading}
+                  onChange={(e) => setCardsH2Heading(e.target.value)}
+                  placeholder="દા.ત. ભાવપૂર્ણ શ્રદ્ધાંજલિ સંદેશાઓ"
+                  className="w-full bg-[#061321] border border-[#1C3A52] focus:border-gold rounded-xl px-4 py-2.5 text-sm sm:text-base text-white placeholder-[#8495A9] focus:outline-none transition-colors"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-semibold text-[#B9C6D6] mb-1.5">
+                  Message Cards Section Paragraph (કાર્ડ્સ પહેલાંનો પેરાગ્રાફ)
+                </label>
+                <textarea
+                  rows={2}
+                  value={cardsParagraph}
+                  onChange={(e) => setCardsParagraph(e.target.value)}
+                  placeholder="દા.ત. નીચે આપેલ સંદેશાઓ તમે તમારા પરિવાર અને સ્નેહીજનો સાથે શેર કરી શકો છો:"
+                  className="w-full bg-[#061321] border border-[#1C3A52] focus:border-gold rounded-xl p-3 text-sm sm:text-base text-white placeholder-[#8495A9] focus:outline-none transition-colors resize-none leading-relaxed"
+                />
+              </div>
             </div>
 
             <div className="space-y-3">

@@ -66,6 +66,8 @@ export interface Post {
   tags: string[];
   introHeading?: string;
   introText?: string;
+  cardsH2Heading?: string;
+  cardsParagraph?: string;
   messageCards?: MessageCard[];
   showTableOfContents?: boolean;
   seoTitle?: string;

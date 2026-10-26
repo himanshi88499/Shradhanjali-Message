@@ -203,7 +203,7 @@ export default async function SingleArticlePage({ params }: Props) {
 
             {/* Article Header Metadata without reading time */}
             <div className="flex flex-wrap items-center gap-3 my-2.5">
-              <span className="px-3.5 py-1 bg-gold text-[#030B12] font-bold text-xs rounded-full shadow-sm">
+              <span className="px-3.5 py-1 bg-gold !text-white font-bold text-xs rounded-full shadow-sm">
                 {post.categoryName || 'Tribute'}
               </span>
               <div className="flex items-center gap-1.5 text-xs text-theme-secondary">
@@ -228,7 +228,7 @@ export default async function SingleArticlePage({ params }: Props) {
             </h1>
 
             {/* Featured Image with Quote Card Overlay */}
-            <div className="relative rounded-2xl overflow-hidden border border-theme bg-theme-card aspect-[16/9] mb-6 shadow-xl">
+            <div className="relative rounded-2xl overflow-hidden border border-theme bg-theme-card aspect-[16/9] mb-3.5 shadow-xl">
               <img
                 src={post.featuredImage || '/images/hero-candle.jpg'}
                 alt={post.imageAlt || post.title}
@@ -345,6 +345,26 @@ export default async function SingleArticlePage({ params }: Props) {
               </div>
             ) : (
               <>
+                {/* H2 Heading & Paragraph before Individual Message Cards */}
+                {(post.cardsH2Heading || post.cardsParagraph) && (
+                  <div className="mt-8 mb-4">
+                    {post.cardsH2Heading && (
+                      <h2
+                        id={post.cardsH2Heading.toLowerCase().replace(/[^a-z0-9\u0A80-\u0AFF]+/g, '-')}
+                        className="text-xl sm:text-2xl font-bold border-b border-theme pb-2 mb-3 text-[#F5C45E] flex items-center gap-2"
+                      >
+                        <Sparkles size={18} className="text-[#F5C45E]" />
+                        <span>{post.cardsH2Heading}</span>
+                      </h2>
+                    )}
+                    {post.cardsParagraph && (
+                      <p className="text-sm sm:text-base text-theme-secondary leading-relaxed">
+                        {post.cardsParagraph}
+                      </p>
+                    )}
+                  </div>
+                )}
+
                 {/* Classic Mode: Individual Message Cards */}
                 {post.messageCards && post.messageCards.length > 0 && (
                   <div className="space-y-4 my-6">
@@ -531,7 +551,7 @@ export default async function SingleArticlePage({ params }: Props) {
         <section className="mt-16 pt-10 border-t border-theme">
           <div className="flex items-center gap-2 text-gold text-lg sm:text-xl font-bold mb-6">
             <Sparkles size={20} />
-            <span>Related Memorial Articles</span>
+            <span>Related Articles</span>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">

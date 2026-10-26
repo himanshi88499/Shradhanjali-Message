@@ -4,9 +4,9 @@ export const initialDatabase: DatabaseSchema = {
   users: [
     {
       id: 'usr_admin',
-      name: 'મુખ્ય વ્યવસ્થાપક (Admin)',
-      email: 'admin@shradhanjali.in',
-      passwordHash: '$2b$10$KGajruDrlYMc7IQk86WVR.6XrHYMqmoa9E7NzfwM6QYJKi/iIMZbi', // Admin@12345
+      name: 'Admin',
+      email: 'Admin@Shradhanjalimsg.com',
+      passwordHash: '$2b$10$ntOgfqDwsCfZJRHMebpEBeex3ApMBnnrQZgyJSsg1P6/jkm9BMXRK', // Karan@#0007043
       role: 'admin',
       avatar: '/images/author-team.jpg',
       bio: 'શ્રદ્ધાંજલિ પોર્ટલના મુખ્ય એડમિનિસ્ટ્રેટર',
@@ -740,7 +740,7 @@ export const initialDatabase: DatabaseSchema = {
     infoCards: [
       {
         id: 1,
-        title: 'અપાર શ્રદ્ધાંજલિ',
+        title: 'ભાવપૂર્ણ શ્રદ્ધાંજલિ',
         description: 'દરેક પ્રિયજનને અમારી તરફથી હૃદયપૂર્વક શ્રદ્ધાંજલિ.',
         icon: 'Heart',
       },

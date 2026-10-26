@@ -60,30 +60,30 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
         <div className="absolute inset-0 bg-[#030B12]/50 md:hidden" />
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 py-12 sm:py-16 lg:py-20">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 py-8 sm:py-12 lg:py-14">
+        <div className="flex flex-col lg:flex-row items-center justify-between gap-8">
           {/* Left Column: Heading, Subtitle, Pill-shaped Search Bar */}
-          <div className="lg:col-span-7 flex flex-col justify-center">
+          <div className="w-full max-w-3xl flex flex-col justify-center">
             {/* Small introductory badge */}
-            <div className="inline-flex items-center gap-2 mb-3">
+            <div className="inline-flex items-center gap-2 mb-2.5">
               <span className="text-[#F5C45E] font-semibold tracking-wider text-xs sm:text-sm">
                 {displayBadge}
               </span>
             </div>
 
-            {/* 2-line Heading matching Reference Screenshot */}
-            <h1 className="text-3xl sm:text-4xl lg:text-[44px] xl:text-5xl font-extrabold tracking-tight leading-[1.2] mb-4">
-              <span className="text-white block drop-shadow-md">
-                {displayHeading1}
+            {/* 1-line Heading across mobile & laptop */}
+            <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-[40px] xl:text-[44px] font-extrabold tracking-tight leading-tight mb-4">
+              <span className="text-white drop-shadow-md">
+                {displayHeading1}{' '}
               </span>
-              <span className="text-[#F5C45E] block mt-1 drop-shadow-md">
+              <span className="text-[#F5C45E] drop-shadow-md">
                 {displayHeading2}
               </span>
             </h1>
 
             {/* Supporting paragraph */}
             <p
-              className="text-sm sm:text-base lg:text-[17px] leading-relaxed mb-8 max-w-xl whitespace-pre-line drop-shadow-md font-normal"
+              className="text-xs sm:text-sm md:text-base leading-relaxed mb-6 max-w-xl whitespace-pre-line drop-shadow-md font-normal"
               style={{ color: '#E2E8F0' }}
             >
               {displaySubtitle}
@@ -115,8 +115,8 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
             </form>
           </div>
 
-          {/* Right Column: Floating Memorial Quotation */}
-          <div className="lg:col-span-5 flex flex-col items-center justify-center lg:items-end lg:pr-4 pt-4 lg:pt-0">
+          {/* Right Column: Floating Memorial Quotation (Hidden on Desktop, Visible on Mobile/Tablet) */}
+          <div className="lg:hidden flex flex-col items-center justify-center pt-2">
             <div className="relative max-w-sm text-center px-4 py-4 sm:py-6">
               {/* Quote Container with golden quotation marks */}
               <div className="relative inline-block text-center">

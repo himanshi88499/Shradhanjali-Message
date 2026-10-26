@@ -1,0 +1,19 @@
+<svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="lotusGoldGradient" x1="18" y1="6" x2="18" y2="31" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#FFE399" />
+      <stop offset="50%" stop-color="#F5C45E" />
+      <stop offset="100%" stop-color="#E5B54E" />
+    </linearGradient>
+    <radialGradient id="emberGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#FFFFFF" />
+      <stop offset="60%" stop-color="#FFE399" />
+      <stop offset="100%" stop-color="#F5C45E" stop-opacity="0" />
+    </radialGradient>
+  </defs>
+  <path d="M10 28C14 30.5 22 30.5 26 28C24 29.5 20 30.5 18 30.5C16 30.5 12 29.5 10 28Z" fill="url(#lotusGoldGradient)" />
+  <path d="M18 27C12 24 7 19 8 13C12 16 16 21 18 27Z" fill="url(#lotusGoldGradient)" opacity="0.9" />
+  <path d="M18 27C24 24 29 19 28 13C24 16 20 21 18 27Z" fill="url(#lotusGoldGradient)" opacity="0.9" />
+  <path d="M18 6C15 13 13 19 18 27C23 19 21 13 18 6Z" fill="url(#lotusGoldGradient)" />
+  <circle cx="18" cy="21" r="2.5" fill="url(#emberGlow)" />
+</svg>

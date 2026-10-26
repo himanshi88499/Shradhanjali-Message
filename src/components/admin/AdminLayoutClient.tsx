@@ -39,7 +39,7 @@ export const AdminLayoutClient: React.FC<AdminLayoutClientProps> = ({ children, 
   }
 
   return (
-    <div className="min-h-screen bg-[#061321] text-[#F4F6FA] flex">
+    <div className="admin-panel-root min-h-screen bg-[#061321] text-[#F4F6FA] flex transition-colors">
       {/* Sidebar */}
       <AdminSidebar
         isOpen={sidebarOpen}
@@ -50,7 +50,7 @@ export const AdminLayoutClient: React.FC<AdminLayoutClientProps> = ({ children, 
       {/* Main Content Area */}
       <div className="flex-1 flex flex-col min-w-0 h-screen overflow-y-auto">
         {/* Admin Header */}
-        <header className="sticky top-0 z-30 bg-[#0A1B2B]/90 backdrop-blur-md border-b border-[#1C3A52] px-4 sm:px-6 py-3.5 flex items-center justify-between">
+        <header className="sticky top-0 z-30 bg-[#0A1B2B] backdrop-blur-md border-b border-[#1C3A52] px-4 sm:px-6 py-3 flex items-center justify-between transition-colors">
           <div className="flex items-center gap-3">
             <button
               type="button"
@@ -59,7 +59,7 @@ export const AdminLayoutClient: React.FC<AdminLayoutClientProps> = ({ children, 
             >
               <Menu size={20} />
             </button>
-            <span className="text-xs sm:text-sm font-bold text-white">
+            <span className="text-xs sm:text-sm font-bold text-theme-primary">
               શ્રદ્ધાંજલિ CMS કંટ્રોલ પેનલ
             </span>
           </div>
@@ -89,7 +89,7 @@ export const AdminLayoutClient: React.FC<AdminLayoutClientProps> = ({ children, 
                 {user.name.charAt(0)}
               </div>
               <div className="hidden sm:block text-left">
-                <p className="text-xs font-bold text-white leading-tight">{user.name}</p>
+                <p className="text-xs font-bold text-theme-primary leading-tight">{user.name}</p>
                 <p className="text-[10px] text-gold">{user.role}</p>
               </div>
             </div>

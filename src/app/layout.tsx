@@ -9,8 +9,9 @@ export const metadata: Metadata = {
     'Shradhanjali Msg is a respectful digital memorial and tribute publishing platform offering condolences, punyatithi messages, memorial poetry, and thoughtful remembrance guidance.',
   metadataBase: new URL('https://shradhanjali.in'),
   icons: {
-    icon: '/favicon.ico',
-    apple: '/favicon.ico',
+    icon: '/favicon.svg',
+    apple: '/favicon.svg',
+    shortcut: '/favicon.svg',
   },
   openGraph: {
     title: 'Shradhanjali Msg — Everlasting in Loving Memories',

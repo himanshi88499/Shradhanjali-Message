@@ -22,7 +22,7 @@ export const InfoStrip: React.FC<InfoStripProps> = ({ title, items }) => {
   const defaultItems: InfoItem[] = [
     {
       id: 1,
-      title: t('info_tribute_title') || 'અપાર શ્રદ્ધાંજલિ',
+      title: t('info_tribute_title') || 'ભાવપૂર્ણ શ્રદ્ધાંજલિ',
       description: t('info_tribute_desc') || 'દરેક પ્રિયજનને અમારી તરફથી હૃદયપૂર્વક શ્રદ્ધાંજલિ.',
       icon: 'Heart',
     },

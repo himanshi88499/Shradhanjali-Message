@@ -11,7 +11,7 @@ export const SUPPORTED_LANGUAGES: LanguageInfo[] = [
   { code: 'gu', name: 'Gujarati', nativeName: 'ગુજરાતી' },
   { code: 'en', name: 'English', nativeName: 'English' },
   { code: 'hi', name: 'Hindi', nativeName: 'हिन्दी' },
-  { code: 'mr', name: 'Marathi', nativeName: 'मરાઠી' },
+  { code: 'mr', name: 'Marathi', nativeName: 'मराठी' },
 ];
 
 export interface TranslationDictionary {
@@ -139,7 +139,7 @@ export const translations: Record<LanguageCode, TranslationDictionary> = {
       'શ્રદ્ધાંજલિ, પુણ્યતિથિ, શાયરી અને ઉપયોગી માહિતી ભરપૂર 12 લેખો',
     view_all_posts: 'બધી પોસ્ટ્સ',
 
-    info_tribute_title: 'અપાર શ્રદ્ધાંજલિ',
+    info_tribute_title: 'ભાવપૂર્ણ શ્રદ્ધાંજલિ',
     info_tribute_desc: 'દરેક પ્રિયજનને અમારી તરફથી હૃદયપૂર્વક શ્રદ્ધાંજલિ.',
     info_rituals_title: 'ઉપયોગી માહિતી',
     info_rituals_desc: 'અંતિમ સંસ્કાર, વિધિ અને મહત્વપૂર્ણ માહિતી એક જ જગ્યાએ.',

@@ -91,7 +91,6 @@ export default function LanguageDropdown({ isMobile = false }: LanguageDropdownP
                     )}
                     <div>
                       <span className="font-medium">{lang.nativeName}</span>
-                      <span className="text-xs text-theme-muted ml-1.5">({lang.name})</span>
                     </div>
                   </div>
                 </button>

@@ -43,7 +43,7 @@ export default function AdminDashboardPage() {
       {/* Welcome Banner */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-[#1C3A52]">
         <div>
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-white">
+          <h1 className="text-2xl sm:text-3xl font-extrabold text-theme-primary">
             ડેશબોર્ડ ઝાંખી (Overview)
           </h1>
           <p className="text-xs sm:text-sm text-[#8495A9] mt-1">
@@ -63,7 +63,7 @@ export default function AdminDashboardPage() {
             href="/"
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-1.5 px-3.5 py-2 bg-[#0B1D2D] hover:bg-[#10263B] border border-[#1C3A52] text-[#B9C6D6] hover:text-white text-xs font-semibold rounded-xl transition-colors"
+            className="inline-flex items-center gap-1.5 px-3.5 py-2 bg-[#0B1D2D] hover:bg-[#10263B] border border-[#1C3A52] text-[#B9C6D6] hover:text-gold text-xs font-semibold rounded-xl transition-colors"
           >
             <span>સાઈટ જુઓ</span>
             <ExternalLink size={13} />
@@ -79,7 +79,7 @@ export default function AdminDashboardPage() {
             <span className="text-[11px] font-semibold text-[#8495A9]">પ્રકાશિત લેખો</span>
             <FileText size={16} className="text-gold" />
           </div>
-          <p className="text-2xl font-black text-white">{publishedPosts.length}</p>
+          <p className="text-2xl font-black text-theme-primary">{publishedPosts.length}</p>
           <span className="text-[10px] text-[#22C55E] flex items-center gap-1 mt-1 font-medium">
             <CheckCircle size={10} /> Live
           </span>
@@ -91,7 +91,7 @@ export default function AdminDashboardPage() {
             <span className="text-[11px] font-semibold text-[#8495A9]">ડ્રાફ્ટ લેખો</span>
             <Clock size={16} className="text-[#FFD782]" />
           </div>
-          <p className="text-2xl font-black text-white">{draftPosts.length}</p>
+          <p className="text-2xl font-black text-theme-primary">{draftPosts.length}</p>
           <span className="text-[10px] text-[#8495A9] mt-1 block">અપ્રકાશિત</span>
         </div>
 
@@ -101,7 +101,7 @@ export default function AdminDashboardPage() {
             <span className="text-[11px] font-semibold text-[#8495A9]">કેટેગરીઝ</span>
             <FolderOpen size={16} className="text-gold" />
           </div>
-          <p className="text-2xl font-black text-white">{categories.length}</p>
+          <p className="text-2xl font-black text-theme-primary">{categories.length}</p>
           <Link href="/admin/categories" className="text-[10px] text-gold hover:underline mt-1 block">
             મેનેજ કરો →
           </Link>
@@ -113,7 +113,7 @@ export default function AdminDashboardPage() {
             <span className="text-[11px] font-semibold text-[#8495A9]">કુલ પેજીસ</span>
             <FileText size={16} className="text-gold" />
           </div>
-          <p className="text-2xl font-black text-white">{pages.length}</p>
+          <p className="text-2xl font-black text-theme-primary">{pages.length}</p>
           <Link href="/admin/pages" className="text-[10px] text-gold hover:underline mt-1 block">
             બધા પેજ →
           </Link>
@@ -125,7 +125,7 @@ export default function AdminDashboardPage() {
             <span className="text-[11px] font-semibold text-[#8495A9]">મીડિયા ફાઇલો</span>
             <ImageIcon size={16} className="text-gold" />
           </div>
-          <p className="text-2xl font-black text-white">{media.length}</p>
+          <p className="text-2xl font-black text-theme-primary">{media.length}</p>
           <Link href="/admin/media" className="text-[10px] text-gold hover:underline mt-1 block">
             લાઇબ્રેરી →
           </Link>
@@ -137,7 +137,7 @@ export default function AdminDashboardPage() {
             <span className="text-[11px] font-semibold text-[#8495A9]">સંપર્ક મેસેજ</span>
             <MessageSquare size={16} className="text-gold" />
           </div>
-          <p className="text-2xl font-black text-white">{submissions.length}</p>
+          <p className="text-2xl font-black text-theme-primary">{submissions.length}</p>
           <Link href="/admin/contact" className="text-[10px] text-gold hover:underline mt-1 block">
             ઇનબોક્સ →
           </Link>
@@ -146,7 +146,7 @@ export default function AdminDashboardPage() {
 
       {/* Quick Action Shortcuts */}
       <div className="bg-[#0B1D2D] border border-[#1C3A52] rounded-2xl p-5 card-glow">
-        <h2 className="text-sm font-bold text-white mb-3">ઝડપી ક્રિયાઓ (Quick Actions)</h2>
+        <h2 className="text-sm font-bold text-theme-primary mb-3">ઝડપી ક્રિયાઓ (Quick Actions)</h2>
         <div className="flex flex-wrap items-center gap-2.5">
           <Link
             href="/admin/posts/new"
@@ -157,28 +157,28 @@ export default function AdminDashboardPage() {
           </Link>
           <Link
             href="/admin/categories"
-            className="px-3.5 py-2 bg-[#061321] hover:bg-[#142B40] text-white border border-[#1C3A52] hover:border-gold rounded-xl text-xs font-medium transition-colors flex items-center gap-1.5"
+            className="px-3.5 py-2 bg-[#061321] hover:bg-[#142B40] text-theme-primary border border-[#1C3A52] hover:border-gold rounded-xl text-xs font-medium transition-colors flex items-center gap-1.5"
           >
             <FolderOpen size={14} className="text-gold" />
             <span>કેટેગરી ઉમેરો</span>
           </Link>
           <Link
             href="/admin/media"
-            className="px-3.5 py-2 bg-[#061321] hover:bg-[#142B40] text-white border border-[#1C3A52] hover:border-gold rounded-xl text-xs font-medium transition-colors flex items-center gap-1.5"
+            className="px-3.5 py-2 bg-[#061321] hover:bg-[#142B40] text-theme-primary border border-[#1C3A52] hover:border-gold rounded-xl text-xs font-medium transition-colors flex items-center gap-1.5"
           >
             <ImageIcon size={14} className="text-gold" />
             <span>ઇમેજ અપલોડ</span>
           </Link>
           <Link
             href="/admin/menus"
-            className="px-3.5 py-2 bg-[#061321] hover:bg-[#142B40] text-white border border-[#1C3A52] hover:border-gold rounded-xl text-xs font-medium transition-colors flex items-center gap-1.5"
+            className="px-3.5 py-2 bg-[#061321] hover:bg-[#142B40] text-theme-primary border border-[#1C3A52] hover:border-gold rounded-xl text-xs font-medium transition-colors flex items-center gap-1.5"
           >
             <Settings size={14} className="text-gold" />
             <span>મેનુ સેટિંગ્સ</span>
           </Link>
           <Link
             href="/admin/settings"
-            className="px-3.5 py-2 bg-[#061321] hover:bg-[#142B40] text-white border border-[#1C3A52] hover:border-gold rounded-xl text-xs font-medium transition-colors flex items-center gap-1.5"
+            className="px-3.5 py-2 bg-[#061321] hover:bg-[#142B40] text-theme-primary border border-[#1C3A52] hover:border-gold rounded-xl text-xs font-medium transition-colors flex items-center gap-1.5"
           >
             <Settings size={14} className="text-gold" />
             <span>વેબસાઇટ સેટિંગ્સ</span>
@@ -191,7 +191,7 @@ export default function AdminDashboardPage() {
         {/* Recent Posts Table (8 cols) */}
         <div className="lg:col-span-8 bg-[#0B1D2D] border border-[#1C3A52] rounded-2xl p-6 card-glow">
           <div className="flex items-center justify-between pb-4 border-b border-[#1C3A52]/70 mb-4">
-            <h3 className="text-base font-bold text-white">તાજેતરના લેખો (Recent Posts)</h3>
+            <h3 className="text-base font-bold text-theme-primary">તાજેતરના લેખો (Recent Posts)</h3>
             <Link href="/admin/posts" className="text-xs text-gold hover:underline font-semibold">
               બધા જુઓ →
             </Link>
@@ -210,7 +210,7 @@ export default function AdminDashboardPage() {
               <tbody className="divide-y divide-[#1C3A52]/40">
                 {recentPosts.map((post) => (
                   <tr key={post.id} className="hover:bg-[#10263B]/50 transition-colors">
-                    <td className="py-3 font-medium text-white max-w-[220px] truncate pr-3">
+                    <td className="py-3 font-medium text-theme-primary max-w-[220px] truncate pr-3">
                       <Link href={`/admin/posts/edit/${post.id}`} className="hover:text-gold transition-colors">
                         {post.title}
                       </Link>
@@ -241,7 +241,7 @@ export default function AdminDashboardPage() {
                           href={`/post/${post.slug}`}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="text-[#8495A9] hover:text-white"
+                          className="text-[#8495A9] hover:text-gold"
                           title="લાઇવ જુઓ"
                         >
                           <ArrowUpRight size={14} />
@@ -260,7 +260,7 @@ export default function AdminDashboardPage() {
           {/* Recent Submissions */}
           <div className="bg-[#0B1D2D] border border-[#1C3A52] rounded-2xl p-6 card-glow">
             <div className="flex items-center justify-between pb-3 border-b border-[#1C3A52]/70 mb-4">
-              <h3 className="text-base font-bold text-white">તાજેતરના સંપર્ક મેસેજ</h3>
+              <h3 className="text-base font-bold text-theme-primary">તાજેતરના સંપર્ક મેસેજ</h3>
               <Link href="/admin/contact" className="text-xs text-gold hover:underline font-semibold">
                 બધા જુઓ →
               </Link>
@@ -274,7 +274,7 @@ export default function AdminDashboardPage() {
                     className="p-3 bg-[#061321] border border-[#1C3A52] rounded-xl hover:border-gold/30 transition-colors"
                   >
                     <div className="flex items-center justify-between mb-1">
-                      <span className="text-xs font-bold text-white truncate max-w-[150px]">
+                      <span className="text-xs font-bold text-theme-primary truncate max-w-[150px]">
                         {sub.name}
                       </span>
                       <span className="text-[10px] text-[#8495A9]">
@@ -301,7 +301,7 @@ export default function AdminDashboardPage() {
           <div className="bg-[#0B1D2D] border border-[#1C3A52] rounded-2xl p-6 card-glow">
             <div className="flex items-center gap-2 mb-3">
               <BarChart2 size={18} className="text-gold" />
-              <h3 className="text-base font-bold text-white">Google Analytics 4</h3>
+              <h3 className="text-base font-bold text-theme-primary">Google Analytics 4</h3>
             </div>
 
             {settings.technical.gaMeasurementId ? (
@@ -312,7 +312,7 @@ export default function AdminDashboardPage() {
                 </div>
                 <p className="text-[#8495A9]">
                   Measurement ID:{' '}
-                  <span className="font-mono text-white">{settings.technical.gaMeasurementId}</span>
+                  <span className="font-mono text-theme-primary">{settings.technical.gaMeasurementId}</span>
                 </p>
               </div>
             ) : (
