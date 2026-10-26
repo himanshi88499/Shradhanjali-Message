@@ -33,7 +33,7 @@ export const AdminLayoutClient: React.FC<AdminLayoutClientProps> = ({ children, 
   if (!user) {
     return (
       <div className="min-h-screen bg-[#061321] flex items-center justify-center text-gold text-sm font-semibold">
-        ચકાસણી ચાલુ છે...
+        Verifying session...
       </div>
     );
   }
@@ -60,7 +60,7 @@ export const AdminLayoutClient: React.FC<AdminLayoutClientProps> = ({ children, 
               <Menu size={20} />
             </button>
             <span className="text-xs sm:text-sm font-bold text-theme-primary">
-              શ્રદ્ધાંજલિ CMS કંટ્રોલ પેનલ
+              Shradhanjali CMS Control Panel
             </span>
           </div>
 
@@ -81,7 +81,7 @@ export const AdminLayoutClient: React.FC<AdminLayoutClientProps> = ({ children, 
               rel="noopener noreferrer"
               className="hidden sm:inline-flex items-center px-3 py-1.5 bg-[#0B1D2D] border border-[#1C3A52] hover:border-gold text-gold text-xs font-semibold rounded-lg transition-colors"
             >
-              લાઈવ સાઈટ જુઓ
+              View Live Site
             </a>
 
             <div className="flex items-center gap-2 pl-3 border-l border-[#1C3A52]">

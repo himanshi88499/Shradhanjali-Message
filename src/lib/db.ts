@@ -247,7 +247,18 @@ export function getSettings(): SiteSettings {
 
 export function updateSettings(settings: Partial<SiteSettings>): SiteSettings {
   const db = getDb();
-  db.settings = { ...db.settings, ...settings };
+  db.settings = {
+    ...db.settings,
+    ...settings,
+    technical: {
+      ...(db.settings.technical || {}),
+      ...(settings.technical || {}),
+    },
+    socials: {
+      ...(db.settings.socials || {}),
+      ...(settings.socials || {}),
+    },
+  };
   saveDb(db);
   return db.settings;
 }
@@ -349,7 +360,41 @@ export function deleteUser(id: string): boolean {
 // ----------------- MEDIA -----------------
 export function getMedia(): MediaItem[] {
   const db = getDb();
-  return db.media || [];
+  if (!db.media) db.media = [];
+
+  try {
+    const uploadsDir = path.join(process.cwd(), 'public', 'uploads');
+    if (fs.existsSync(uploadsDir)) {
+      const files = fs.readdirSync(uploadsDir);
+      let changed = false;
+      for (const f of files) {
+        if (f.startsWith('.') || f === '.gitkeep') continue;
+        const url = `/uploads/${f}`;
+        if (!db.media.some((m) => m.url === url)) {
+          const stats = fs.statSync(path.join(uploadsDir, f));
+          const ext = path.extname(f).toLowerCase();
+          const cleanTitle = f.replace(/^\d+-/, '').replace(/\.[^.]+$/, '');
+          const item: MediaItem = {
+            id: `med-${stats.birthtimeMs || Date.now()}-${f}`,
+            name: f,
+            url,
+            altText: cleanTitle,
+            title: cleanTitle,
+            size: stats.size,
+            mimeType: ext === '.png' ? 'image/png' : ext === '.webp' ? 'image/webp' : ext === '.svg' ? 'image/svg+xml' : 'image/jpeg',
+            createdAt: stats.birthtime?.toISOString() || new Date().toISOString(),
+          };
+          db.media.unshift(item);
+          changed = true;
+        }
+      }
+      if (changed) saveDb(db);
+    }
+  } catch (err) {
+    console.error('Error syncing uploads to media list:', err);
+  }
+
+  return db.media;
 }
 
 export function saveMedia(item: MediaItem): MediaItem {

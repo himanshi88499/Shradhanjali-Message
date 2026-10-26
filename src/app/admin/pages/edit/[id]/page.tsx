@@ -52,7 +52,7 @@ export default function EditPage() {
       });
 
       if (res.ok) {
-        setMessage('પેજ સફળતાપૂર્વક અપડેટ થયું!');
+        setMessage('Page updated successfully!');
         setTimeout(() => {
           router.push('/admin/pages');
           router.refresh();
@@ -67,7 +67,7 @@ export default function EditPage() {
 
   if (!page) {
     return (
-      <div className="text-center py-12 text-gold">પેજ ડેટા લોડ થઈ રહ્યો છે...</div>
+      <div className="text-center py-12 text-gold">Loading page content...</div>
     );
   }
 
@@ -83,7 +83,7 @@ export default function EditPage() {
             <ArrowLeft size={16} />
           </button>
           <div>
-            <h1 className="text-xl font-bold text-white">પેજ સંપાદિત કરો: {page.title}</h1>
+            <h1 className="text-xl font-bold text-white">Edit Page: {page.title}</h1>
             <p className="text-xs text-gold font-mono">/{page.slug}</p>
           </div>
         </div>
@@ -94,7 +94,7 @@ export default function EditPage() {
           className="flex items-center gap-1.5 px-4 py-2 bg-gold hover:bg-[#ffd782] text-[#061321] text-xs font-bold rounded-xl transition-all shadow-md"
         >
           <Save size={14} />
-          <span>{loading ? 'સેવ થઈ રહ્યું છે...' : 'સેવ કરો'}</span>
+          <span>{loading ? 'Saving...' : 'Save Page'}</span>
         </button>
       </div>
 
@@ -108,7 +108,7 @@ export default function EditPage() {
       <div className="bg-[#0B1D2D] border border-[#1C3A52] rounded-2xl p-6 card-glow space-y-4">
         <div>
           <label className="block text-xs font-semibold text-[#B9C6D6] mb-1.5">
-            પેજ શીર્ષક (Title)
+            Page Title
           </label>
           <input
             type="text"
@@ -121,7 +121,7 @@ export default function EditPage() {
 
         <div>
           <label className="block text-xs font-semibold text-[#B9C6D6] mb-1.5">
-            પેજ લખાણ (Content / Description)
+            Page Content (Markdown / Text)
           </label>
           <textarea
             rows={12}

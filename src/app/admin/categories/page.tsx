@@ -54,7 +54,7 @@ export default function AdminCategoriesPage() {
       });
 
       if (res.ok) {
-        setMessage('કેટેગરી સફળતાપૂર્વક સેવ થઈ!');
+        setMessage('Category saved successfully!');
         setFormData({
           name: '',
           slug: '',
@@ -73,7 +73,7 @@ export default function AdminCategoriesPage() {
   };
 
   const handleDelete = async (id: string, name: string) => {
-    if (!window.confirm(`શું તમે "${name}" કેટેગરી ડિલીટ કરવા માંગો છો?`)) return;
+    if (!window.confirm(`Are you sure you want to delete category "${name}"?`)) return;
     try {
       await fetch('/api/admin/categories', {
         method: 'DELETE',
@@ -94,9 +94,9 @@ export default function AdminCategoriesPage() {
   return (
     <div className="space-y-6 animate-fade-in">
       <div className="pb-5 border-b border-[#1C3A52]">
-        <h1 className="text-2xl font-extrabold text-white">કેટેગરી મેનેજમેન્ટ (Categories)</h1>
+        <h1 className="text-2xl font-extrabold text-white">Categories Management</h1>
         <p className="text-xs text-[#8495A9] mt-1">
-          વેબસાઇટની મુખ્ય કેટેગરીઓ ઉમેરો અથવા સંપાદિત કરો.
+          Add, edit, and organize portal categories.
         </p>
       </div>
 
@@ -112,27 +112,27 @@ export default function AdminCategoriesPage() {
         <div className="lg:col-span-5 bg-[#0B1D2D] border border-[#1C3A52] rounded-2xl p-6 card-glow">
           <h2 className="text-sm font-bold text-white mb-4 flex items-center gap-2">
             <FolderOpen size={16} className="text-gold" />
-            <span>{editingCat ? 'કેટેગરી સંપાદિત કરો' : 'નવી કેટેગરી ઉમેરો'}</span>
+            <span>{editingCat ? 'Edit Category' : 'Add New Category'}</span>
           </h2>
 
           <form onSubmit={handleSave} className="space-y-4 text-xs">
             <div>
               <label className="block text-[#B9C6D6] font-medium mb-1">
-                કેટેગરીનું નામ (Name) <span className="text-gold">*</span>
+                Category Name <span className="text-gold">*</span>
               </label>
               <input
                 type="text"
                 required
                 value={formData.name || ''}
                 onChange={(e) => handleNameChange(e.target.value)}
-                placeholder="દા.ત. શ્રદ્ધાંજલિ સંદેશ..."
+                placeholder="e.g. Shradhanjali Messages..."
                 className="w-full bg-[#061321] border border-[#1C3A52] focus:border-gold rounded-xl px-3 py-2 text-white focus:outline-none"
               />
             </div>
 
             <div>
               <label className="block text-[#B9C6D6] font-medium mb-1">
-                સ્લગ (Slug)
+                Slug
               </label>
               <input
                 type="text"
@@ -145,20 +145,20 @@ export default function AdminCategoriesPage() {
 
             <div>
               <label className="block text-[#B9C6D6] font-medium mb-1">
-                વર્ણન (Description)
+                Description
               </label>
               <textarea
                 rows={2}
                 value={formData.description || ''}
                 onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                placeholder="ટૂંકું વિવરણ..."
+                placeholder="Short description for the category..."
                 className="w-full bg-[#061321] border border-[#1C3A52] focus:border-gold rounded-xl p-3 text-white focus:outline-none resize-none"
               />
             </div>
 
             <div>
               <label className="block text-[#B9C6D6] font-medium mb-1">
-                ઇમેજ URL (Image)
+                Image URL
               </label>
               <input
                 type="text"
@@ -171,7 +171,7 @@ export default function AdminCategoriesPage() {
             <div className="grid grid-cols-2 gap-3">
               <div>
                 <label className="block text-[#B9C6D6] font-medium mb-1">
-                  આઇકન (Icon)
+                  Icon
                 </label>
                 <select
                   value={formData.icon || 'Heart'}
@@ -189,7 +189,7 @@ export default function AdminCategoriesPage() {
 
               <div>
                 <label className="block text-[#B9C6D6] font-medium mb-1">
-                  ક્રમ (Display Order)
+                  Display Order
                 </label>
                 <input
                   type="number"
@@ -206,7 +206,7 @@ export default function AdminCategoriesPage() {
                 className="flex-1 py-2.5 px-4 bg-gold hover:bg-[#ffd782] text-[#061321] font-bold rounded-xl transition-all shadow-md flex items-center justify-center gap-1.5"
               >
                 <Save size={14} />
-                <span>{editingCat ? 'અપડેટ કરો' : 'કેટેગરી સેવ કરો'}</span>
+                <span>{editingCat ? 'Update Category' : 'Save Category'}</span>
               </button>
 
               {editingCat && (
@@ -225,7 +225,7 @@ export default function AdminCategoriesPage() {
                   }}
                   className="px-3 py-2.5 bg-[#061321] border border-[#1C3A52] text-[#8495A9] rounded-xl hover:text-white"
                 >
-                  રદ કરો
+                  Cancel
                 </button>
               )}
             </div>
@@ -235,17 +235,17 @@ export default function AdminCategoriesPage() {
         {/* Categories Table (7 cols) */}
         <div className="lg:col-span-7 bg-[#0B1D2D] border border-[#1C3A52] rounded-2xl overflow-hidden card-glow">
           <div className="p-4 border-b border-[#1C3A52] flex items-center justify-between">
-            <h3 className="text-sm font-bold text-white">હાલની કેટેગરીઝ ({categories.length})</h3>
+            <h3 className="text-sm font-bold text-white">All Categories ({categories.length})</h3>
           </div>
 
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs">
               <thead>
                 <tr className="bg-[#061321]/60 text-[#8495A9] border-b border-[#1C3A52]">
-                  <th className="py-3 px-4 font-semibold">ક્રમ</th>
-                  <th className="py-3 px-4 font-semibold">નામ (Name)</th>
-                  <th className="py-3 px-4 font-semibold">સ્લગ</th>
-                  <th className="py-3 px-4 font-semibold text-right">ક્રિયા</th>
+                  <th className="py-3 px-4 font-semibold">Order</th>
+                  <th className="py-3 px-4 font-semibold">Name</th>
+                  <th className="py-3 px-4 font-semibold">Slug</th>
+                  <th className="py-3 px-4 font-semibold text-right">Actions</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-[#1C3A52]/40">
@@ -265,7 +265,7 @@ export default function AdminCategoriesPage() {
                           type="button"
                           onClick={() => handleEditClick(cat)}
                           className="p-1.5 rounded-lg bg-[#061321] hover:bg-[#142B40] text-gold border border-[#1C3A52]"
-                          title="સંપાદિત કરો"
+                          title="Edit"
                         >
                           <Edit2 size={13} />
                         </button>
@@ -273,7 +273,7 @@ export default function AdminCategoriesPage() {
                           type="button"
                           onClick={() => handleDelete(cat.id, cat.name)}
                           className="p-1.5 rounded-lg bg-[#061321] hover:bg-[#EF4444]/20 text-[#EF4444] border border-[#1C3A52]"
-                          title="ડિલીટ કરો"
+                          title="Delete"
                         >
                           <Trash2 size={13} />
                         </button>

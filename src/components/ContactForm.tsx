@@ -169,11 +169,11 @@ export const ContactForm: React.FC = () => {
           />
         </div>
 
-        {/* Submit Button: Crisp white text on gold, strong contrast */}
+        {/* Submit Button: Crisp black text on gold */}
         <button
           type="submit"
           disabled={loading}
-          className="w-full py-3.5 px-6 bg-gold hover:bg-gold/90 disabled:opacity-50 text-white font-bold text-sm rounded-xl transition-all shadow-md flex items-center justify-center gap-2"
+          className="w-full py-3.5 px-6 bg-gold hover:bg-[#ffd782] disabled:opacity-50 text-black font-bold text-sm rounded-xl transition-all shadow-md flex items-center justify-center gap-2"
         >
           <Send size={16} />
           <span>{loading ? 'Sending...' : 'Send Message'}</span>

@@ -1,7 +1,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { getPages } from '@/lib/db';
-import { Edit2, ArrowUpRight, FileText, CheckCircle } from 'lucide-react';
+import { Edit2, ArrowUpRight, FileText } from 'lucide-react';
 
 export default function AdminPagesPage() {
   const pages = getPages();
@@ -28,9 +28,9 @@ export default function AdminPagesPage() {
   return (
     <div className="space-y-6 animate-fade-in">
       <div className="pb-5 border-b border-[#1C3A52]">
-        <h1 className="text-2xl font-extrabold text-white">પેજીસ મેનેજમેન્ટ (Pages)</h1>
+        <h1 className="text-2xl font-extrabold text-white">Pages Management</h1>
         <p className="text-xs text-[#8495A9] mt-1">
-          વેબસાઇટના સ્થિર અને માહિતીપ્રદ પૃષ્ઠોનું સંચાલન કરો.
+          Manage static and informative pages of the website.
         </p>
       </div>
 
@@ -39,11 +39,11 @@ export default function AdminPagesPage() {
           <table className="w-full text-left text-xs">
             <thead>
               <tr className="bg-[#061321]/60 text-[#8495A9] border-b border-[#1C3A52]">
-                <th className="py-3.5 px-4 font-semibold">પેજ શીર્ષક (Title)</th>
-                <th className="py-3.5 px-4 font-semibold">સ્લગ</th>
-                <th className="py-3.5 px-4 font-semibold">સ્થિતિ</th>
-                <th className="py-3.5 px-4 font-semibold">છેલ્લે અપડેટ</th>
-                <th className="py-3.5 px-4 font-semibold text-right">ક્રિયા</th>
+                <th className="py-3.5 px-4 font-semibold">Page Title</th>
+                <th className="py-3.5 px-4 font-semibold">Slug</th>
+                <th className="py-3.5 px-4 font-semibold">Status</th>
+                <th className="py-3.5 px-4 font-semibold">Last Updated</th>
+                <th className="py-3.5 px-4 font-semibold text-right">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-[#1C3A52]/40">
@@ -56,11 +56,11 @@ export default function AdminPagesPage() {
                   <td className="py-3 px-4 text-gold font-mono">/{page.slug}</td>
                   <td className="py-3 px-4">
                     <span className="inline-block px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-[#22C55E]/15 text-[#22C55E] border border-[#22C55E]/30">
-                      પ્રકાશિત
+                      Published
                     </span>
                   </td>
                   <td className="py-3 px-4 text-[#8495A9]">
-                    {new Date(page.updatedAt).toLocaleDateString('gu-IN', {
+                    {new Date(page.updatedAt).toLocaleDateString('en-US', {
                       day: 'numeric',
                       month: 'short',
                       year: 'numeric',
@@ -71,7 +71,7 @@ export default function AdminPagesPage() {
                       <Link
                         href={`/admin/pages/edit/${page.id}`}
                         className="p-1.5 rounded-lg bg-[#061321] hover:bg-[#142B40] text-gold border border-[#1C3A52]"
-                        title="સંપાદિત કરો"
+                        title="Edit"
                       >
                         <Edit2 size={13} />
                       </Link>
@@ -80,7 +80,7 @@ export default function AdminPagesPage() {
                         target="_blank"
                         rel="noopener noreferrer"
                         className="p-1.5 rounded-lg bg-[#061321] hover:bg-[#142B40] text-[#B9C6D6] hover:text-white border border-[#1C3A52]"
-                        title="લાઈવ જુઓ"
+                        title="View Live"
                       >
                         <ArrowUpRight size={13} />
                       </a>

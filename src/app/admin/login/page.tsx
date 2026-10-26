@@ -26,13 +26,13 @@ export default function AdminLoginPage() {
 
       const data = await res.json();
       if (!res.ok) {
-        throw new Error(data.error || 'લૉગિન નિષ્ફળ ગયું.');
+        throw new Error(data.error || 'Login failed.');
       }
 
       router.push('/admin');
       router.refresh();
     } catch (err: any) {
-      setError(err.message || 'અમાન્ય પ્રમાણપત્ર');
+      setError(err.message || 'Invalid credentials.');
     } finally {
       setLoading(false);
     }
@@ -45,10 +45,10 @@ export default function AdminLoginPage() {
         <div className="flex flex-col items-center text-center mb-8">
           <LotusLogo size="lg" />
           <h1 className="text-xl sm:text-2xl font-bold text-white mt-4">
-            વ્યવસ્થાપક લૉગિન
+            Admin Login
           </h1>
           <p className="text-xs text-[#8495A9] mt-1">
-            શ્રદ્ધાંજલિ પોર્ટલ CMS એડમિન પેનલ
+            Shradhanjali Portal CMS Control Panel
           </p>
         </div>
 
@@ -64,7 +64,7 @@ export default function AdminLoginPage() {
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
               <label className="block text-xs font-medium text-[#B9C6D6] mb-1.5">
-                ઇમેઇલ એડ્રેસ
+                Email Address
               </label>
               <div className="relative flex items-center">
                 <Mail size={16} className="absolute left-3.5 text-[#8495A9]" />
@@ -74,14 +74,14 @@ export default function AdminLoginPage() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   className="w-full bg-[#061321] border border-[#1C3A52] focus:border-gold rounded-xl pl-10 pr-4 py-2.5 text-sm text-white focus:outline-none transition-colors"
-                  placeholder="Admin@Shradhanjalimsg.com"
+                  placeholder="admin@shradhanjalimsg.com"
                 />
               </div>
             </div>
 
             <div>
               <label className="block text-xs font-medium text-[#B9C6D6] mb-1.5">
-                પાસવર્ડ
+                Password
               </label>
               <div className="relative flex items-center">
                 <Lock size={16} className="absolute left-3.5 text-[#8495A9]" />
@@ -99,7 +99,7 @@ export default function AdminLoginPage() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full mt-2 py-3 bg-gold hover:bg-gold/90 disabled:opacity-50 text-white font-bold text-sm rounded-xl transition-all shadow-md flex items-center justify-center gap-2"
+              className="w-full mt-2 py-3 bg-gold hover:bg-[#ffd782] disabled:opacity-50 text-[#061321] font-bold text-sm rounded-xl transition-all shadow-md flex items-center justify-center gap-2"
             >
               <span>{loading ? 'Authenticating...' : 'Login to Admin'}</span>
               <ArrowRight size={16} />
@@ -109,7 +109,7 @@ export default function AdminLoginPage() {
 
         <div className="text-center mt-6">
           <a href="/" className="text-xs text-[#8495A9] hover:text-gold transition-colors">
-            ← વેબસાઇટ પર પાછા જાઓ
+            ← Back to Website
           </a>
         </div>
       </div>

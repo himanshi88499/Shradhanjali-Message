@@ -44,10 +44,10 @@ export default function AdminDashboardPage() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-[#1C3A52]">
         <div>
           <h1 className="text-2xl sm:text-3xl font-extrabold text-theme-primary">
-            ડેશબોર્ડ ઝાંખી (Overview)
+            Dashboard Overview
           </h1>
           <p className="text-xs sm:text-sm text-[#8495A9] mt-1">
-            શ્રદ્ધાંજલિ પોર્ટલની સામગ્રી અને પ્રવૃત્તિઓનું સંચાલન કરો.
+            Manage Shradhanjali portal content, tribute messages, and activities.
           </p>
         </div>
 
@@ -57,7 +57,7 @@ export default function AdminDashboardPage() {
             className="inline-flex items-center gap-2 px-4 py-2 bg-gold hover:bg-[#ffd782] text-[#061321] text-xs font-bold rounded-xl transition-all shadow-md"
           >
             <PlusCircle size={15} />
-            <span>નવો લેખ ઉમેરો</span>
+            <span>Add New Post</span>
           </Link>
           <a
             href="/"
@@ -65,7 +65,7 @@ export default function AdminDashboardPage() {
             rel="noopener noreferrer"
             className="inline-flex items-center gap-1.5 px-3.5 py-2 bg-[#0B1D2D] hover:bg-[#10263B] border border-[#1C3A52] text-[#B9C6D6] hover:text-gold text-xs font-semibold rounded-xl transition-colors"
           >
-            <span>સાઈટ જુઓ</span>
+            <span>View Site</span>
             <ExternalLink size={13} />
           </a>
         </div>
@@ -76,7 +76,7 @@ export default function AdminDashboardPage() {
         {/* Published Posts */}
         <div className="bg-[#0B1D2D] border border-[#1C3A52] rounded-2xl p-4 card-glow">
           <div className="flex items-center justify-between mb-2">
-            <span className="text-[11px] font-semibold text-[#8495A9]">પ્રકાશિત લેખો</span>
+            <span className="text-[11px] font-semibold text-[#8495A9]">Published Posts</span>
             <FileText size={16} className="text-gold" />
           </div>
           <p className="text-2xl font-black text-theme-primary">{publishedPosts.length}</p>
@@ -88,100 +88,100 @@ export default function AdminDashboardPage() {
         {/* Draft Posts */}
         <div className="bg-[#0B1D2D] border border-[#1C3A52] rounded-2xl p-4 card-glow">
           <div className="flex items-center justify-between mb-2">
-            <span className="text-[11px] font-semibold text-[#8495A9]">ડ્રાફ્ટ લેખો</span>
+            <span className="text-[11px] font-semibold text-[#8495A9]">Draft Posts</span>
             <Clock size={16} className="text-[#FFD782]" />
           </div>
           <p className="text-2xl font-black text-theme-primary">{draftPosts.length}</p>
-          <span className="text-[10px] text-[#8495A9] mt-1 block">અપ્રકાશિત</span>
+          <span className="text-[10px] text-[#8495A9] mt-1 block">Unpublished</span>
         </div>
 
         {/* Categories */}
         <div className="bg-[#0B1D2D] border border-[#1C3A52] rounded-2xl p-4 card-glow">
           <div className="flex items-center justify-between mb-2">
-            <span className="text-[11px] font-semibold text-[#8495A9]">કેટેગરીઝ</span>
+            <span className="text-[11px] font-semibold text-[#8495A9]">Categories</span>
             <FolderOpen size={16} className="text-gold" />
           </div>
           <p className="text-2xl font-black text-theme-primary">{categories.length}</p>
           <Link href="/admin/categories" className="text-[10px] text-gold hover:underline mt-1 block">
-            મેનેજ કરો →
+            Manage →
           </Link>
         </div>
 
         {/* Pages */}
         <div className="bg-[#0B1D2D] border border-[#1C3A52] rounded-2xl p-4 card-glow">
           <div className="flex items-center justify-between mb-2">
-            <span className="text-[11px] font-semibold text-[#8495A9]">કુલ પેજીસ</span>
+            <span className="text-[11px] font-semibold text-[#8495A9]">Total Pages</span>
             <FileText size={16} className="text-gold" />
           </div>
           <p className="text-2xl font-black text-theme-primary">{pages.length}</p>
           <Link href="/admin/pages" className="text-[10px] text-gold hover:underline mt-1 block">
-            બધા પેજ →
+            All Pages →
           </Link>
         </div>
 
         {/* Media */}
         <div className="bg-[#0B1D2D] border border-[#1C3A52] rounded-2xl p-4 card-glow">
           <div className="flex items-center justify-between mb-2">
-            <span className="text-[11px] font-semibold text-[#8495A9]">મીડિયા ફાઇલો</span>
+            <span className="text-[11px] font-semibold text-[#8495A9]">Media Files</span>
             <ImageIcon size={16} className="text-gold" />
           </div>
           <p className="text-2xl font-black text-theme-primary">{media.length}</p>
           <Link href="/admin/media" className="text-[10px] text-gold hover:underline mt-1 block">
-            લાઇબ્રેરી →
+            Library →
           </Link>
         </div>
 
         {/* Submissions */}
         <div className="bg-[#0B1D2D] border border-[#1C3A52] rounded-2xl p-4 card-glow">
           <div className="flex items-center justify-between mb-2">
-            <span className="text-[11px] font-semibold text-[#8495A9]">સંપર્ક મેસેજ</span>
+            <span className="text-[11px] font-semibold text-[#8495A9]">Contact Messages</span>
             <MessageSquare size={16} className="text-gold" />
           </div>
           <p className="text-2xl font-black text-theme-primary">{submissions.length}</p>
           <Link href="/admin/contact" className="text-[10px] text-gold hover:underline mt-1 block">
-            ઇનબોક્સ →
+            Inbox →
           </Link>
         </div>
       </div>
 
       {/* Quick Action Shortcuts */}
       <div className="bg-[#0B1D2D] border border-[#1C3A52] rounded-2xl p-5 card-glow">
-        <h2 className="text-sm font-bold text-theme-primary mb-3">ઝડપી ક્રિયાઓ (Quick Actions)</h2>
+        <h2 className="text-sm font-bold text-theme-primary mb-3">Quick Actions</h2>
         <div className="flex flex-wrap items-center gap-2.5">
           <Link
             href="/admin/posts/new"
             className="px-3.5 py-2 bg-[#061321] hover:bg-[#142B40] text-gold border border-[#1C3A52] hover:border-gold rounded-xl text-xs font-semibold transition-colors flex items-center gap-1.5"
           >
             <PlusCircle size={14} />
-            <span>નવો લેખ</span>
+            <span>New Post</span>
           </Link>
           <Link
             href="/admin/categories"
             className="px-3.5 py-2 bg-[#061321] hover:bg-[#142B40] text-theme-primary border border-[#1C3A52] hover:border-gold rounded-xl text-xs font-medium transition-colors flex items-center gap-1.5"
           >
             <FolderOpen size={14} className="text-gold" />
-            <span>કેટેગરી ઉમેરો</span>
+            <span>Add Category</span>
           </Link>
           <Link
             href="/admin/media"
             className="px-3.5 py-2 bg-[#061321] hover:bg-[#142B40] text-theme-primary border border-[#1C3A52] hover:border-gold rounded-xl text-xs font-medium transition-colors flex items-center gap-1.5"
           >
             <ImageIcon size={14} className="text-gold" />
-            <span>ઇમેજ અપલોડ</span>
+            <span>Upload Media</span>
           </Link>
           <Link
             href="/admin/menus"
             className="px-3.5 py-2 bg-[#061321] hover:bg-[#142B40] text-theme-primary border border-[#1C3A52] hover:border-gold rounded-xl text-xs font-medium transition-colors flex items-center gap-1.5"
           >
             <Settings size={14} className="text-gold" />
-            <span>મેનુ સેટિંગ્સ</span>
+            <span>Menu Settings</span>
           </Link>
           <Link
             href="/admin/settings"
             className="px-3.5 py-2 bg-[#061321] hover:bg-[#142B40] text-theme-primary border border-[#1C3A52] hover:border-gold rounded-xl text-xs font-medium transition-colors flex items-center gap-1.5"
           >
             <Settings size={14} className="text-gold" />
-            <span>વેબસાઇટ સેટિંગ્સ</span>
+            <span>Website Settings</span>
           </Link>
         </div>
       </div>
@@ -191,9 +191,9 @@ export default function AdminDashboardPage() {
         {/* Recent Posts Table (8 cols) */}
         <div className="lg:col-span-8 bg-[#0B1D2D] border border-[#1C3A52] rounded-2xl p-6 card-glow">
           <div className="flex items-center justify-between pb-4 border-b border-[#1C3A52]/70 mb-4">
-            <h3 className="text-base font-bold text-theme-primary">તાજેતરના લેખો (Recent Posts)</h3>
+            <h3 className="text-base font-bold text-theme-primary">Recent Posts</h3>
             <Link href="/admin/posts" className="text-xs text-gold hover:underline font-semibold">
-              બધા જુઓ →
+              View All →
             </Link>
           </div>
 
@@ -201,10 +201,10 @@ export default function AdminDashboardPage() {
             <table className="w-full text-left text-xs">
               <thead>
                 <tr className="text-[#8495A9] border-b border-[#1C3A52]/50">
-                  <th className="pb-3 font-semibold">શીર્ષક (Title)</th>
-                  <th className="pb-3 font-semibold">કેટેગરી</th>
-                  <th className="pb-3 font-semibold">સ્થિતિ</th>
-                  <th className="pb-3 font-semibold text-right">ક્રિયા</th>
+                  <th className="pb-3 font-semibold">Title</th>
+                  <th className="pb-3 font-semibold">Category</th>
+                  <th className="pb-3 font-semibold">Status</th>
+                  <th className="pb-3 font-semibold text-right">Actions</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-[#1C3A52]/40">
@@ -216,7 +216,7 @@ export default function AdminDashboardPage() {
                       </Link>
                     </td>
                     <td className="py-3 text-[#B9C6D6]">
-                      {post.categoryName || 'જનરલ'}
+                      {post.categoryName || 'General'}
                     </td>
                     <td className="py-3">
                       <span
@@ -226,7 +226,7 @@ export default function AdminDashboardPage() {
                             : 'bg-[#FFD782]/15 text-[#FFD782] border border-[#FFD782]/30'
                         }`}
                       >
-                        {post.status === 'published' ? 'પ્રકાશિત' : 'ડ્રાફ્ટ'}
+                        {post.status === 'published' ? 'Published' : 'Draft'}
                       </span>
                     </td>
                     <td className="py-3 text-right">
@@ -235,14 +235,14 @@ export default function AdminDashboardPage() {
                           href={`/admin/posts/edit/${post.id}`}
                           className="text-gold hover:underline font-semibold text-[11px]"
                         >
-                          સંપાદિત કરો
+                          Edit
                         </Link>
                         <a
                           href={`/post/${post.slug}`}
                           target="_blank"
                           rel="noopener noreferrer"
                           className="text-[#8495A9] hover:text-gold"
-                          title="લાઇવ જુઓ"
+                          title="View Live"
                         >
                           <ArrowUpRight size={14} />
                         </a>
@@ -260,9 +260,9 @@ export default function AdminDashboardPage() {
           {/* Recent Submissions */}
           <div className="bg-[#0B1D2D] border border-[#1C3A52] rounded-2xl p-6 card-glow">
             <div className="flex items-center justify-between pb-3 border-b border-[#1C3A52]/70 mb-4">
-              <h3 className="text-base font-bold text-theme-primary">તાજેતરના સંપર્ક મેસેજ</h3>
+              <h3 className="text-base font-bold text-theme-primary">Recent Contact Submissions</h3>
               <Link href="/admin/contact" className="text-xs text-gold hover:underline font-semibold">
-                બધા જુઓ →
+                View All →
               </Link>
             </div>
 
@@ -278,7 +278,7 @@ export default function AdminDashboardPage() {
                         {sub.name}
                       </span>
                       <span className="text-[10px] text-[#8495A9]">
-                        {new Date(sub.createdAt).toLocaleDateString('gu-IN', {
+                        {new Date(sub.createdAt).toLocaleDateString('en-US', {
                           day: 'numeric',
                           month: 'short',
                         })}
@@ -292,12 +292,12 @@ export default function AdminDashboardPage() {
               </div>
             ) : (
               <p className="text-xs text-[#8495A9] text-center py-6">
-                હાલ કોઈ નવો સંપર્ક મેસેજ નથી.
+                No new contact submissions yet.
               </p>
             )}
           </div>
 
-          {/* Real-time Google Analytics Status (Honest, no fake stats) */}
+          {/* Real-time Google Analytics Status */}
           <div className="bg-[#0B1D2D] border border-[#1C3A52] rounded-2xl p-6 card-glow">
             <div className="flex items-center gap-2 mb-3">
               <BarChart2 size={18} className="text-gold" />
@@ -308,7 +308,7 @@ export default function AdminDashboardPage() {
               <div className="space-y-2 text-xs">
                 <div className="flex items-center gap-2 text-[#22C55E]">
                   <CheckCircle size={14} />
-                  <span className="font-semibold">કનેક્ટેડ છે (Active)</span>
+                  <span className="font-semibold">Connected (Active)</span>
                 </div>
                 <p className="text-[#8495A9]">
                   Measurement ID:{' '}
@@ -318,13 +318,13 @@ export default function AdminDashboardPage() {
             ) : (
               <div className="space-y-3 text-xs text-[#B9C6D6]">
                 <p className="leading-relaxed">
-                  ગૂગલ એનાલિટિક્સ હજુ કનેક્ટ કરેલ નથી. તમારો GA4 Measurement ID ઉમેરવા માટે સેટિંગ્સમાં જાઓ.
+                  Google Analytics is not connected yet. Add your GA4 Measurement ID in Website Settings.
                 </p>
                 <Link
                   href="/admin/settings"
                   className="inline-block px-3 py-1.5 bg-[#142B40] text-gold border border-gold/30 hover:bg-[#1A3854] rounded-lg text-xs font-semibold transition-colors"
                 >
-                  GA4 કનેક્ટ કરો →
+                  Configure GA4 →
                 </Link>
               </div>
             )}

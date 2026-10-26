@@ -1,6 +1,6 @@
 import React from 'react';
 import { getContactSubmissions } from '@/lib/db';
-import { Mail, Phone, Calendar, CheckCircle } from 'lucide-react';
+import { Mail, Phone, Calendar } from 'lucide-react';
 
 export default function AdminContactSubmissionsPage() {
   const submissions = getContactSubmissions();
@@ -9,10 +9,10 @@ export default function AdminContactSubmissionsPage() {
     <div className="space-y-6 animate-fade-in max-w-5xl">
       <div className="pb-5 border-b border-[#1C3A52]">
         <h1 className="text-2xl font-extrabold text-white">
-          સંપર્ક સંદેશાઓ (Contact Form Submissions)
+          Contact Messages
         </h1>
         <p className="text-xs text-[#8495A9] mt-1">
-          મુલાકાતીઓ દ્વારા મોકલેલ તમામ પૂછપરછ અને સંદેશાઓ. (કુલ {submissions.length})
+          Visitor inquiries and messages submitted via the Contact form. (Total: {submissions.length})
         </p>
       </div>
 
@@ -32,7 +32,7 @@ export default function AdminContactSubmissionsPage() {
               <div className="flex items-center gap-1.5 text-xs text-[#8495A9]">
                 <Calendar size={13} />
                 <span>
-                  {new Date(sub.createdAt).toLocaleString('gu-IN', {
+                  {new Date(sub.createdAt).toLocaleString('en-US', {
                     dateStyle: 'medium',
                     timeStyle: 'short',
                   })}
@@ -65,7 +65,7 @@ export default function AdminContactSubmissionsPage() {
 
         {submissions.length === 0 && (
           <div className="text-center py-12 bg-[#0B1D2D] border border-[#1C3A52] rounded-2xl text-[#8495A9]">
-            હાલ કોઈ નવો સંપર્ક સંદેશ નથી.
+            No contact submissions yet.
           </div>
         )}
       </div>

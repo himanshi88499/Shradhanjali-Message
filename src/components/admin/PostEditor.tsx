@@ -155,14 +155,14 @@ export const PostEditor: React.FC<PostEditorProps> = ({
       const uploadedUrl = data.url || data.media?.url;
       if (res.ok && uploadedUrl) {
         setFeaturedImage(uploadedUrl);
-        setNotification({ type: 'success', message: 'ઇમેજ સફળતાપૂર્વક અપલોડ થઈ!' });
+        setNotification({ type: 'success', message: 'Featured image uploaded successfully!' });
         setTimeout(() => setNotification(null), 3000);
       } else {
-        alert(data.error || 'ઇમેજ અપલોડ નિષ્ફળ ગયું.');
+        alert(data.error || 'Failed to upload image.');
       }
     } catch (err) {
       console.error(err);
-      alert('ઇમેજ અપલોડ કરવામાં એરર આવી.');
+      alert('Error uploading image.');
     } finally {
       setUploadingImage(false);
       if (fileInputRef.current) fileInputRef.current.value = '';
@@ -192,17 +192,17 @@ export const PostEditor: React.FC<PostEditorProps> = ({
       const data = await res.json();
       const uploadedUrl = data.url || data.media?.url;
       if (res.ok && uploadedUrl) {
-        const alt = prompt('ઇમેજ Alt ટેગ / વિવરણ (Image Alt text):', file.name.replace(/\.[^/.]+$/, '')) || 'શ્રદ્ધાંજલિ ફોટો';
+        const alt = prompt('Image Alt text / Description:', file.name.replace(/\.[^/.]+$/, '')) || 'Memorial Image';
         const imgMarkdown = `\n\n![${alt}](${uploadedUrl})\n\n`;
         insertSnippet(imgMarkdown);
-        setNotification({ type: 'success', message: 'ઇમેજ સફળતાપૂર્વક લેખમાં દાખલ થઈ ગઈ!' });
+        setNotification({ type: 'success', message: 'Image successfully inserted into article!' });
         setTimeout(() => setNotification(null), 3000);
       } else {
-        alert(data.error || 'ઇમેજ અપલોડ નિષ્ફળ ગયું.');
+        alert(data.error || 'Failed to upload image.');
       }
     } catch (err) {
       console.error(err);
-      alert('ઇમેજ અપલોડ કરવામાં એરર આવી.');
+      alert('Error uploading image.');
     } finally {
       setUploadingContentImg(false);
       if (contentImageInputRef.current) contentImageInputRef.current.value = '';
@@ -210,9 +210,9 @@ export const PostEditor: React.FC<PostEditorProps> = ({
   };
 
   const handleInsertImageUrl = () => {
-    const url = prompt('ઇમેજ URL દાખલ કરો (Image URL):');
+    const url = prompt('Enter Image URL:');
     if (!url || !url.trim()) return;
-    const alt = prompt('ઇમેજ Alt ટેગ (Image Alt Text):', 'શ્રદ્ધાંજલિ ફોટો') || 'શ્રદ્ધાંજલિ ફોટો';
+    const alt = prompt('Enter Image Alt text:', 'Memorial Image') || 'Memorial Image';
     insertSnippet(`\n\n![${alt.trim()}](${url.trim()})\n\n`);
   };
 
@@ -228,15 +228,15 @@ export const PostEditor: React.FC<PostEditorProps> = ({
   }, [content]);
 
   const handleRemoveArticleImage = (rawSnippet: string) => {
-    if (confirm('શું તમે આ ઇમેજ લેખમાંથી હટાવવા માંગો છો? (Remove image from article)')) {
+    if (confirm('Are you sure you want to remove this image from the article?')) {
       setContent((prev) => prev.replace(rawSnippet, '').trim());
     }
   };
 
   const handleEditArticleImage = (img: { alt: string; url: string; raw: string }) => {
-    const newAlt = prompt('ઇમેજ Alt ટેગ સુધારો (Image Alt text):', img.alt);
+    const newAlt = prompt('Edit Image Alt text:', img.alt);
     if (newAlt === null) return;
-    const newUrl = prompt('ઇમેજ URL સુધારો (Image URL):', img.url);
+    const newUrl = prompt('Edit Image URL:', img.url);
     if (newUrl === null) return;
     const newSnippet = `![${newAlt.trim()}](${newUrl.trim()})`;
     setContent((prev) => prev.replace(img.raw, newSnippet));
@@ -252,9 +252,9 @@ export const PostEditor: React.FC<PostEditorProps> = ({
     const titlePass = titleLen >= 30 && titleLen <= 70;
     score += titlePass ? 15 : titleLen > 0 ? 8 : 0;
     checks.push({
-      label: 'SEO શીર્ષક લંબાઈ (30-70 અક્ષરો)',
+      label: 'SEO Title Length (30-70 characters)',
       passed: titlePass,
-      tip: `હાલ: ${titleLen} અક્ષરો`,
+      tip: `Current: ${titleLen} chars`,
     });
 
     // 2. Meta description presence & length (15 pts)
@@ -262,54 +262,54 @@ export const PostEditor: React.FC<PostEditorProps> = ({
     const descPass = descLen >= 80 && descLen <= 170;
     score += descPass ? 15 : descLen > 0 ? 8 : 0;
     checks.push({
-      label: 'મેટા વિવરણ લંબાઈ (80-170 અક્ષરો)',
+      label: 'Meta Description Length (80-170 characters)',
       passed: descPass,
-      tip: `હાલ: ${descLen} અક્ષરો`,
+      tip: `Current: ${descLen} chars`,
     });
 
     // 3. Focus keyword presence (10 pts)
     const hasFocus = focusKeyword.trim().length > 0;
     score += hasFocus ? 10 : 0;
     checks.push({
-      label: 'ફોકસ કીવર્ડ નક્કી કરેલ છે',
+      label: 'Focus Keyword is set',
       passed: hasFocus,
-      tip: hasFocus ? focusKeyword : 'કીવર્ડ દાખલ કરો',
+      tip: hasFocus ? focusKeyword : 'Enter keyword',
     });
 
     // 4. Keyword in Title (15 pts)
     const kwInTitle = hasFocus && (seoTitle || title).toLowerCase().includes(focusKeyword.toLowerCase());
     score += kwInTitle ? 15 : 0;
     checks.push({
-      label: 'શીર્ષકમાં ફોકસ કીવર્ડ હાજર છે',
+      label: 'Focus Keyword in Title',
       passed: kwInTitle,
-      tip: kwInTitle ? 'હાજર છે' : 'શીર્ષકમાં કીવર્ડ ઉમેરો',
+      tip: kwInTitle ? 'Present' : 'Add to title',
     });
 
     // 5. Keyword in Content (15 pts)
     const kwInContent = hasFocus && content.toLowerCase().includes(focusKeyword.toLowerCase());
     score += kwInContent ? 15 : 0;
     checks.push({
-      label: 'કન્ટેન્ટમાં ફોકસ કીવર્ડ હાજર છે',
+      label: 'Focus Keyword in Content',
       passed: kwInContent,
-      tip: kwInContent ? 'હાજર છે' : 'કન્ટેન્ટમાં કીવર્ડ ઉમેરો',
+      tip: kwInContent ? 'Present' : 'Add to content',
     });
 
     // 6. Featured Image & Alt text (15 pts)
     const hasImageAlt = featuredImage && (imageAlt.trim().length > 0 || title.length > 0);
     score += hasImageAlt ? 15 : 0;
     checks.push({
-      label: 'ઇમેજ Alt ટેગ હાજર છે',
+      label: 'Featured Image & Alt text',
       passed: Boolean(hasImageAlt),
-      tip: hasImageAlt ? 'ઉત્તમ' : 'ઇમેજ Alt ટેગ ઉમેરો',
+      tip: hasImageAlt ? 'Optimal' : 'Add image alt',
     });
 
     // 7. Headings (H2/H3) structure (15 pts)
     const hasHeadings = content.includes('## ') || content.includes('### ');
     score += hasHeadings ? 15 : 0;
     checks.push({
-      label: 'H2/H3 હેડિંગ્સ હાજર છે',
+      label: 'H2/H3 Headings structure',
       passed: hasHeadings,
-      tip: hasHeadings ? 'યોગ્ય માળખું' : '## હેડિંગ્સ ઉમેરો',
+      tip: hasHeadings ? 'Optimal' : 'Add ## Headings',
     });
 
     return { score: Math.min(100, score), checks };
@@ -321,7 +321,7 @@ export const PostEditor: React.FC<PostEditorProps> = ({
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!title.trim()) {
-      setNotification({ type: 'error', message: 'કૃપા કરીને લેખનું શીર્ષક લખો.' });
+      setNotification({ type: 'error', message: 'Please enter a post title.' });
       return;
     }
 
@@ -348,7 +348,7 @@ export const PostEditor: React.FC<PostEditorProps> = ({
       title: title.trim(),
       slug: (slug || `post-${Date.now()}`).trim(),
       categoryId,
-      categoryName: selectedCategory?.name || 'શ્રદ્ધાંજલિ સંદેશ',
+      categoryName: selectedCategory?.name || 'General',
       categorySlug: selectedCategory?.slug || 'shradhanjali',
       excerpt: excerpt.trim(),
       quote: quote.trim(),
@@ -365,7 +365,7 @@ export const PostEditor: React.FC<PostEditorProps> = ({
       seoTitle: seoTitle.trim() || title.trim(),
       seoDescription: seoDescription.trim() || excerpt.trim(),
       focusKeyword: focusKeyword.trim(),
-      tags: initialPost?.tags || ['ભાવપૂર્ણ'],
+      tags: initialPost?.tags || ['Memorial'],
       authorId: initialPost?.authorId || 'author-1',
       publishedAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
@@ -382,9 +382,9 @@ export const PostEditor: React.FC<PostEditorProps> = ({
       });
 
       const data = await res.json();
-      if (!res.ok) throw new Error(data.error || 'સેવ કરવામાં ભૂલ આવી.');
+      if (!res.ok) throw new Error(data.error || 'Failed to save post.');
 
-      setNotification({ type: 'success', message: 'લેખ સફળતાપૂર્વક સેવ થઈ ગયો છે!' });
+      setNotification({ type: 'success', message: 'Post saved successfully!' });
       setTimeout(() => {
         setNotification(null);
       }, 4000);
@@ -396,7 +396,7 @@ export const PostEditor: React.FC<PostEditorProps> = ({
       }
       router.refresh();
     } catch (err: any) {
-      setNotification({ type: 'error', message: err.message || 'સેવ કરવામાં ભૂલ આવી.' });
+      setNotification({ type: 'error', message: err.message || 'Failed to save post.' });
     } finally {
       setLoading(false);
     }
@@ -416,10 +416,10 @@ export const PostEditor: React.FC<PostEditorProps> = ({
           </button>
           <div>
             <h1 className="text-xl sm:text-2xl font-extrabold text-white">
-              {isEdit ? 'લેખ સંપાદિત કરો (Edit Post)' : 'નવો લેખ ઉમેરો (Add New Post)'}
+              {isEdit ? 'Edit Post' : 'Add New Post'}
             </h1>
             <p className="text-xs text-[#8495A9]">
-              ગુજરાતી ભાષામાં શ્રદ્ધાંજલિ સંદેશ અને લેખ લખો.
+              Write and publish memorial tributes and condolence posts.
             </p>
           </div>
         </div>
@@ -434,7 +434,7 @@ export const PostEditor: React.FC<PostEditorProps> = ({
                 : 'bg-[#FFD782]/15 text-[#FFD782] border-[#FFD782]/40'
             }`}
           >
-            {status === 'published' ? 'પ્રકાશિત (Published)' : 'ડ્રાફ્ટ (Draft)'}
+            {status === 'published' ? 'Published' : 'Draft'}
           </button>
 
           <button
@@ -443,7 +443,7 @@ export const PostEditor: React.FC<PostEditorProps> = ({
             className="flex items-center gap-2 px-5 py-2.5 bg-gold hover:bg-[#ffd782] text-[#061321] text-xs font-bold rounded-xl transition-all shadow-md disabled:opacity-50"
           >
             <Save size={15} />
-            <span>{loading ? 'સેવ થઈ રહ્યું છે...' : 'સેવ કરો'}</span>
+            <span>{loading ? 'Saving...' : 'Save Post'}</span>
           </button>
         </div>
       </div>
@@ -476,7 +476,7 @@ export const PostEditor: React.FC<PostEditorProps> = ({
                 required
                 value={title}
                 onChange={(e) => handleTitleChange(e.target.value)}
-                placeholder="દા.ત. માતાજીની પુણ્યતિથિ પર શ્રદ્ધાંજલિ સંદેશ..."
+                placeholder="e.g. Condolence & Shradhanjali Tribute Messages..."
                 className="w-full bg-[#061321] border border-[#1C3A52] focus:border-gold rounded-xl px-4 py-3 text-base sm:text-lg font-medium text-white placeholder-[#8495A9] focus:outline-none transition-colors"
               />
             </div>
@@ -504,7 +504,7 @@ export const PostEditor: React.FC<PostEditorProps> = ({
                 rows={2}
                 value={excerpt}
                 onChange={(e) => setExcerpt(e.target.value)}
-                placeholder="લેખનો ટૂંકો સારાંશ જે કાર્ડમાં અને સોશિયલ મીડિયા પર દેખાશે..."
+                placeholder="Short summary displayed on cards and search engines..."
                 className="w-full bg-[#061321] border border-[#1C3A52] focus:border-gold rounded-xl p-3.5 text-sm sm:text-base text-white placeholder-[#8495A9] focus:outline-none transition-colors resize-none leading-relaxed"
               />
             </div>
@@ -517,7 +517,7 @@ export const PostEditor: React.FC<PostEditorProps> = ({
                 type="text"
                 value={quote}
                 onChange={(e) => setQuote(e.target.value)}
-                placeholder="દા.ત. માતાનો પ્રેમ કદી ભુલાય નહિ... એ તો જીવનભરનું આશીર્વાદ છે."
+                placeholder="e.g. In loving memory of a precious life..."
                 className="w-full bg-[#061321] border border-[#1C3A52] focus:border-gold rounded-xl px-4 py-2.5 text-sm sm:text-base text-white placeholder-[#8495A9] focus:outline-none transition-colors"
               />
             </div>
@@ -526,26 +526,26 @@ export const PostEditor: React.FC<PostEditorProps> = ({
             <div className="pt-3 border-t border-[#1C3A52]/60 space-y-3">
               <div>
                 <label className="block text-xs font-semibold text-[#B9C6D6] mb-1.5">
-                  TOC Intro Subheading (Table of Contents પછીનું હેડિંગ)
+                  TOC Intro Subheading (Heading after Table of Contents)
                 </label>
                 <input
                   type="text"
                   value={introHeading}
                   onChange={(e) => setIntroHeading(e.target.value)}
-                  placeholder="દા.ત. પિતાશ્રીની પુણ્યતિથિ પર શ્રદ્ધાંજલિ સંદેશ"
+                  placeholder="e.g. Memorial Tribute & Condolence Wishes"
                   className="w-full bg-[#061321] border border-[#1C3A52] focus:border-gold rounded-xl px-4 py-2.5 text-sm sm:text-base text-white placeholder-[#8495A9] focus:outline-none transition-colors"
                 />
               </div>
 
               <div>
                 <label className="block text-xs font-semibold text-[#B9C6D6] mb-1.5">
-                  TOC Intro Paragraph (Table of Contents પછીનું લખાણ)
+                  TOC Intro Paragraph (Paragraph after Table of Contents)
                 </label>
                 <textarea
                   rows={3}
                   value={introText}
                   onChange={(e) => setIntroText(e.target.value)}
-                  placeholder="દા.ત. આપણા પ્રિયજનોનું જીવન પ્રેમ, ત્યાગ અને સંસ્કારોની ખાણ હતું. તેમના આશીર્વાદ અને સ્નેહ આજે પણ આપણા હૃદયમાં જીવંત છે..."
+                  placeholder="e.g. Heartfelt condolence text paragraph placed directly below table of contents..."
                   className="w-full bg-[#061321] border border-[#1C3A52] focus:border-gold rounded-xl p-3.5 text-sm sm:text-base text-white placeholder-[#8495A9] focus:outline-none transition-colors resize-none leading-relaxed"
                 />
               </div>
@@ -564,7 +564,7 @@ export const PostEditor: React.FC<PostEditorProps> = ({
                   </span>
                 </h3>
                 <p className="text-xs text-[#8495A9] mt-0.5 font-medium">
-                  Individual Message Cards with Copy & Share buttons
+                  Message cards with Copy and Share buttons
                 </p>
               </div>
 
@@ -574,7 +574,7 @@ export const PostEditor: React.FC<PostEditorProps> = ({
                 className="flex items-center gap-1.5 px-3.5 py-1.5 bg-[#061321] hover:bg-[#142B40] text-gold border border-gold/40 hover:border-gold rounded-lg text-xs font-semibold transition-all shadow-sm"
               >
                 <Plus size={14} />
-                <span>નવો કાર્ડ ઉમેરો</span>
+                <span>Add New Card</span>
               </button>
             </div>
 
@@ -582,26 +582,26 @@ export const PostEditor: React.FC<PostEditorProps> = ({
             <div className="space-y-3 pb-4 border-b border-[#1C3A52]/60 mb-4 bg-[#061321]/40 p-3.5 rounded-xl border border-[#1C3A52]/40">
               <div>
                 <label className="block text-xs font-semibold text-[#B9C6D6] mb-1.5">
-                  Message Cards Section H2 Heading (કાર્ડ્સ પહેલાંનું મુખ્ય H2 હેડિંગ)
+                  Message Cards Section H2 Heading (Heading before cards)
                 </label>
                 <input
                   type="text"
                   value={cardsH2Heading}
                   onChange={(e) => setCardsH2Heading(e.target.value)}
-                  placeholder="દા.ત. ભાવપૂર્ણ શ્રદ્ધાંજલિ સંદેશાઓ"
+                  placeholder="e.g. Heartfelt Tribute Messages"
                   className="w-full bg-[#061321] border border-[#1C3A52] focus:border-gold rounded-xl px-4 py-2.5 text-sm sm:text-base text-white placeholder-[#8495A9] focus:outline-none transition-colors"
                 />
               </div>
 
               <div>
                 <label className="block text-xs font-semibold text-[#B9C6D6] mb-1.5">
-                  Message Cards Section Paragraph (કાર્ડ્સ પહેલાંનો પેરાગ્રાફ)
+                  Message Cards Section Paragraph (Paragraph before cards)
                 </label>
                 <textarea
                   rows={2}
                   value={cardsParagraph}
                   onChange={(e) => setCardsParagraph(e.target.value)}
-                  placeholder="દા.ત. નીચે આપેલ સંદેશાઓ તમે તમારા પરિવાર અને સ્નેહીજનો સાથે શેર કરી શકો છો:"
+                  placeholder="e.g. You can share these heartfelt condolences and tribute messages with family and friends:"
                   className="w-full bg-[#061321] border border-[#1C3A52] focus:border-gold rounded-xl p-3 text-sm sm:text-base text-white placeholder-[#8495A9] focus:outline-none transition-colors resize-none leading-relaxed"
                 />
               </div>
@@ -610,7 +610,7 @@ export const PostEditor: React.FC<PostEditorProps> = ({
             <div className="space-y-3">
               {messageCards.length === 0 ? (
                 <div className="p-6 text-center border border-dashed border-[#1C3A52] rounded-xl text-xs text-[#8495A9]">
-                  હજુ સુધી કોઈ સંદેશ કાર્ડ ઉમેરાયું નથી. "નવો કાર્ડ ઉમેરો" પર ક્લિક કરો.
+                  No message cards added yet. Click &quot;Add New Card&quot; to create one.
                 </div>
               ) : (
                 messageCards.map((card, idx) => (
@@ -624,7 +624,7 @@ export const PostEditor: React.FC<PostEditorProps> = ({
                           {idx + 1}
                         </span>
                         <span className="text-[11px] font-semibold text-[#8495A9]">
-                          સંદેશ #{idx + 1}
+                          Card #{idx + 1}
                         </span>
                       </div>
 
@@ -634,7 +634,7 @@ export const PostEditor: React.FC<PostEditorProps> = ({
                           onClick={() => handleMoveCard(idx, 'up')}
                           disabled={idx === 0}
                           className="p-1 rounded text-[#8495A9] hover:text-white disabled:opacity-30 disabled:hover:text-[#8495A9] transition-colors"
-                          title="ઉપર ખસેડો (Move Up)"
+                          title="Move Up"
                         >
                           <ArrowUp size={14} />
                         </button>
@@ -643,7 +643,7 @@ export const PostEditor: React.FC<PostEditorProps> = ({
                           onClick={() => handleMoveCard(idx, 'down')}
                           disabled={idx === messageCards.length - 1}
                           className="p-1 rounded text-[#8495A9] hover:text-white disabled:opacity-30 disabled:hover:text-[#8495A9] transition-colors"
-                          title="નીચે ખસેડો (Move Down)"
+                          title="Move Down"
                         >
                           <ArrowDown size={14} />
                         </button>
@@ -651,7 +651,7 @@ export const PostEditor: React.FC<PostEditorProps> = ({
                           type="button"
                           onClick={() => handleRemoveCard(card.id)}
                           className="p-1 rounded text-[#8495A9] hover:text-[#EF4444] transition-colors ml-1"
-                          title="આ કાર્ડ ડિલીટ કરો"
+                          title="Delete this card"
                         >
                           <Trash2 size={14} />
                         </button>
@@ -662,12 +662,12 @@ export const PostEditor: React.FC<PostEditorProps> = ({
                       rows={2}
                       value={card.text}
                       onChange={(e) => handleCardTextChange(card.id, e.target.value)}
-                      placeholder="ગુજરાતી શ્રદ્ધાંજલિ સંદેશ અહીં લખો..."
+                      placeholder="Write memorial message card text here..."
                       className="w-full bg-[#030B12] border border-[#1C3A52]/60 focus:border-gold rounded-lg p-3 text-sm sm:text-base text-white placeholder-[#8495A9] focus:outline-none resize-none leading-relaxed"
                     />
 
                     <div className="flex items-center justify-between text-[11px] text-[#8495A9] pt-1">
-                      <span>{card.text ? `${card.text.length} અક્ષરો` : 'ખાલી'}</span>
+                      <span>{card.text ? `${card.text.length} chars` : 'Empty'}</span>
                       <button
                         type="button"
                         onClick={() => {
@@ -676,9 +676,9 @@ export const PostEditor: React.FC<PostEditorProps> = ({
                           }
                         }}
                         className="px-2.5 py-1 bg-[#142B40] text-gold hover:bg-[#1C3A52] rounded-md text-[11px] font-semibold border border-gold/30 transition-colors"
-                        title="આ સંદેશ કાર્ડને કન્ટેન્ટમાં જ્યાં કર્સર છે ત્યાં દાખલ કરો"
+                        title="Insert this card at cursor in article content"
                       >
-                        + કાર્ડ કન્ટેન્ટમાં ઉમેરો
+                        + Insert in Content
                       </button>
                     </div>
                   </div>
@@ -693,7 +693,7 @@ export const PostEditor: React.FC<PostEditorProps> = ({
                 className="mt-3 w-full py-2 bg-[#061321] hover:bg-[#142B40] text-gold border border-dashed border-gold/40 hover:border-gold rounded-xl text-xs font-semibold flex items-center justify-center gap-1.5 transition-colors"
               >
                 <Plus size={14} />
-                <span>+ વધુ એક સંદેશ કાર્ડ ઉમેરો</span>
+                <span>+ Add Another Message Card</span>
               </button>
             )}
           </div>
@@ -701,7 +701,7 @@ export const PostEditor: React.FC<PostEditorProps> = ({
           {/* Main Article Content & Live Preview */}
           <div className="bg-[#0B1D2D] border border-[#1C3A52] rounded-2xl p-5 card-glow">
             <div className="flex items-center justify-between pb-3 border-b border-[#1C3A52]/60 mb-4">
-              <h3 className="text-sm font-bold text-white">મુખ્ય કન્ટેન્ટ (Article Content)</h3>
+              <h3 className="text-sm font-bold text-white">Article Content</h3>
 
               <div className="flex items-center bg-[#061321] rounded-lg p-0.5 border border-[#1C3A52]">
                 <button
@@ -712,7 +712,7 @@ export const PostEditor: React.FC<PostEditorProps> = ({
                   }`}
                 >
                   <Edit3 size={13} className="inline mr-1" />
-                  એડિટર
+                  Editor
                 </button>
                 <button
                   type="button"
@@ -722,7 +722,7 @@ export const PostEditor: React.FC<PostEditorProps> = ({
                   }`}
                 >
                   <Eye size={13} className="inline mr-1" />
-                  લાઇવ પ્રિવ્યૂ
+                  Live Preview
                 </button>
               </div>
             </div>
@@ -734,62 +734,62 @@ export const PostEditor: React.FC<PostEditorProps> = ({
                   <div className="flex items-center justify-between">
                     <span className="text-[11px] font-bold text-gold uppercase tracking-wider flex items-center gap-1.5">
                       <Sparkles size={13} />
-                      <span>ઝડપી ઉમેરો (Quick Insert at Cursor):</span>
+                      <span>Quick Insert at Cursor:</span>
                     </span>
                     <span className="text-[10px] text-[#8495A9]">
-                      જ્યાં કર્સર છે ત્યાં એક ક્લિકમાં ઉમેરો
+                      Click to insert formatted snippet at cursor
                     </span>
                   </div>
 
                   <div className="flex flex-wrap items-center gap-1.5">
                     <button
                       type="button"
-                      onClick={() => insertSnippet('\n\n## હેડિંગ શીર્ષક અહીં લખો\n\n')}
+                      onClick={() => insertSnippet('\n\n## Section Heading Title\n\n')}
                       className="px-2.5 py-1 bg-[#142B40] hover:bg-[#1C3A52] text-gold border border-gold/30 rounded-lg text-xs font-semibold transition-colors"
-                      title="H2 મુખ્ય હેડિંગ ઉમેરો"
+                      title="Add H2 Heading"
                     >
-                      + H2 હેડિંગ
+                      + H2 Heading
                     </button>
                     <button
                       type="button"
-                      onClick={() => insertSnippet('\n\n### સબ-હેડિંગ અહીં લખો\n\n')}
+                      onClick={() => insertSnippet('\n\n### Sub-heading Title\n\n')}
                       className="px-2.5 py-1 bg-[#142B40] hover:bg-[#1C3A52] text-[#FFD782] border border-[#FFD782]/30 rounded-lg text-xs font-semibold transition-colors"
-                      title="H3 સબ-હેડિંગ ઉમેરો"
+                      title="Add H3 Sub-heading"
                     >
-                      + H3 સબ-હેડિંગ
+                      + H3 Sub-heading
                     </button>
                     <button
                       type="button"
-                      onClick={() => insertSnippet('\n\nઅહીં તમારો કન્ટેન્ટ પેરાગ્રાફ લખો...\n\n')}
+                      onClick={() => insertSnippet('\n\nWrite your content paragraph here...\n\n')}
                       className="px-2.5 py-1 bg-[#0B1D2D] hover:bg-[#142B40] text-white border border-[#1C3A52] rounded-lg text-xs font-medium transition-colors"
-                      title="પેરાગ્રાફ કન્ટેન્ટ ઉમેરો"
+                      title="Add Paragraph"
                     >
-                      + પેરાગ્રાફ
+                      + Paragraph
                     </button>
                     <span className="text-[#1C3A52]">|</span>
                     <button
                       type="button"
-                      onClick={() => insertSnippet('\n\n:::card\nભાવપૂર્ણ શ્રદ્ધાંજલિ સંદેશ અહીં લખો...\n:::\n\n')}
+                      onClick={() => insertSnippet('\n\n:::card\nMemorial tribute message text here...\n:::\n\n')}
                       className="px-2.5 py-1 bg-[#F5C45E]/15 hover:bg-[#F5C45E]/25 text-gold border border-gold/40 rounded-lg text-xs font-bold transition-colors"
-                      title="1 ઇન્ડિવિડ્યુઅલ સંદેશ કાર્ડ ઉમેરો"
+                      title="Add 1 Individual Message Card"
                     >
-                      + ૧ સંદેશ કાર્ડ
+                      + 1 Message Card
                     </button>
                     <button
                       type="button"
                       onClick={() => insertBatchCards(5)}
                       className="px-2.5 py-1 bg-[#F5C45E]/15 hover:bg-[#F5C45E]/25 text-gold border border-gold/40 rounded-lg text-xs font-bold transition-colors"
-                      title="૫ સંદેશ કાર્ડ્સ એકસાથે ઉમેરો"
+                      title="Add 5 Message Cards at once"
                     >
-                      + ૫ કાર્ડ્સ
+                      + 5 Cards
                     </button>
                     <button
                       type="button"
                       onClick={() => insertBatchCards(10)}
                       className="px-2.5 py-1 bg-[#F5C45E]/20 hover:bg-[#F5C45E]/30 text-gold border border-gold/60 rounded-lg text-xs font-bold transition-colors shadow-sm"
-                      title="૧૦ સંદેશ કાર્ડ્સ એકસાથે ઉમેરો"
+                      title="Add 10 Message Cards (Batch)"
                     >
-                      + ૧૦ કાર્ડ્સ (Batch)
+                      + 10 Cards (Batch)
                     </button>
                     <span className="text-[#1C3A52]">|</span>
                     {/* In-Article Image Upload & Insert Buttons */}
@@ -805,16 +805,16 @@ export const PostEditor: React.FC<PostEditorProps> = ({
                       onClick={() => contentImageInputRef.current?.click()}
                       disabled={uploadingContentImg}
                       className="px-2.5 py-1 bg-[#128C7E]/25 hover:bg-[#128C7E]/40 text-[#25D366] border border-[#128C7E]/50 rounded-lg text-xs font-bold transition-colors flex items-center gap-1 shadow-sm"
-                      title="લેખમાં ગમે ત્યાં નવી ઇમેજ અપલોડ કરી દાખલ કરો"
+                      title="Upload new image and insert into article"
                     >
                       <UploadCloud size={13} />
-                      <span>{uploadingContentImg ? 'અપલોડ...' : '+ Upload Image'}</span>
+                      <span>{uploadingContentImg ? 'Uploading...' : '+ Upload Image'}</span>
                     </button>
                     <button
                       type="button"
                       onClick={handleInsertImageUrl}
                       className="px-2.5 py-1 bg-[#142B40] hover:bg-[#1C3A52] text-white border border-[#1C3A52] rounded-lg text-xs font-medium transition-colors flex items-center gap-1"
-                      title="ઇમેજ URL દાખલ કરો"
+                      title="Insert Image URL"
                     >
                       <ImageIcon size={13} />
                       <span>+ Image URL</span>
@@ -828,10 +828,10 @@ export const PostEditor: React.FC<PostEditorProps> = ({
                     <div className="flex items-center justify-between">
                       <span className="text-xs font-bold text-gold flex items-center gap-1.5">
                         <ImageIcon size={14} />
-                        <span>લેખમાં ઉમેરેલ ઇમેજો (Embedded Images in Article: {articleImages.length})</span>
+                        <span>Embedded Images in Article ({articleImages.length})</span>
                       </span>
                       <span className="text-[11px] text-[#8495A9]">
-                        આ ઇમેજો લેખમાં નીચે દર્શાવેલ સ્થાન પર લાઈવ દેખાશે
+                        These images render inline in the published post
                       </span>
                     </div>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
@@ -874,15 +874,15 @@ export const PostEditor: React.FC<PostEditorProps> = ({
                   rows={15}
                   value={content}
                   onChange={(e) => setContent(e.target.value)}
-                  placeholder="## હેડિંગ અહીં લખો&#10;&#10;કન્ટેન્ટનો પેરાગ્રાફ અહીં લખો...&#10;&#10;:::card&#10;શ્રદ્ધાંજલિ સંદેશ ૧...&#10;:::&#10;&#10;:::card&#10;શ્રદ્ધાંજલિ સંદેશ ૨...&#10;:::"
+                  placeholder="## Section Heading&#10;&#10;Write paragraph content here...&#10;&#10;:::card&#10;Memorial tribute message 1...&#10;:::&#10;&#10;:::card&#10;Memorial tribute message 2...&#10;:::"
                   className="w-full bg-[#061321] border border-[#1C3A52] focus:border-gold rounded-xl p-4 text-sm sm:text-base text-white placeholder-[#8495A9] focus:outline-none transition-colors font-sans leading-relaxed"
                 />
 
                 <div className="p-2.5 rounded-lg bg-[#061321]/60 border border-[#1C3A52]/60 text-[11px] text-[#8495A9] flex items-center justify-between">
                   <span>
-                    💡 ટિપ: તમે <strong>પેરાગ્રાફ → હેડિંગ → ઇમેજ → 10 સંદેશ કાર્ડ્સ → હેડિંગ → કાર્ડ્સ</strong> ગમે તેટલી વાર પુનરાવર્તિત કરી શકો છો.
+                    💡 Tip: You can freely interleave <strong>Paragraphs → Headings → Images → Message Cards</strong> in any sequence.
                   </span>
-                  <span>{content.length} અક્ષરો</span>
+                  <span>{content.length} chars</span>
                 </div>
               </div>
             ) : (
@@ -896,7 +896,7 @@ export const PostEditor: React.FC<PostEditorProps> = ({
                       return (
                         <div key={idx} className="p-4 rounded-xl bg-[#0B1D2D] border border-gold/40 shadow-sm">
                           <span className="text-[10px] text-gold font-bold uppercase tracking-wider block mb-1">
-                            ✨ શ્રદ્ધાંજલિ સંદેશ કાર્ડ પ્રિવ્યૂ
+                            ✨ Tribute Message Card Preview
                           </span>
                           <p className="text-white text-xs sm:text-sm font-medium leading-relaxed">{text}</p>
                           <div className="flex gap-2 mt-2 text-[10px] text-[#8495A9]">
@@ -928,7 +928,7 @@ export const PostEditor: React.FC<PostEditorProps> = ({
                     });
                   })
                 ) : (
-                  <p className="text-xs text-[#8495A9]">પ્રિવ્યૂ જોવા માટે લખાણ દાખલ કરો.</p>
+                  <p className="text-xs text-[#8495A9]">Enter content in the editor to see preview.</p>
                 )}
               </div>
             )}
@@ -940,13 +940,13 @@ export const PostEditor: React.FC<PostEditorProps> = ({
           {/* Post Settings */}
           <div className="bg-[#0B1D2D] border border-[#1C3A52] rounded-2xl p-5 card-glow space-y-4">
             <h3 className="text-xs font-bold text-white uppercase tracking-wider">
-              પ્રકાશન વિગતો (Publishing Settings)
+              Publishing Settings
             </h3>
 
             {/* Category Select */}
             <div>
               <label className="block text-xs font-medium text-[#B9C6D6] mb-1.5">
-                કેટેગરી
+                Category
               </label>
               <select
                 value={categoryId}
@@ -1004,7 +1004,7 @@ export const PostEditor: React.FC<PostEditorProps> = ({
                         className="px-3 py-1.5 bg-[#061321] text-white hover:text-gold rounded-lg text-xs font-medium border border-[#1C3A52] flex items-center gap-1"
                       >
                         <UploadCloud size={13} />
-                        બદલો
+                        Replace
                       </button>
                       <button
                         type="button"
@@ -1012,14 +1012,14 @@ export const PostEditor: React.FC<PostEditorProps> = ({
                         className="px-3 py-1.5 bg-[#EF4444]/80 hover:bg-[#EF4444] text-white rounded-lg text-xs font-medium flex items-center gap-1"
                       >
                         <Trash2 size={13} />
-                        હટાવો
+                        Remove
                       </button>
                     </div>
                   </>
                 ) : (
                   <div className="text-center p-4">
                     <ImageIcon size={32} className="mx-auto text-[#8495A9] mb-2 opacity-60" />
-                    <p className="text-xs text-[#8495A9]">કોઈ ઇમેજ સિલેક્ટ કરેલ નથી</p>
+                    <p className="text-xs text-[#8495A9]">No image selected</p>
                   </div>
                 )}
               </div>
@@ -1032,19 +1032,19 @@ export const PostEditor: React.FC<PostEditorProps> = ({
                 className="w-full flex items-center justify-center gap-1.5 py-2 px-3 bg-[#142B40] hover:bg-[#1C3A52] text-gold border border-gold/40 rounded-xl text-xs font-semibold transition-colors disabled:opacity-50"
               >
                 <UploadCloud size={14} />
-                <span>{uploadingImage ? 'અપલોડ થઈ રહ્યું છે...' : 'પીસીમાંથી ઇમેજ અપલોડ કરો'}</span>
+                <span>{uploadingImage ? 'Uploading...' : 'Upload Image from PC'}</span>
               </button>
 
               {/* Direct URL input */}
               <div>
                 <label className="block text-[11px] text-[#8495A9] mb-1">
-                  અથવા ઇમેજ URL એડિટ કરો:
+                  Or enter direct Image URL:
                 </label>
                 <input
                   type="text"
                   value={featuredImage}
                   onChange={(e) => setFeaturedImage(e.target.value)}
-                  placeholder="/images/... અથવા https://..."
+                  placeholder="/images/... or https://..."
                   className="w-full bg-[#061321] border border-[#1C3A52] focus:border-gold rounded-xl px-3 py-2 text-xs text-white focus:outline-none transition-colors"
                 />
               </div>
@@ -1052,13 +1052,13 @@ export const PostEditor: React.FC<PostEditorProps> = ({
               {/* Image Alt */}
               <div>
                 <label className="block text-xs font-medium text-[#B9C6D6] mb-1.5">
-                  ઇમેજ Alt ટેગ (SEO માટે)
+                  Image Alt Tag (for SEO)
                 </label>
                 <input
                   type="text"
                   value={imageAlt}
                   onChange={(e) => setImageAlt(e.target.value)}
-                  placeholder="દા.ત. પિતાશ્રી પુણ્યતિથિ શ્રદ્ધાંજલિ સંદેશ ફોટો"
+                  placeholder="e.g. Memorial Tribute Photo"
                   className="w-full bg-[#061321] border border-[#1C3A52] focus:border-gold rounded-xl px-3 py-2 text-xs text-white focus:outline-none transition-colors"
                 />
               </div>
@@ -1066,7 +1066,7 @@ export const PostEditor: React.FC<PostEditorProps> = ({
 
             {/* TOC Toggle */}
             <div className="flex items-center justify-between pt-2 border-t border-[#1C3A52]/60">
-              <span className="text-xs text-[#B9C6D6]">ટેબલ ઓફ કન્ટેન્ટ (TOC) દર્શાવો</span>
+              <span className="text-xs text-[#B9C6D6]">Show Table of Contents (TOC)</span>
               <input
                 type="checkbox"
                 checked={showTableOfContents}
@@ -1080,7 +1080,7 @@ export const PostEditor: React.FC<PostEditorProps> = ({
           <div className="bg-[#0B1D2D] border border-[#1C3A52] rounded-2xl p-5 card-glow space-y-4">
             <div className="flex items-center justify-between pb-3 border-b border-[#1C3A52]/60">
               <h3 className="text-xs font-bold text-white uppercase tracking-wider">
-                SEO સ્કોર અને ચકાસણી
+                SEO Checklist Score
               </h3>
               <div
                 className={`px-3 py-1 rounded-full text-xs font-extrabold ${
@@ -1098,13 +1098,13 @@ export const PostEditor: React.FC<PostEditorProps> = ({
             {/* Focus keyword input */}
             <div>
               <label className="block text-xs font-medium text-[#B9C6D6] mb-1.5">
-                મુખ્ય ફોકસ કીવર્ડ (Focus Keyword)
+                Focus Keyword
               </label>
               <input
                 type="text"
                 value={focusKeyword}
                 onChange={(e) => setFocusKeyword(e.target.value)}
-                placeholder="દા.ત. માતાજીની પુણ્યતિથિ"
+                placeholder="e.g. Shradhanjali Messages"
                 className="w-full bg-[#061321] border border-[#1C3A52] focus:border-gold rounded-xl px-3 py-2 text-xs text-white focus:outline-none transition-colors"
               />
             </div>
@@ -1112,13 +1112,13 @@ export const PostEditor: React.FC<PostEditorProps> = ({
             {/* SEO Title */}
             <div>
               <label className="block text-xs font-medium text-[#B9C6D6] mb-1.5">
-                SEO શીર્ષક (SEO Title)
+                SEO Title
               </label>
               <input
                 type="text"
                 value={seoTitle}
                 onChange={(e) => setSeoTitle(e.target.value)}
-                placeholder="ગૂગલમાં દેખાનારું શીર્ષક..."
+                placeholder="Title displayed in Google search results..."
                 className="w-full bg-[#061321] border border-[#1C3A52] focus:border-gold rounded-xl px-3 py-2 text-xs text-white focus:outline-none transition-colors"
               />
             </div>
@@ -1126,13 +1126,13 @@ export const PostEditor: React.FC<PostEditorProps> = ({
             {/* SEO Meta Description */}
             <div>
               <label className="block text-xs font-medium text-[#B9C6D6] mb-1.5">
-                મેટા ડિસ્ક્રિપ્શન (Meta Description)
+                Meta Description
               </label>
               <textarea
                 rows={2}
                 value={seoDescription}
                 onChange={(e) => setSeoDescription(e.target.value)}
-                placeholder="સર્ચ એન્જિન માટે 150 અક્ષરોનું વિવરણ..."
+                placeholder="150-160 character description for search engines..."
                 className="w-full bg-[#061321] border border-[#1C3A52] focus:border-gold rounded-xl p-3 text-xs text-white focus:outline-none transition-colors resize-none"
               />
             </div>

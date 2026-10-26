@@ -89,7 +89,7 @@ export default function AdminUsersPage() {
     if (!formData.name || !formData.email) return;
 
     if (!editingUser && (!formData.password || formData.password.length < 6)) {
-      setMessage({ text: 'નવા યુઝર માટે ઓછામાં ઓછો 6 અક્ષરનો પાસવર્ડ જરૂરી છે.', type: 'error' });
+      setMessage({ text: 'A minimum 6 character password is required for new users.', type: 'error' });
       return;
     }
 
@@ -120,22 +120,22 @@ export default function AdminUsersPage() {
       const data = await res.json();
 
       if (res.ok && data.success) {
-        setMessage({ text: data.message || 'સફળતાપૂર્વક સાચવવામાં આવ્યું!', type: 'success' });
+        setMessage({ text: data.message || 'User saved successfully!', type: 'success' });
         closeModal();
         fetchUsers();
         setTimeout(() => setMessage(null), 3500);
       } else {
-        setMessage({ text: data.error || 'સેવ કરવામાં ભૂલ આવી.', type: 'error' });
+        setMessage({ text: data.error || 'Failed to save user.', type: 'error' });
       }
     } catch (err: any) {
-      setMessage({ text: err.message || 'સર્વર એરર આવી.', type: 'error' });
+      setMessage({ text: err.message || 'Server error occurred.', type: 'error' });
     } finally {
       setSaving(false);
     }
   };
 
   const handleDelete = async (user: SafeUser) => {
-    if (!window.confirm(`શું તમે ખરેખર "${user.name}" (${user.email}) યુઝરને ડિલીટ કરવા માંગો છો?`)) {
+    if (!window.confirm(`Are you sure you want to delete user "${user.name}" (${user.email})?`)) {
       return;
     }
 
@@ -148,15 +148,15 @@ export default function AdminUsersPage() {
 
       const data = await res.json();
       if (res.ok && data.success) {
-        setMessage({ text: data.message || 'યુઝર ડિલીટ થયો.', type: 'success' });
+        setMessage({ text: data.message || 'User deleted.', type: 'success' });
         fetchUsers();
         setTimeout(() => setMessage(null), 3500);
       } else {
-        alert(data.error || 'ડિલીટ નિષ્ફળ ગયું.');
+        alert(data.error || 'Failed to delete user.');
       }
     } catch (err) {
       console.error(err);
-      alert('ડિલીટ કરવામાં એરર આવી.');
+      alert('Error deleting user.');
     }
   };
 
@@ -188,10 +188,10 @@ export default function AdminUsersPage() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-5 border-b border-[#1C3A52]">
         <div>
           <h1 className="text-2xl font-extrabold text-white">
-            યુઝર્સ અને રોલ (User & Role Management)
+            Users & Roles Management
           </h1>
           <p className="text-xs text-[#8495A9] mt-1">
-            એડમિનિસ્ટ્રેટર, એડિટર, લેખક અને સબ્સ્ક્રાઇબર રોલ્સનું સંપૂર્ણ સંચાલન.
+            Manage administrative access, editors, authors, and roles.
           </p>
         </div>
 
@@ -201,7 +201,7 @@ export default function AdminUsersPage() {
           className="inline-flex items-center gap-2 px-4 py-2.5 bg-gold hover:bg-[#ffd782] text-[#061321] text-xs font-bold rounded-xl transition-all shadow-md self-start sm:self-auto"
         >
           <Plus size={16} />
-          <span>નવો યુઝર ઉમેરો</span>
+          <span>Add New User</span>
         </button>
       </div>
 
@@ -229,7 +229,7 @@ export default function AdminUsersPage() {
         <div className="p-4 border-b border-[#1C3A52] flex flex-col sm:flex-row items-center justify-between gap-3">
           <h2 className="text-sm font-bold text-white flex items-center gap-2 self-start sm:self-auto">
             <UsersIcon size={16} className="text-gold" />
-            <span>નોંધાયેલા વપરાશકર્તાઓ ({filteredUsers.length})</span>
+            <span>Registered Users ({filteredUsers.length})</span>
           </h2>
 
           <div className="relative w-full sm:w-64">
@@ -238,7 +238,7 @@ export default function AdminUsersPage() {
               type="text"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              placeholder="શોધો નામ, ઇમેઇલ, રોલ..."
+              placeholder="Search by name, email, role..."
               className="w-full bg-[#061321] text-white text-xs pl-8 pr-3 py-1.5 rounded-xl border border-[#1C3A52] focus:outline-none focus:border-gold"
             />
           </div>
@@ -248,11 +248,11 @@ export default function AdminUsersPage() {
           <table className="w-full text-left text-xs">
             <thead>
               <tr className="bg-[#061321]/60 text-[#8495A9] border-b border-[#1C3A52]">
-                <th className="py-3 px-4 font-semibold">વપરાશકર્તા</th>
-                <th className="py-3 px-4 font-semibold">ઇમેઇલ</th>
-                <th className="py-3 px-4 font-semibold">રોલ (Role)</th>
-                <th className="py-3 px-4 font-semibold">નોંધણી તારીખ</th>
-                <th className="py-3 px-4 font-semibold text-right">ક્રિયા</th>
+                <th className="py-3 px-4 font-semibold">User</th>
+                <th className="py-3 px-4 font-semibold">Email</th>
+                <th className="py-3 px-4 font-semibold">Role</th>
+                <th className="py-3 px-4 font-semibold">Registered</th>
+                <th className="py-3 px-4 font-semibold text-right">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-[#1C3A52]/40">
@@ -283,7 +283,7 @@ export default function AdminUsersPage() {
                     </span>
                   </td>
                   <td className="py-3 px-4 text-[#8495A9]">
-                    {new Date(u.createdAt).toLocaleDateString('gu-IN', {
+                    {new Date(u.createdAt).toLocaleDateString('en-US', {
                       day: 'numeric',
                       month: 'short',
                       year: 'numeric',
@@ -295,7 +295,7 @@ export default function AdminUsersPage() {
                         type="button"
                         onClick={() => openEditModal(u)}
                         className="p-1.5 rounded-lg bg-[#061321] hover:bg-[#10263B] text-gold border border-[#1C3A52] hover:border-gold/40 transition-colors"
-                        title="એડિટ કરો"
+                        title="Edit"
                       >
                         <Edit2 size={13} />
                       </button>
@@ -303,7 +303,7 @@ export default function AdminUsersPage() {
                         type="button"
                         onClick={() => handleDelete(u)}
                         className="p-1.5 rounded-lg bg-[#061321] hover:bg-red-500/20 text-red-400 border border-[#1C3A52] hover:border-red-500/40 transition-colors"
-                        title="ડિલીટ કરો"
+                        title="Delete"
                       >
                         <Trash2 size={13} />
                       </button>
@@ -315,7 +315,7 @@ export default function AdminUsersPage() {
               {filteredUsers.length === 0 && (
                 <tr>
                   <td colSpan={5} className="py-8 text-center text-[#8495A9]">
-                    કોઈ વપરાશકર્તા મળ્યો નથી.
+                    No users found.
                   </td>
                 </tr>
               )}
@@ -331,7 +331,7 @@ export default function AdminUsersPage() {
             <div className="flex items-center justify-between pb-4 border-b border-[#1C3A52]">
               <h3 className="text-base font-bold text-white flex items-center gap-2">
                 <UserIcon size={18} className="text-gold" />
-                <span>{editingUser ? 'યુઝર એડિટ કરો' : 'નવો યુઝર ઉમેરો'}</span>
+                <span>{editingUser ? 'Edit User' : 'Add New User'}</span>
               </h3>
               <button
                 type="button"
@@ -345,7 +345,7 @@ export default function AdminUsersPage() {
             <form onSubmit={handleSubmit} className="mt-5 space-y-4 text-xs">
               {/* Name */}
               <div>
-                <label className="block text-[#B9C6D6] font-semibold mb-1">પૂરું નામ *</label>
+                <label className="block text-[#B9C6D6] font-semibold mb-1">Full Name *</label>
                 <div className="relative">
                   <UserIcon size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#8495A9]" />
                   <input
@@ -353,7 +353,7 @@ export default function AdminUsersPage() {
                     required
                     value={formData.name}
                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                    placeholder="દા.ત. રમેશભાઈ પટેલ"
+                    placeholder="e.g. Ramesh Patel"
                     className="w-full bg-[#061321] text-white pl-9 pr-3 py-2 rounded-xl border border-[#1C3A52] focus:outline-none focus:border-gold"
                   />
                 </div>
@@ -361,7 +361,7 @@ export default function AdminUsersPage() {
 
               {/* Email */}
               <div>
-                <label className="block text-[#B9C6D6] font-semibold mb-1">ઇમેઇલ એડ્રેસ *</label>
+                <label className="block text-[#B9C6D6] font-semibold mb-1">Email Address *</label>
                 <div className="relative">
                   <Mail size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#8495A9]" />
                   <input
@@ -377,7 +377,7 @@ export default function AdminUsersPage() {
 
               {/* Role */}
               <div>
-                <label className="block text-[#B9C6D6] font-semibold mb-1">રોલ (Role / પરમિશન) *</label>
+                <label className="block text-[#B9C6D6] font-semibold mb-1">Role & Permissions *</label>
                 <div className="relative">
                   <Shield size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#8495A9]" />
                   <select
@@ -390,10 +390,10 @@ export default function AdminUsersPage() {
                     }
                     className="w-full bg-[#061321] text-white pl-9 pr-3 py-2 rounded-xl border border-[#1C3A52] focus:outline-none focus:border-gold cursor-pointer"
                   >
-                    <option value="admin">Administrator (સંપૂર્ણ સંચાલન)</option>
-                    <option value="editor">Editor (લેખો અને કેટેગરીઝ સંચાલન)</option>
-                    <option value="author">Author (પોતાના લેખો લખવા)</option>
-                    <option value="subscriber">Subscriber (માત્ર વાંચક)</option>
+                    <option value="admin">Administrator (Full Control)</option>
+                    <option value="editor">Editor (Posts & Categories)</option>
+                    <option value="author">Author (Publish Articles)</option>
+                    <option value="subscriber">Subscriber (Reader)</option>
                   </select>
                 </div>
               </div>
@@ -401,7 +401,7 @@ export default function AdminUsersPage() {
               {/* Password */}
               <div>
                 <label className="block text-[#B9C6D6] font-semibold mb-1">
-                  પાસવર્ડ {editingUser ? '(બદલવો હોય તો જ દાખલ કરો)' : '*'}
+                  Password {editingUser ? '(Leave blank to keep unchanged)' : '*'}
                 </label>
                 <div className="relative">
                   <Lock size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#8495A9]" />
@@ -409,7 +409,7 @@ export default function AdminUsersPage() {
                     type="password"
                     value={formData.password}
                     onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                    placeholder={editingUser ? 'નવો પાસવર્ડ (ઓપ્શનલ)' : 'ન્યૂનતમ 6 અક્ષર'}
+                    placeholder={editingUser ? 'New password (optional)' : 'Minimum 6 characters'}
                     minLength={editingUser ? 0 : 6}
                     required={!editingUser}
                     className="w-full bg-[#061321] text-white pl-9 pr-3 py-2 rounded-xl border border-[#1C3A52] focus:outline-none focus:border-gold"
@@ -419,12 +419,12 @@ export default function AdminUsersPage() {
 
               {/* Bio */}
               <div>
-                <label className="block text-[#B9C6D6] font-semibold mb-1">ટૂંકો પરિચય (Bio)</label>
+                <label className="block text-[#B9C6D6] font-semibold mb-1">Bio / Profile Description</label>
                 <textarea
                   rows={2}
                   value={formData.bio}
                   onChange={(e) => setFormData({ ...formData, bio: e.target.value })}
-                  placeholder="યુઝર વિશે ટૂંકી નોંધ..."
+                  placeholder="Short note about the user..."
                   className="w-full bg-[#061321] text-white p-2.5 rounded-xl border border-[#1C3A52] focus:outline-none focus:border-gold resize-none"
                 />
               </div>
@@ -436,14 +436,14 @@ export default function AdminUsersPage() {
                   onClick={closeModal}
                   className="px-4 py-2 rounded-xl border border-[#1C3A52] text-[#B9C6D6] hover:bg-[#10263B] transition-colors"
                 >
-                  રદ કરો
+                  Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={saving}
                   className="px-5 py-2 bg-gold hover:bg-[#ffd782] disabled:opacity-50 text-[#061321] font-bold rounded-xl transition-all shadow-md flex items-center gap-1.5"
                 >
-                  {saving ? 'સાચવી રહ્યું છે...' : editingUser ? 'અપડેટ કરો' : 'ઉમેરો'}
+                  {saving ? 'Saving...' : editingUser ? 'Update User' : 'Add User'}
                 </button>
               </div>
             </form>

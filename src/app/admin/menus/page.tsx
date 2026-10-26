@@ -76,7 +76,7 @@ export default function AdminMenusPage() {
         body: JSON.stringify({ header: headerMenu, footer: footerMenu }),
       });
       if (res.ok) {
-        setMessage('મેનુ સેટિંગ્સ સફળતાપૂર્વક સેવ થઈ ગઈ!');
+        setMessage('Menu navigation settings saved successfully!');
         setTimeout(() => setMessage(''), 3000);
       }
     } catch (err) {
@@ -90,9 +90,9 @@ export default function AdminMenusPage() {
     <div className="space-y-6 animate-fade-in max-w-5xl">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-5 border-b border-[#1C3A52]">
         <div>
-          <h1 className="text-2xl font-extrabold text-white">મેનુ મેનેજમેન્ટ (Menu Editor)</h1>
+          <h1 className="text-2xl font-extrabold text-white">Menus & Navigation</h1>
           <p className="text-xs text-[#8495A9] mt-1">
-            હેડર અને ફૂટર નેવિગેશન લિંક્સનું સંચાલન કરો.
+            Organize header and footer navigation links.
           </p>
         </div>
 
@@ -103,7 +103,7 @@ export default function AdminMenusPage() {
           className="flex items-center gap-2 px-5 py-2.5 bg-gold hover:bg-[#ffd782] disabled:opacity-50 text-[#061321] text-xs font-bold rounded-xl transition-all shadow-md self-start sm:self-auto"
         >
           <Save size={15} />
-          <span>{saving ? 'સેવ થઈ રહ્યું છે...' : 'તમામ ફેરફારો સેવ કરો'}</span>
+          <span>{saving ? 'Saving...' : 'Save All Changes'}</span>
         </button>
       </div>
 
@@ -125,8 +125,8 @@ export default function AdminMenusPage() {
             onChange={(e) => setTargetMenu(e.target.value as any)}
             className="w-full bg-[#061321] border border-[#1C3A52] focus:border-gold rounded-xl px-3 py-2.5 text-white focus:outline-none"
           >
-            <option value="header">હેડર મેનુ (Header)</option>
-            <option value="footer">ફૂટર મેનુ (Footer)</option>
+            <option value="header">Header Menu</option>
+            <option value="footer">Footer Menu</option>
           </select>
         </div>
 
@@ -136,7 +136,7 @@ export default function AdminMenusPage() {
             required
             value={newLabel}
             onChange={(e) => setNewLabel(e.target.value)}
-            placeholder="લિંકનું નામ (દા.ત. શ્રદ્ધાંજલિ સંદેશ)..."
+            placeholder="Link label (e.g. Shradhanjali Messages)..."
             className="w-full bg-[#061321] border border-[#1C3A52] focus:border-gold rounded-xl px-3 py-2.5 text-white focus:outline-none"
           />
         </div>
@@ -147,7 +147,7 @@ export default function AdminMenusPage() {
             required
             value={newUrl}
             onChange={(e) => setNewUrl(e.target.value)}
-            placeholder="URL (દા.ત. /category/shradhanjali)..."
+            placeholder="URL (e.g. /category/shradhanjali)..."
             className="w-full bg-[#061321] border border-[#1C3A52] focus:border-gold rounded-xl px-3 py-2.5 text-white focus:outline-none font-mono"
           />
         </div>
@@ -157,7 +157,7 @@ export default function AdminMenusPage() {
           className="w-full md:w-auto px-4 py-2.5 bg-[#142B40] hover:bg-[#1A3854] text-gold border border-gold/40 rounded-xl font-bold transition-colors flex items-center justify-center gap-1.5 shrink-0"
         >
           <Plus size={14} />
-          <span>લિંક ઉમેરો</span>
+          <span>Add Link</span>
         </button>
       </form>
 
@@ -165,7 +165,7 @@ export default function AdminMenusPage() {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Header Menu List */}
         <div className="bg-[#0B1D2D] border border-[#1C3A52] rounded-2xl p-5 card-glow">
-          <h2 className="text-sm font-bold text-white mb-3">હેડર મેનુ લિંક્સ ({headerMenu.length})</h2>
+          <h2 className="text-sm font-bold text-white mb-3">Header Menu Links ({headerMenu.length})</h2>
           <div className="space-y-2">
             {headerMenu.map((item, idx) => (
               <div
@@ -209,7 +209,7 @@ export default function AdminMenusPage() {
 
         {/* Footer Menu List */}
         <div className="bg-[#0B1D2D] border border-[#1C3A52] rounded-2xl p-5 card-glow">
-          <h2 className="text-sm font-bold text-white mb-3">ફૂટર મેનુ લિંક્સ ({footerMenu.length})</h2>
+          <h2 className="text-sm font-bold text-white mb-3">Footer Menu Links ({footerMenu.length})</h2>
           <div className="space-y-2">
             {footerMenu.map((item, idx) => (
               <div

@@ -41,17 +41,17 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({ isOpen, onClose, use
   };
 
   const navItems = [
-    { label: 'ડેશબોર્ડ (Dashboard)', href: '/admin', icon: LayoutDashboard },
-    { label: 'બધા લેખો (Posts)', href: '/admin/posts', icon: FileText },
-    { label: 'નવો લેખ ઉમેરો (Add Post)', href: '/admin/posts/new', icon: PlusCircle },
-    { label: 'પેજીસ (Pages)', href: '/admin/pages', icon: FileText },
-    { label: 'કેટેગરીઝ (Categories)', href: '/admin/categories', icon: FolderOpen },
-    { label: 'મીડિયા લાઇબ્રેરી (Media)', href: '/admin/media', icon: Image },
-    { label: 'સંપર્ક મેસેજ (Contact)', href: '/admin/contact', icon: MessageSquare },
-    { label: 'SEO મેનેજમેન્ટ', href: '/admin/seo', icon: Search },
-    { label: 'મેનુ મેનેજમેન્ટ (Menus)', href: '/admin/menus', icon: Menu },
-    { label: 'સેટિંગ્સ (Settings)', href: '/admin/settings', icon: Settings },
-    { label: 'યુઝર્સ અને રોલ (Users)', href: '/admin/users', icon: Users },
+    { label: 'Dashboard', href: '/admin', icon: LayoutDashboard },
+    { label: 'All Posts', href: '/admin/posts', icon: FileText },
+    { label: 'Add New Post', href: '/admin/posts/new', icon: PlusCircle },
+    { label: 'Pages', href: '/admin/pages', icon: FileText },
+    { label: 'Categories', href: '/admin/categories', icon: FolderOpen },
+    { label: 'Media Library', href: '/admin/media', icon: Image },
+    { label: 'Contact Messages', href: '/admin/contact', icon: MessageSquare },
+    { label: 'SEO Management', href: '/admin/seo', icon: Search },
+    { label: 'Menus', href: '/admin/menus', icon: Menu },
+    { label: 'Website Settings', href: '/admin/settings', icon: Settings },
+    { label: 'Users & Roles', href: '/admin/users', icon: Users },
   ];
 
   const sidebarContent = (
@@ -69,7 +69,7 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({ isOpen, onClose, use
 
       {/* User Info Badge */}
       <div className="px-5 py-4 border-b border-[#1C3A52]/70 bg-[#061321]/50">
-        <p className="text-xs font-semibold text-white truncate">{user?.name || 'એડમિન'}</p>
+        <p className="text-xs font-semibold text-white truncate">{user?.name || 'Admin'}</p>
         <span className="inline-block mt-0.5 px-2 py-0.5 bg-gold/15 text-gold text-[10px] font-bold rounded-full">
           {user?.role?.toUpperCase() || 'ADMIN'}
         </span>
@@ -113,7 +113,7 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({ isOpen, onClose, use
         >
           <span className="flex items-center gap-2">
             <ExternalLink size={14} className="text-[#8495A9]" />
-            <span>વેબસાઇટ જુઓ</span>
+            <span>View Website</span>
           </span>
           <span className="text-[10px] bg-[#142B40] text-gold px-1.5 py-0.5 rounded">Live</span>
         </a>
@@ -124,7 +124,7 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({ isOpen, onClose, use
           className="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-xs text-[#EF4444] hover:bg-[#EF4444]/10 transition-colors"
         >
           <LogOut size={14} />
-          <span>લૉગઆઉટ (Logout)</span>
+          <span>Logout</span>
         </button>
       </div>
     </div>

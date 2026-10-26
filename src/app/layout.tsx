@@ -23,11 +23,18 @@ export const metadata: Metadata = {
   },
 };
 
+import { getSettings } from '@/lib/db';
+
 export default function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const settings = getSettings();
+  const searchConsoleTag = settings.technical?.searchConsoleMetaTag?.trim();
+  const customHeaderCode = settings.technical?.customHeaderCode?.trim();
+  const customFooterCode = settings.technical?.customFooterCode?.trim();
+
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
@@ -50,6 +57,20 @@ export default function RootLayout({
             })();`,
           }}
         />
+
+        {/* Google Search Console HTML Tag Verification */}
+        {searchConsoleTag && (
+          searchConsoleTag.startsWith('<') ? (
+            <div dangerouslySetInnerHTML={{ __html: searchConsoleTag }} />
+          ) : (
+            <meta name="google-site-verification" content={searchConsoleTag} />
+          )
+        )}
+
+        {/* Custom Header Code (GTM / CSS / Analytics) */}
+        {customHeaderCode && (
+          <div dangerouslySetInnerHTML={{ __html: customHeaderCode }} />
+        )}
       </head>
       <body className="min-h-screen flex flex-col antialiased selection:bg-[#F5C45E] selection:text-[#061625]">
         <ThemeProvider>
@@ -57,6 +78,11 @@ export default function RootLayout({
             {children}
           </LanguageProvider>
         </ThemeProvider>
+
+        {/* Custom Footer Code (Scripts / Tracking / Chat) */}
+        {customFooterCode && (
+          <div dangerouslySetInnerHTML={{ __html: customFooterCode }} />
+        )}
       </body>
     </html>
   );

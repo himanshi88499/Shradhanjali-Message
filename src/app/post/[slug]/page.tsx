@@ -16,6 +16,7 @@ import { SidebarCategories } from '@/components/SidebarCategories';
 import { BlogCard } from '@/components/BlogCard';
 import { LotusIcon } from '@/components/LotusLogo';
 import { ArticleLanguageBadge } from '@/components/ArticleLanguageBadge';
+import { PostFaqAccordion } from '@/components/PostFaqAccordion';
 
 interface Props {
   params: Promise<{ slug: string }>;
@@ -149,7 +150,7 @@ export default async function SingleArticlePage({ params }: Props) {
   };
 
   const renderRecommendationBox = (recPost: typeof post) => (
-    <div className="my-8 p-4 sm:p-5 rounded-2xl bg-theme-surface border border-theme hover:border-[#F5C45E]/60 transition-all card-glow group">
+    <div className="my-4 sm:my-4.5 p-4 sm:p-5 rounded-2xl bg-theme-surface border border-theme hover:border-[#F5C45E]/60 transition-all card-glow group">
       <div className="flex items-center gap-2 text-xs font-bold text-[#F5C45E] uppercase tracking-wider mb-3">
         <Sparkles size={15} className="text-[#F5C45E]" />
         <span>આ પણ વાંચો</span>
@@ -396,7 +397,7 @@ export default async function SingleArticlePage({ params }: Props) {
 
                 {/* Classic Mode: Individual Message Cards */}
                 {post.messageCards && post.messageCards.length > 0 && (
-                  <div className="space-y-4 my-6">
+                  <div className="space-y-3 my-3 sm:my-3.5">
                     {post.messageCards.map((card) => (
                       <MessageCardItem
                         key={card.id}
@@ -413,7 +414,7 @@ export default async function SingleArticlePage({ params }: Props) {
                 {midPostRecommendation && renderRecommendationBox(midPostRecommendation)}
 
                 {/* Main Rich Text Content */}
-                <div className="prose prose-invert max-w-none text-theme-primary text-base leading-relaxed mt-6 space-y-6">
+                <div className="prose prose-invert max-w-none text-theme-primary text-base leading-relaxed mt-3.5 sm:mt-4 space-y-4 sm:space-y-5">
                   {post.content.split('\n\n').map((paragraph, index) => {
                     const pTrimmed = paragraph.trim();
                     const imgMatch = pTrimmed.match(/^!\[(.*?)\]\((.*?)\)$/);
@@ -507,6 +508,9 @@ export default async function SingleArticlePage({ params }: Props) {
                 </a>
               </div>
             )}
+
+            {/* Dynamic Contextual FAQ Section (5 Helpful Search-Focused Q&A) */}
+            <PostFaqAccordion post={post} />
 
             {/* Author Information Box */}
             {author && (

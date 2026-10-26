@@ -35,14 +35,14 @@ export default function AdminPostsPage() {
   }, []);
 
   const handleDelete = async (id: string, title: string) => {
-    if (!window.confirm(`શું તમે ખરેખર "${title}" લેખ ડિલીટ કરવા માંગો છો?`)) return;
+    if (!window.confirm(`Are you sure you want to delete post "${title}"?`)) return;
 
     try {
       const res = await fetch(`/api/admin/posts/${id}`, { method: 'DELETE' });
       if (res.ok) {
         setPosts(posts.filter((p) => p.id !== id));
       } else {
-        alert('ડિલીટ કરવામાં ભૂલ આવી.');
+        alert('Failed to delete post.');
       }
     } catch (err) {
       console.error(err);
@@ -63,9 +63,9 @@ export default function AdminPostsPage() {
       {/* Top Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-[#1C3A52]">
         <div>
-          <h1 className="text-2xl font-extrabold text-white">બધા લેખો (Posts Management)</h1>
+          <h1 className="text-2xl font-extrabold text-white">All Posts</h1>
           <p className="text-xs text-[#8495A9] mt-1">
-            કુલ {posts.length} લેખો ઉપલબ્ધ છે.
+            Total {posts.length} posts available in the system.
           </p>
         </div>
 
@@ -74,7 +74,7 @@ export default function AdminPostsPage() {
           className="inline-flex items-center gap-2 px-4 py-2 bg-gold hover:bg-[#ffd782] text-[#061321] text-xs font-bold rounded-xl transition-all shadow-md self-start sm:self-auto"
         >
           <PlusCircle size={15} />
-          <span>નવો લેખ ઉમેરો</span>
+          <span>Add New Post</span>
         </Link>
       </div>
 
@@ -87,7 +87,7 @@ export default function AdminPostsPage() {
             type="text"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            placeholder="લેખનું શીર્ષક અથવા સ્લગ શોધો..."
+            placeholder="Search by title or slug..."
             className="w-full bg-[#061321] border border-[#1C3A52] focus:border-gold rounded-xl pl-9 pr-4 py-2 text-xs text-white placeholder-[#8495A9] focus:outline-none transition-colors"
           />
         </div>
@@ -100,7 +100,7 @@ export default function AdminPostsPage() {
             onChange={(e) => setSelectedCat(e.target.value)}
             className="bg-[#061321] border border-[#1C3A52] focus:border-gold rounded-xl px-3 py-2 text-xs text-[#B9C6D6] focus:outline-none transition-colors"
           >
-            <option value="all">બધી કેટેગરીઝ</option>
+            <option value="all">All Categories</option>
             {categories.map((c) => (
               <option key={c.id} value={c.id}>
                 {c.name}
@@ -114,9 +114,9 @@ export default function AdminPostsPage() {
             onChange={(e) => setSelectedStatus(e.target.value)}
             className="bg-[#061321] border border-[#1C3A52] focus:border-gold rounded-xl px-3 py-2 text-xs text-[#B9C6D6] focus:outline-none transition-colors"
           >
-            <option value="all">તમામ સ્થિતિ</option>
-            <option value="published">પ્રકાશિત (Published)</option>
-            <option value="draft">ડ્રાફ્ટ (Draft)</option>
+            <option value="all">All Statuses</option>
+            <option value="published">Published</option>
+            <option value="draft">Draft</option>
           </select>
         </div>
       </div>
@@ -127,12 +127,12 @@ export default function AdminPostsPage() {
           <table className="w-full text-left text-xs">
             <thead>
               <tr className="bg-[#061321]/60 text-[#8495A9] border-b border-[#1C3A52]">
-                <th className="py-3.5 px-4 font-semibold">ઇમેજ</th>
-                <th className="py-3.5 px-4 font-semibold">શીર્ષક (Title)</th>
-                <th className="py-3.5 px-4 font-semibold">કેટેગરી</th>
-                <th className="py-3.5 px-4 font-semibold">સ્થિતિ</th>
-                <th className="py-3.5 px-4 font-semibold">તારીખ</th>
-                <th className="py-3.5 px-4 font-semibold text-right">ક્રિયા</th>
+                <th className="py-3.5 px-4 font-semibold">Image</th>
+                <th className="py-3.5 px-4 font-semibold">Title</th>
+                <th className="py-3.5 px-4 font-semibold">Category</th>
+                <th className="py-3.5 px-4 font-semibold">Status</th>
+                <th className="py-3.5 px-4 font-semibold">Date</th>
+                <th className="py-3.5 px-4 font-semibold text-right">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-[#1C3A52]/40">
@@ -159,7 +159,7 @@ export default function AdminPostsPage() {
                     </span>
                   </td>
                   <td className="py-3 px-4 text-[#B9C6D6]">
-                    {post.categoryName || 'જનરલ'}
+                    {post.categoryName || 'General'}
                   </td>
                   <td className="py-3 px-4">
                     <span
@@ -169,11 +169,11 @@ export default function AdminPostsPage() {
                           : 'bg-[#FFD782]/15 text-[#FFD782] border border-[#FFD782]/30'
                       }`}
                     >
-                      {post.status === 'published' ? 'પ્રકાશિત' : 'ડ્રાફ્ટ'}
+                      {post.status === 'published' ? 'Published' : 'Draft'}
                     </span>
                   </td>
                   <td className="py-3 px-4 text-[#8495A9]">
-                    {new Date(post.publishedAt).toLocaleDateString('gu-IN', {
+                    {new Date(post.publishedAt).toLocaleDateString('en-US', {
                       day: 'numeric',
                       month: 'short',
                       year: 'numeric',
@@ -184,7 +184,7 @@ export default function AdminPostsPage() {
                       <Link
                         href={`/admin/posts/edit/${post.id}`}
                         className="p-1.5 rounded-lg bg-[#061321] hover:bg-[#142B40] text-gold border border-[#1C3A52] hover:border-gold transition-colors"
-                        title="સંપાદિત કરો"
+                        title="Edit"
                       >
                         <Edit2 size={13} />
                       </Link>
@@ -193,7 +193,7 @@ export default function AdminPostsPage() {
                         target="_blank"
                         rel="noopener noreferrer"
                         className="p-1.5 rounded-lg bg-[#061321] hover:bg-[#142B40] text-[#B9C6D6] hover:text-white border border-[#1C3A52] transition-colors"
-                        title="લાઇવ સાઈટ પર જુઓ"
+                        title="View Live"
                       >
                         <ArrowUpRight size={13} />
                       </a>
@@ -201,7 +201,7 @@ export default function AdminPostsPage() {
                         type="button"
                         onClick={() => handleDelete(post.id, post.title)}
                         className="p-1.5 rounded-lg bg-[#061321] hover:bg-[#EF4444]/20 text-[#EF4444] border border-[#1C3A52] transition-colors"
-                        title="ડિલીટ કરો"
+                        title="Delete"
                       >
                         <Trash2 size={13} />
                       </button>
@@ -213,7 +213,7 @@ export default function AdminPostsPage() {
               {filteredPosts.length === 0 && !loading && (
                 <tr>
                   <td colSpan={6} className="text-center py-8 text-[#8495A9]">
-                    કોઈ લેખ મળ્યો નથી.
+                    No posts found.
                   </td>
                 </tr>
               )}

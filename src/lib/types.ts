@@ -154,6 +154,10 @@ export interface SiteSettings {
     adsensePublisherId?: string;
     enableAdPlacements?: boolean;
     allowIndexing?: boolean;
+    adsTxt?: string;
+    searchConsoleMetaTag?: string;
+    customHeaderCode?: string;
+    customFooterCode?: string;
   };
 }
 
