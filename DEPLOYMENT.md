@@ -1,6 +1,33 @@
-# શ્રદ્ધાંજલિ (Shradhanjali) - Hostinger Deployment & Setup Guide
+# શ્રદ્ધાંજલિ (Shradhanjali) - Deployment & Setup Guide (Cloudways & Hostinger)
 
-This guide provides step-by-step instructions for deploying the **Shradhanjali Gujarati CMS Website** to **Hostinger Hosting** (without WordPress).
+This guide provides step-by-step instructions for deploying the **Shradhanjali Gujarati CMS Website** to **Cloudways** and **Hostinger**.
+
+---
+
+## 🚀 Cloudways Deployment Instructions (Fix for PM2 Crash)
+
+If your Cloudways deployment failed with `Application failed to start - process crashed (at least 15 restart(s) detected)` while running `$ npx next start`:
+
+### Why this happens on Cloudways:
+1. In Cloudways Node.js applications, PM2 manages the application process. When PM2 runs `npx next start`, `npx` acts as a temporary CLI wrapper and disconnects, which PM2 interprets as a process crash and restarts it 15 times before aborting.
+2. Next.js production on Cloudways requires a persistent Node.js process listening on `0.0.0.0:${PORT:-3000}`.
+
+### The Solution:
+We have added a production-ready `server.js` and `ecosystem.config.cjs` to the repository.
+
+In your **Cloudways Platform Dashboard**:
+1. Open your application -> **Application Settings** (or **Deployment via Git** / **General Settings**).
+2. Set the **Start Command** to:
+   ```bash
+   node server.js
+   ```
+   *(or `npm start`)*
+3. Ensure the **Build Command** is:
+   ```bash
+   npm run build
+   ```
+4. Click **Save Changes** and click **Deploy / Redeploy**.
+5. Your application will start cleanly and stay running with PM2.
 
 ---
 
