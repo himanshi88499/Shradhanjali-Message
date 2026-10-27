@@ -18,7 +18,10 @@ import {
   ArrowDown,
   Image as ImageIcon,
   Clock,
+  Bold,
+  Link as LinkIcon,
 } from 'lucide-react';
+import { RichText } from '@/components/RichText';
 import { Post, Category, MessageCard } from '@/lib/types';
 
 interface PostEditorProps {
@@ -75,6 +78,80 @@ export const PostEditor: React.FC<PostEditorProps> = ({
       snippet += `:::card\nશ્રદ્ધાંજલિ સંદેશ #${i}: પ્રિયજનની પવિત્ર સ્મૃતિને શત શત નમન...\n:::\n\n`;
     }
     insertSnippet(snippet);
+  };
+
+  const handleBoldText = () => {
+    const textarea = contentRef.current;
+    if (!textarea) return;
+    const start = textarea.selectionStart;
+    const end = textarea.selectionEnd;
+    const selectedText = content.substring(start, end);
+
+    if (!selectedText) {
+      const placeholder = '**bold text**';
+      const newContent = content.substring(0, start) + placeholder + content.substring(end);
+      setContent(newContent);
+      setTimeout(() => {
+        textarea.focus();
+        textarea.setSelectionRange(start + 2, start + 2 + 9);
+      }, 50);
+      return;
+    }
+
+    let replacement = '';
+    let newEnd = end;
+    if (selectedText.startsWith('**') && selectedText.endsWith('**') && selectedText.length >= 4) {
+      replacement = selectedText.slice(2, -2);
+      newEnd = start + replacement.length;
+    } else {
+      replacement = `**${selectedText}**`;
+      newEnd = start + replacement.length;
+    }
+
+    const newContent = content.substring(0, start) + replacement + content.substring(end);
+    setContent(newContent);
+    setTimeout(() => {
+      textarea.focus();
+      textarea.setSelectionRange(start, newEnd);
+    }, 50);
+  };
+
+  const handleInsertLink = () => {
+    const textarea = contentRef.current;
+    if (!textarea) return;
+    const start = textarea.selectionStart;
+    const end = textarea.selectionEnd;
+    const selectedText = content.substring(start, end);
+
+    let linkText = selectedText;
+    if (!linkText) {
+      const enteredText = window.prompt('Enter link text:');
+      if (enteredText === null) return;
+      linkText = enteredText.trim() || 'Link';
+    }
+
+    const enteredUrl = window.prompt('Enter website URL:', 'https://');
+    if (!enteredUrl) return;
+    const url = enteredUrl.trim();
+    if (!url) return;
+
+    const replacement = `[${linkText}](${url})`;
+    const newContent = content.substring(0, start) + replacement + content.substring(end);
+    setContent(newContent);
+    setTimeout(() => {
+      textarea.focus();
+      textarea.setSelectionRange(start, start + replacement.length);
+    }, 50);
+  };
+
+  const handleContentKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if ((e.ctrlKey || e.metaKey) && (e.key === 'b' || e.key === 'B')) {
+      e.preventDefault();
+      handleBoldText();
+    } else if ((e.ctrlKey || e.metaKey) && (e.key === 'k' || e.key === 'K')) {
+      e.preventDefault();
+      handleInsertLink();
+    }
   };
 
   const [status, setStatus] = useState<'published' | 'draft' | 'scheduled' | 'trash'>(initialPost?.status || 'draft');
@@ -771,6 +848,25 @@ export const PostEditor: React.FC<PostEditorProps> = ({
                   <div className="flex flex-wrap items-center gap-1.5">
                     <button
                       type="button"
+                      onClick={handleBoldText}
+                      className="px-2.5 py-1 bg-[#142B40] hover:bg-[#1C3A52] text-white border border-gold/40 rounded-lg text-xs font-bold transition-colors flex items-center gap-1 shadow-sm"
+                      title="Bold Selected Text (Ctrl+B)"
+                    >
+                      <Bold size={13} className="text-gold" />
+                      <span>Bold (Ctrl+B)</span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={handleInsertLink}
+                      className="px-2.5 py-1 bg-[#142B40] hover:bg-[#1C3A52] text-white border border-gold/40 rounded-lg text-xs font-bold transition-colors flex items-center gap-1 shadow-sm"
+                      title="Add Website Link (Ctrl+K)"
+                    >
+                      <LinkIcon size={13} className="text-gold" />
+                      <span>+ Link</span>
+                    </button>
+                    <span className="text-[#1C3A52]">|</span>
+                    <button
+                      type="button"
                       onClick={() => insertSnippet('\n\n## Section Heading Title\n\n')}
                       className="px-2.5 py-1 bg-[#142B40] hover:bg-[#1C3A52] text-gold border border-gold/30 rounded-lg text-xs font-semibold transition-colors"
                       title="Add H2 Heading"
@@ -901,6 +997,7 @@ export const PostEditor: React.FC<PostEditorProps> = ({
                   rows={15}
                   value={content}
                   onChange={(e) => setContent(e.target.value)}
+                  onKeyDown={handleContentKeyDown}
                   placeholder="## Section Heading&#10;&#10;Write paragraph content here...&#10;&#10;:::card&#10;Memorial tribute message 1...&#10;:::&#10;&#10;:::card&#10;Memorial tribute message 2...&#10;:::"
                   className="w-full bg-[#061321] border border-[#1C3A52] focus:border-gold rounded-xl p-4 text-sm sm:text-base text-white placeholder-[#8495A9] focus:outline-none transition-colors font-sans leading-relaxed"
                 />
@@ -951,7 +1048,7 @@ export const PostEditor: React.FC<PostEditorProps> = ({
                       if (pTrimmed.startsWith('### ')) {
                         return <h3 key={pIdx} className="text-base font-semibold text-[#FFD782]">{pTrimmed.replace('### ', '')}</h3>;
                       }
-                      return <p key={pIdx}>{pTrimmed}</p>;
+                      return <p key={pIdx}><RichText content={pTrimmed} /></p>;
                     });
                   })
                 ) : (

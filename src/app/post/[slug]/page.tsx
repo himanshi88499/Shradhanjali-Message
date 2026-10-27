@@ -17,6 +17,7 @@ import { BlogCard } from '@/components/BlogCard';
 import { LotusIcon } from '@/components/LotusLogo';
 import { ArticleLanguageBadge } from '@/components/ArticleLanguageBadge';
 import { PostFaqAccordion } from '@/components/PostFaqAccordion';
+import { RichText } from '@/components/RichText';
 
 interface Props {
   params: Promise<{ slug: string }>;
@@ -378,7 +379,7 @@ export default async function SingleArticlePage({ params }: Props) {
                   return (
                     <React.Fragment key={idx}>
                       <p className="text-theme-secondary leading-relaxed text-base">
-                        {block.text}
+                        <RichText content={block.text} />
                       </p>
                       {shouldInsertMidRec && (
                         <div className="not-prose">{renderRecommendationBox(midPostRecommendation)}</div>
@@ -473,7 +474,7 @@ export default async function SingleArticlePage({ params }: Props) {
                     }
                     return (
                       <p key={index} className="text-theme-secondary leading-relaxed text-base">
-                        {paragraph}
+                        <RichText content={paragraph} />
                       </p>
                     );
                   })}

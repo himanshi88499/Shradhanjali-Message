@@ -5,6 +5,7 @@ import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
 import { Breadcrumbs } from '@/components/Breadcrumbs';
 import { ContactForm } from '@/components/ContactForm';
+import { RichText } from '@/components/RichText';
 import { getPageBySlug, getSettings } from '@/lib/db';
 
 export const dynamic = 'force-dynamic';
@@ -101,8 +102,8 @@ export default function ContactPage() {
 
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
             <div className="lg:col-span-7 space-y-4 text-base sm:text-lg text-theme-secondary leading-relaxed">
-              <p>{content}</p>
-              {heroDescription && <p>{heroDescription}</p>}
+              <p><RichText content={content} /></p>
+              {heroDescription && <p><RichText content={heroDescription} /></p>}
             </div>
 
             <div className="lg:col-span-5">

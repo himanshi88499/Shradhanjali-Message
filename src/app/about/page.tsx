@@ -6,6 +6,7 @@ import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
 import { Breadcrumbs } from '@/components/Breadcrumbs';
 import { LotusIcon } from '@/components/LotusLogo';
+import { RichText } from '@/components/RichText';
 import { getPageBySlug } from '@/lib/db';
 
 export const dynamic = 'force-dynamic';
@@ -163,8 +164,8 @@ export default function AboutPage() {
 
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
             <div className="lg:col-span-7 space-y-4 text-base sm:text-lg text-[#B9C6D6] leading-relaxed">
-              <p>{content}</p>
-              {heroDescription && <p>{heroDescription}</p>}
+              <p><RichText content={content} /></p>
+              {heroDescription && <p><RichText content={heroDescription} /></p>}
             </div>
 
             <div className="lg:col-span-5">
@@ -192,7 +193,7 @@ export default function AboutPage() {
               </div>
               <h3 className="text-lg font-bold text-white mb-2">{card.title}</h3>
               <p className="text-xs sm:text-sm text-[#B9C6D6] leading-relaxed">
-                {card.description}
+                <RichText content={card.description} />
               </p>
             </div>
           ))}
@@ -204,7 +205,7 @@ export default function AboutPage() {
             <h3 className="text-2xl font-bold text-white mb-4">{journeyTitle}</h3>
             <div className="space-y-4 text-sm sm:text-base text-[#B9C6D6] leading-relaxed">
               {journeyText.split('\n\n').map((paragraph, index) => (
-                <p key={index}>{paragraph}</p>
+                <p key={index}><RichText content={paragraph} /></p>
               ))}
             </div>
           </div>

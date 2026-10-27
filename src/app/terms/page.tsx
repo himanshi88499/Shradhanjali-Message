@@ -3,6 +3,7 @@ import type { Metadata } from 'next';
 import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
 import { Breadcrumbs } from '@/components/Breadcrumbs';
+import { RichText } from '@/components/RichText';
 import { getPageBySlug } from '@/lib/db';
 
 export const dynamic = 'force-dynamic';
@@ -62,7 +63,7 @@ export default function TermsPage() {
                   </h3>
                 );
               }
-              return <p key={index}>{paragraph}</p>;
+              return <p key={index}><RichText content={paragraph} /></p>;
             })}
           </div>
         </article>

@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import Link from 'next/link';
 import {
@@ -22,6 +22,8 @@ import {
   MessageCircle,
   FileText,
   Layers,
+  Bold,
+  Link as LinkIcon,
 } from 'lucide-react';
 import { Page, PageMetaSection, PageValueCard, PageTeamMember } from '@/lib/types';
 import { LotusIcon } from '@/components/LotusLogo';
@@ -41,6 +43,97 @@ export default function EditPage() {
   const [seoTitle, setSeoTitle] = useState('');
   const [seoDescription, setSeoDescription] = useState('');
   const [metadata, setMetadata] = useState<PageMetaSection>({});
+
+  const aboutContentRef = useRef<HTMLTextAreaElement>(null);
+  const contactContentRef = useRef<HTMLTextAreaElement>(null);
+  const policyContentRef = useRef<HTMLTextAreaElement>(null);
+
+  // Format selected text in a textarea as bold
+  const applyBoldToTextarea = (
+    textarea: HTMLTextAreaElement | null,
+    currentVal: string,
+    setVal: (v: string) => void
+  ) => {
+    if (!textarea) return;
+    const start = textarea.selectionStart;
+    const end = textarea.selectionEnd;
+    const selectedText = currentVal.substring(start, end);
+
+    if (!selectedText) {
+      const placeholder = '**bold text**';
+      const updated = currentVal.substring(0, start) + placeholder + currentVal.substring(end);
+      setVal(updated);
+      setTimeout(() => {
+        textarea.focus();
+        textarea.setSelectionRange(start + 2, start + 2 + 9);
+      }, 50);
+      return;
+    }
+
+    let replacement = '';
+    let newEnd = end;
+    if (selectedText.startsWith('**') && selectedText.endsWith('**') && selectedText.length >= 4) {
+      replacement = selectedText.slice(2, -2);
+      newEnd = start + replacement.length;
+    } else {
+      replacement = `**${selectedText}**`;
+      newEnd = start + replacement.length;
+    }
+
+    const updated = currentVal.substring(0, start) + replacement + currentVal.substring(end);
+    setVal(updated);
+    setTimeout(() => {
+      textarea.focus();
+      textarea.setSelectionRange(start, newEnd);
+    }, 50);
+  };
+
+  // Format selected text in a textarea as website link
+  const applyLinkToTextarea = (
+    textarea: HTMLTextAreaElement | null,
+    currentVal: string,
+    setVal: (v: string) => void
+  ) => {
+    if (!textarea) return;
+    const start = textarea.selectionStart;
+    const end = textarea.selectionEnd;
+    const selectedText = currentVal.substring(start, end);
+
+    let linkText = selectedText;
+    if (!linkText) {
+      const enteredText = window.prompt('Enter link text:');
+      if (enteredText === null) return;
+      linkText = enteredText.trim() || 'Link';
+    }
+
+    const enteredUrl = window.prompt('Enter website URL:', 'https://');
+    if (!enteredUrl) return;
+    const url = enteredUrl.trim();
+    if (!url) return;
+
+    const replacement = `[${linkText}](${url})`;
+    const updated = currentVal.substring(0, start) + replacement + currentVal.substring(end);
+    setVal(updated);
+    setTimeout(() => {
+      textarea.focus();
+      textarea.setSelectionRange(start, start + replacement.length);
+    }, 50);
+  };
+
+  // Keyboard shortcut listener for Ctrl+B (Bold) and Ctrl+K (Link)
+  const handleTextareaKeyDown = (
+    e: React.KeyboardEvent<HTMLTextAreaElement>,
+    currentVal: string,
+    setVal: (v: string) => void
+  ) => {
+    if ((e.ctrlKey || e.metaKey) && (e.key === 'b' || e.key === 'B')) {
+      e.preventDefault();
+      applyBoldToTextarea(e.currentTarget, currentVal, setVal);
+    } else if ((e.ctrlKey || e.metaKey) && (e.key === 'k' || e.key === 'K')) {
+      e.preventDefault();
+      applyLinkToTextarea(e.currentTarget, currentVal, setVal);
+    }
+  };
 
   // Active section tab for rich pages
   const [activeTab, setActiveTab] = useState<'hero' | 'widgets' | 'seo'>('hero');
@@ -366,13 +459,37 @@ export default function EditPage() {
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-[#B9C6D6] mb-1.5">
-                  Hero Primary Paragraph (Content)
-                </label>
+                <div className="flex items-center justify-between mb-1.5">
+                  <label className="block text-xs font-semibold text-[#B9C6D6]">
+                    Hero Primary Paragraph (Content)
+                  </label>
+                  <div className="flex items-center gap-1.5">
+                    <button
+                      type="button"
+                      onClick={() => applyBoldToTextarea(aboutContentRef.current, content, setContent)}
+                      className="px-2 py-0.5 text-[10px] bg-[#061321] text-white border border-gold/40 rounded hover:bg-[#142B40] flex items-center gap-1 font-bold transition-colors"
+                      title="Bold Selected Text (Ctrl+B)"
+                    >
+                      <Bold size={11} className="text-gold" />
+                      <span>Bold (Ctrl+B)</span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => applyLinkToTextarea(aboutContentRef.current, content, setContent)}
+                      className="px-2 py-0.5 text-[10px] bg-[#061321] text-white border border-gold/40 rounded hover:bg-[#142B40] flex items-center gap-1 font-bold transition-colors"
+                      title="Add Website Link (Ctrl+K)"
+                    >
+                      <LinkIcon size={11} className="text-gold" />
+                      <span>+ Link</span>
+                    </button>
+                  </div>
+                </div>
                 <textarea
+                  ref={aboutContentRef}
                   rows={3}
                   value={content}
                   onChange={(e) => setContent(e.target.value)}
+                  onKeyDown={(e) => handleTextareaKeyDown(e, content, setContent)}
                   className="w-full bg-[#061321] border border-[#1C3A52] focus:border-gold rounded-xl p-3 text-xs sm:text-sm text-white focus:outline-none leading-relaxed"
                   placeholder="શ્રદ્ધાંજલિ એક એવી વેબસાઇટ છે..."
                 />
@@ -386,6 +503,7 @@ export default function EditPage() {
                   rows={2}
                   value={metadata.heroDescription || ''}
                   onChange={(e) => updateMetaField('heroDescription', e.target.value)}
+                  onKeyDown={(e) => handleTextareaKeyDown(e, metadata.heroDescription || '', (val) => updateMetaField('heroDescription', val))}
                   className="w-full bg-[#061321] border border-[#1C3A52] focus:border-gold rounded-xl p-3 text-xs sm:text-sm text-white focus:outline-none leading-relaxed"
                   placeholder="અમારું લક્ષ્ય છે કે દરેક વ્યક્તિને..."
                 />
@@ -792,13 +910,37 @@ export default function EditPage() {
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-[#B9C6D6] mb-1.5">
-                  Hero Primary Paragraph (Content)
-                </label>
+                <div className="flex items-center justify-between mb-1.5">
+                  <label className="block text-xs font-semibold text-[#B9C6D6]">
+                    Hero Primary Paragraph (Content)
+                  </label>
+                  <div className="flex items-center gap-1.5">
+                    <button
+                      type="button"
+                      onClick={() => applyBoldToTextarea(contactContentRef.current, content, setContent)}
+                      className="px-2 py-0.5 text-[10px] bg-[#061321] text-white border border-gold/40 rounded hover:bg-[#142B40] flex items-center gap-1 font-bold transition-colors"
+                      title="Bold Selected Text (Ctrl+B)"
+                    >
+                      <Bold size={11} className="text-gold" />
+                      <span>Bold (Ctrl+B)</span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => applyLinkToTextarea(contactContentRef.current, content, setContent)}
+                      className="px-2 py-0.5 text-[10px] bg-[#061321] text-white border border-gold/40 rounded hover:bg-[#142B40] flex items-center gap-1 font-bold transition-colors"
+                      title="Add Website Link (Ctrl+K)"
+                    >
+                      <LinkIcon size={11} className="text-gold" />
+                      <span>+ Link</span>
+                    </button>
+                  </div>
+                </div>
                 <textarea
+                  ref={contactContentRef}
                   rows={3}
                   value={content}
                   onChange={(e) => setContent(e.target.value)}
+                  onKeyDown={(e) => handleTextareaKeyDown(e, content, setContent)}
                   className="w-full bg-[#061321] border border-[#1C3A52] focus:border-gold rounded-xl p-3 text-xs sm:text-sm text-white focus:outline-none leading-relaxed"
                   placeholder="Whether you have an inquiry, feedback on memorial content..."
                 />
@@ -812,6 +954,7 @@ export default function EditPage() {
                   rows={2}
                   value={metadata.heroDescription || ''}
                   onChange={(e) => updateMetaField('heroDescription', e.target.value)}
+                  onKeyDown={(e) => handleTextareaKeyDown(e, metadata.heroDescription || '', (val) => updateMetaField('heroDescription', val))}
                   className="w-full bg-[#061321] border border-[#1C3A52] focus:border-gold rounded-xl p-3 text-xs sm:text-sm text-white focus:outline-none leading-relaxed"
                   placeholder="Every message is important to our team..."
                 />
@@ -1130,6 +1273,25 @@ export default function EditPage() {
               <div className="flex items-center gap-1.5">
                 <button
                   type="button"
+                  onClick={() => applyBoldToTextarea(policyContentRef.current, content, setContent)}
+                  className="px-2 py-0.5 text-[10px] bg-[#061321] text-white border border-gold/40 rounded hover:bg-[#142B40] flex items-center gap-1 font-bold transition-colors"
+                  title="Bold Selected Text (Ctrl+B)"
+                >
+                  <Bold size={11} className="text-gold" />
+                  <span>Bold (Ctrl+B)</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => applyLinkToTextarea(policyContentRef.current, content, setContent)}
+                  className="px-2 py-0.5 text-[10px] bg-[#061321] text-white border border-gold/40 rounded hover:bg-[#142B40] flex items-center gap-1 font-bold transition-colors"
+                  title="Add Website Link (Ctrl+K)"
+                >
+                  <LinkIcon size={11} className="text-gold" />
+                  <span>+ Link</span>
+                </button>
+                <span className="text-[#1C3A52]">|</span>
+                <button
+                  type="button"
                   onClick={() => setContent((prev) => prev + '\n\n## Subheading\n')}
                   className="px-2 py-0.5 text-[10px] bg-[#061321] text-gold border border-[#1C3A52] rounded hover:bg-[#142B40]"
                 >
@@ -1152,9 +1314,11 @@ export default function EditPage() {
               </div>
             </div>
             <textarea
+              ref={policyContentRef}
               rows={16}
               value={content}
               onChange={(e) => setContent(e.target.value)}
+              onKeyDown={(e) => handleTextareaKeyDown(e, content, setContent)}
               className="w-full bg-[#061321] border border-[#1C3A52] focus:border-gold rounded-xl p-4 text-xs sm:text-sm text-white focus:outline-none leading-relaxed font-mono"
             />
           </div>
