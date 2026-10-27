@@ -85,9 +85,12 @@ export const BlogCard: React.FC<BlogCardProps> = ({ post, priority = false }) =>
             </span>
           </div>
 
-          <span className="text-[11px] font-medium text-gold hover:underline group-hover:translate-x-0.5 transition-transform">
+          <Link
+            href={`/post/${post.slug}`}
+            className="text-[11px] font-medium text-gold hover:underline group-hover:translate-x-0.5 transition-transform"
+          >
             વાંચો →
-          </span>
+          </Link>
         </div>
       </div>
     </article>
