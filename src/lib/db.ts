@@ -7,11 +7,11 @@ const DATA_DIR = path.join(process.cwd(), 'data');
 const DB_FILE = path.join(DATA_DIR, 'db.json');
 
 // Memory cache to optimize file I/O
+// Memory cache with mtime check to always keep data in sync
 let cachedDb: DatabaseSchema | null = null;
+let lastDbMtime = 0;
 
 function ensureDbFile(): DatabaseSchema {
-  if (cachedDb) return cachedDb;
-
   try {
     if (!fs.existsSync(DATA_DIR)) {
       fs.mkdirSync(DATA_DIR, { recursive: true });
@@ -20,28 +20,41 @@ function ensureDbFile(): DatabaseSchema {
     if (!fs.existsSync(DB_FILE)) {
       fs.writeFileSync(DB_FILE, JSON.stringify(initialDatabase, null, 2), 'utf-8');
       cachedDb = JSON.parse(JSON.stringify(initialDatabase));
+      lastDbMtime = fs.statSync(DB_FILE).mtimeMs;
       return cachedDb!;
+    }
+
+    const currentMtime = fs.statSync(DB_FILE).mtimeMs;
+    if (cachedDb && currentMtime === lastDbMtime) {
+      return cachedDb;
     }
 
     const data = fs.readFileSync(DB_FILE, 'utf-8');
     cachedDb = JSON.parse(data) as DatabaseSchema;
+    lastDbMtime = currentMtime;
 
-    // Ensure pages have all seed metadata if not explicitly set
-    if (cachedDb && Array.isArray(cachedDb.pages)) {
-      cachedDb.pages = cachedDb.pages.map((p) => {
-        const seedMatch = initialDatabase.pages.find((sp) => sp.slug === p.slug);
-        if (seedMatch) {
-          return {
-            ...seedMatch,
-            ...p,
-            metadata: {
-              ...(seedMatch.metadata || {}),
-              ...(p.metadata || {}),
-            },
-          };
+    // Ensure pages array is always populated and saved
+    let needPersist = false;
+    if (!cachedDb || !Array.isArray(cachedDb.pages) || cachedDb.pages.length === 0) {
+      cachedDb.pages = JSON.parse(JSON.stringify(initialDatabase.pages));
+      needPersist = true;
+    } else {
+      // Ensure seed pages and their default metadata exist if not customized
+      initialDatabase.pages.forEach((seedPage) => {
+        const found = cachedDb!.pages.find((p) => p.slug === seedPage.slug || p.id === seedPage.id);
+        if (!found) {
+          cachedDb!.pages.push(JSON.parse(JSON.stringify(seedPage)));
+          needPersist = true;
+        } else if (!found.metadata) {
+          found.metadata = JSON.parse(JSON.stringify(seedPage.metadata || {}));
+          needPersist = true;
         }
-        return p;
       });
+    }
+
+    if (needPersist) {
+      fs.writeFileSync(DB_FILE, JSON.stringify(cachedDb, null, 2), 'utf-8');
+      lastDbMtime = fs.statSync(DB_FILE).mtimeMs;
     }
 
     return cachedDb;
@@ -62,6 +75,7 @@ export function saveDb(data: DatabaseSchema): boolean {
     }
     fs.writeFileSync(DB_FILE, JSON.stringify(data, null, 2), 'utf-8');
     cachedDb = data;
+    lastDbMtime = fs.statSync(DB_FILE).mtimeMs;
     return true;
   } catch (err) {
     console.error('Error saving database file:', err);
@@ -263,16 +277,19 @@ export function deleteCategory(id: string): boolean {
 // ----------------- PAGES -----------------
 export function getPages(): Page[] {
   const db = getDb();
-  return db.pages;
+  return Array.isArray(db.pages) ? db.pages : [];
 }
 
 export function getPageBySlug(slug: string): Page | undefined {
-  const db = getDb();
-  return db.pages.find((p) => p.slug === slug);
+  const pages = getPages();
+  return pages.find((p) => p.slug === slug || p.id === slug);
 }
 
 export function savePage(page: Page): Page {
   const db = getDb();
+  if (!Array.isArray(db.pages)) {
+    db.pages = [];
+  }
   const index = db.pages.findIndex((p) => p.id === page.id || p.slug === page.slug);
   const existing = index >= 0 ? db.pages[index] : undefined;
 
@@ -283,7 +300,8 @@ export function savePage(page: Page): Page {
       ...(existing?.metadata || {}),
       ...(page.metadata || {}),
     },
-    id: page.id || existing?.id || `page-${Date.now()}`,
+    id: page.id || existing?.id || `page-${page.slug || Date.now()}`,
+    slug: page.slug || existing?.slug || 'page',
     updatedAt: new Date().toISOString(),
   };
 

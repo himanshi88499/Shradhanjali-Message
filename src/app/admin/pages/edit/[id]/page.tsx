@@ -46,17 +46,19 @@ export default function EditPage() {
   const [activeTab, setActiveTab] = useState<'hero' | 'widgets' | 'seo'>('hero');
 
   useEffect(() => {
-    fetch('/api/admin/pages')
+    fetch('/api/admin/pages', { cache: 'no-store' })
       .then((res) => res.json())
       .then((pages: Page[]) => {
-        const found = pages.find((p) => p.id === id);
-        if (found) {
-          setPage(found);
-          setTitle(found.title || '');
-          setContent(found.content || '');
-          setSeoTitle(found.seoTitle || found.title || '');
-          setSeoDescription(found.seoDescription || '');
-          setMetadata(found.metadata || {});
+        if (Array.isArray(pages)) {
+          const found = pages.find((p) => p.id === id || p.slug === id);
+          if (found) {
+            setPage(found);
+            setTitle(found.title || '');
+            setContent(found.content || '');
+            setSeoTitle(found.seoTitle || found.title || '');
+            setSeoDescription(found.seoDescription || '');
+            setMetadata(found.metadata || {});
+          }
         }
       })
       .catch((err) => console.error('Failed to load page:', err));
@@ -161,15 +163,17 @@ export default function EditPage() {
         body: JSON.stringify(updatedData),
       });
 
-      if (res.ok) {
-        const json = await res.json();
+      const json = await res.json().catch(() => ({}));
+
+      if (res.ok && json.success) {
         if (json.page) {
           setPage(json.page);
         }
         setMessage('Changes saved successfully! Public page has been updated.');
+        router.refresh();
         setTimeout(() => setMessage(''), 4000);
       } else {
-        setMessage('Failed to save page. Please try again.');
+        setMessage(json.error || 'Failed to save page. Please try again.');
       }
     } catch (err) {
       console.error(err);
