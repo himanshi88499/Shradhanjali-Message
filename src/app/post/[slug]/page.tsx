@@ -47,7 +47,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 interface ContentBlock {
-  type: 'h2' | 'h3' | 'paragraph' | 'card' | 'image';
+  type: 'h2' | 'h3' | 'paragraph' | 'card' | 'image' | 'list';
   text: string;
   url?: string;
   alt?: string;
@@ -87,6 +87,8 @@ function parseContentBlocks(content: string): ContentBlock[] {
           blocks.push({ type: 'h2', text: pTrimmed.replace(/^##\s+/, '') });
         } else if (pTrimmed.startsWith('### ')) {
           blocks.push({ type: 'h3', text: pTrimmed.replace(/^###\s+/, '') });
+        } else if (pTrimmed.split('\n').some((l) => l.trim().startsWith('• ') || l.trim().startsWith('- '))) {
+          blocks.push({ type: 'list', text: pTrimmed });
         } else {
           blocks.push({ type: 'paragraph', text: pTrimmed });
         }
@@ -376,6 +378,25 @@ export default async function SingleArticlePage({ params }: Props) {
                     );
                   }
 
+                  if (block.type === 'list') {
+                    const items = block.text.split('\n').map((l) => l.trim()).filter(Boolean);
+                    return (
+                      <React.Fragment key={idx}>
+                        <ul className="not-prose my-4 space-y-2 pl-2 list-none">
+                          {items.map((item, itemIdx) => (
+                            <li key={itemIdx} className="flex items-start gap-2.5 text-theme-secondary text-base leading-relaxed">
+                              <span className="text-gold font-bold select-none mt-1 text-sm">•</span>
+                              <span className="flex-1"><RichText content={item.replace(/^[•\-\*]\s*/, '')} /></span>
+                            </li>
+                          ))}
+                        </ul>
+                        {shouldInsertMidRec && (
+                          <div className="not-prose">{renderRecommendationBox(midPostRecommendation)}</div>
+                        )}
+                      </React.Fragment>
+                    );
+                  }
+
                   return (
                     <React.Fragment key={idx}>
                       <p className="text-theme-secondary leading-relaxed text-base">
@@ -470,6 +491,19 @@ export default async function SingleArticlePage({ params }: Props) {
                         >
                           {heading}
                         </h3>
+                      );
+                    }
+                    if (paragraph.split('\n').some((l) => l.trim().startsWith('• ') || l.trim().startsWith('- '))) {
+                      const items = paragraph.split('\n').map((l) => l.trim()).filter(Boolean);
+                      return (
+                        <ul key={index} className="not-prose my-4 space-y-2 pl-2 list-none">
+                          {items.map((item, itemIdx) => (
+                            <li key={itemIdx} className="flex items-start gap-2.5 text-theme-secondary text-base leading-relaxed">
+                              <span className="text-gold font-bold select-none mt-1 text-sm">•</span>
+                              <span className="flex-1"><RichText content={item.replace(/^[•\-\*]\s*/, '')} /></span>
+                            </li>
+                          ))}
+                        </ul>
                       );
                     }
                     return (

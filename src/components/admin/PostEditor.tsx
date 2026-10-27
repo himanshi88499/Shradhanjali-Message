@@ -20,6 +20,7 @@ import {
   Clock,
   Bold,
   Link as LinkIcon,
+  List,
 } from 'lucide-react';
 import { RichText } from '@/components/RichText';
 import { Post, Category, MessageCard } from '@/lib/types';
@@ -144,6 +145,49 @@ export const PostEditor: React.FC<PostEditorProps> = ({
     }, 50);
   };
 
+  const handleInsertBullet = () => {
+    const textarea = contentRef.current;
+    if (!textarea) {
+      insertSnippet('\n• First bullet item\n• Second bullet item\n\n');
+      return;
+    }
+    const start = textarea.selectionStart;
+    const end = textarea.selectionEnd;
+    const selectedText = content.substring(start, end);
+
+    if (!selectedText) {
+      const snippet = '\n• Bullet point item\n';
+      const before = content.substring(0, start);
+      const after = content.substring(end);
+      const newContent = before + snippet + after;
+      setContent(newContent);
+      setTimeout(() => {
+        textarea.focus();
+        textarea.setSelectionRange(start + 3, start + 3 + 18);
+      }, 50);
+      return;
+    }
+
+    const lines = selectedText.split('\n');
+    const isAllBulleted = lines.every((line) => line.trim().startsWith('• ') || line.trim().startsWith('- '));
+    const toggledLines = lines.map((line) => {
+      if (isAllBulleted) {
+        return line.replace(/^(\s*)[•\-]\s*/, '$1');
+      } else {
+        if (!line.trim()) return line;
+        return line.startsWith('• ') ? line : `• ${line}`;
+      }
+    });
+
+    const replacement = toggledLines.join('\n');
+    const newContent = content.substring(0, start) + replacement + content.substring(end);
+    setContent(newContent);
+    setTimeout(() => {
+      textarea.focus();
+      textarea.setSelectionRange(start, start + replacement.length);
+    }, 50);
+  };
+
   const handleContentKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if ((e.ctrlKey || e.metaKey) && (e.key === 'b' || e.key === 'B')) {
       e.preventDefault();
@@ -151,6 +195,38 @@ export const PostEditor: React.FC<PostEditorProps> = ({
     } else if ((e.ctrlKey || e.metaKey) && (e.key === 'k' || e.key === 'K')) {
       e.preventDefault();
       handleInsertLink();
+    } else if (e.key === 'Enter') {
+      const textarea = contentRef.current;
+      if (textarea) {
+        const start = textarea.selectionStart;
+        const currentLine = content.substring(0, start).split('\n').pop() || '';
+        if (currentLine.startsWith('• ') || currentLine.startsWith('- ')) {
+          const bulletPrefix = currentLine.startsWith('• ') ? '• ' : '- ';
+          if (currentLine.trim() === '•' || currentLine.trim() === '-') {
+            e.preventDefault();
+            const beforeLine = content.substring(0, start - currentLine.length);
+            const after = content.substring(start);
+            const newContent = beforeLine + after;
+            setContent(newContent);
+            setTimeout(() => {
+              textarea.focus();
+              textarea.setSelectionRange(beforeLine.length, beforeLine.length);
+            }, 50);
+            return;
+          }
+          e.preventDefault();
+          const insertStr = `\n${bulletPrefix}`;
+          const before = content.substring(0, start);
+          const after = content.substring(start);
+          const newContent = before + insertStr + after;
+          setContent(newContent);
+          setTimeout(() => {
+            textarea.focus();
+            textarea.setSelectionRange(start + insertStr.length, start + insertStr.length);
+          }, 50);
+          return;
+        }
+      }
     }
   };
 
@@ -864,6 +940,15 @@ export const PostEditor: React.FC<PostEditorProps> = ({
                       <LinkIcon size={13} className="text-gold" />
                       <span>+ Link</span>
                     </button>
+                    <button
+                      type="button"
+                      onClick={handleInsertBullet}
+                      className="px-2.5 py-1 bg-[#142B40] hover:bg-[#1C3A52] text-white border border-gold/40 rounded-lg text-xs font-bold transition-colors flex items-center gap-1 shadow-sm"
+                      title="Add Bullet Point"
+                    >
+                      <List size={13} className="text-gold" />
+                      <span>• Bullet</span>
+                    </button>
                     <span className="text-[#1C3A52]">|</span>
                     <button
                       type="button"
@@ -1047,6 +1132,19 @@ export const PostEditor: React.FC<PostEditorProps> = ({
                       }
                       if (pTrimmed.startsWith('### ')) {
                         return <h3 key={pIdx} className="text-base font-semibold text-[#FFD782]">{pTrimmed.replace('### ', '')}</h3>;
+                      }
+                      if (pTrimmed.split('\n').some((l) => l.trim().startsWith('• ') || l.trim().startsWith('- '))) {
+                        const items = pTrimmed.split('\n').map((l) => l.trim()).filter(Boolean);
+                        return (
+                          <ul key={pIdx} className="my-3 space-y-1.5 pl-2 list-none">
+                            {items.map((item, itemIdx) => (
+                              <li key={itemIdx} className="flex items-start gap-2 text-[#B9C6D6] text-sm">
+                                <span className="text-gold font-bold select-none text-xs mt-0.5">•</span>
+                                <span className="flex-1"><RichText content={item.replace(/^[•\-\*]\s*/, '')} /></span>
+                              </li>
+                            ))}
+                          </ul>
+                        );
                       }
                       return <p key={pIdx}><RichText content={pTrimmed} /></p>;
                     });

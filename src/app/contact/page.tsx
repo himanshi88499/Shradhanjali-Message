@@ -90,9 +90,6 @@ export default function ContactPage() {
 
         {/* Hero Section */}
         <div className="mt-4 mb-12">
-          <span className="text-gold font-bold tracking-widest text-xs sm:text-sm uppercase">
-            {badge}
-          </span>
           <h1 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-theme-primary mt-2 mb-3">
             {pageTitle}
           </h1>
