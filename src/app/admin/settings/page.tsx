@@ -1,7 +1,8 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { Save, CheckCircle2, Settings, Globe, Share2, Shield, Code, Search, DollarSign } from 'lucide-react';
+import Link from 'next/link';
+import { Save, CheckCircle2, Settings, Globe, Share2, Shield, Code, Search, DollarSign, ExternalLink } from 'lucide-react';
 import { SiteSettings } from '@/lib/types';
 
 export default function AdminSettingsPage() {
@@ -315,6 +316,26 @@ export default function AdminSettingsPage() {
       {/* Tab 4: Technical, SEO, Ads & Custom Code Injection */}
       {activeTab === 'technical' && (
         <div className="bg-[#0B1D2D] border border-[#1C3A52] rounded-2xl p-6 card-glow space-y-5 text-xs">
+          {/* Direct Link to Homepage SEO Management */}
+          <div className="p-4 rounded-xl bg-gold/10 border border-gold/40 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div>
+              <div className="text-gold font-bold flex items-center gap-2">
+                <Search size={15} />
+                <span>Homepage Meta Title, Description & Keywords</span>
+              </div>
+              <p className="text-[11px] text-[#B9C6D6] mt-0.5">
+                Configure Homepage Google search snippet, focus keywords, canonical URL, and OG share image with live preview.
+              </p>
+            </div>
+            <Link
+              href="/admin/seo"
+              className="px-4 py-2 bg-gold hover:bg-[#ffd782] text-[#061321] text-xs font-bold rounded-xl flex items-center gap-1.5 shrink-0 transition-colors shadow-sm self-start sm:self-auto"
+            >
+              <span>Manage Homepage SEO</span>
+              <ExternalLink size={12} />
+            </Link>
+          </div>
+
           {/* Google Search Console HTML Tag Verification */}
           <div className="p-4 rounded-xl bg-[#061321] border border-[#1C3A52] space-y-2">
             <div className="flex items-center gap-2 text-gold font-bold">

@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { revalidatePath } from 'next/cache';
 import { requireAuth } from '@/lib/auth';
 import { getPosts, savePost } from '@/lib/db';
 import { Post } from '@/lib/types';
@@ -32,8 +33,20 @@ export async function POST(req: NextRequest) {
       authorId: body.authorId || user.userId,
     });
 
+    try {
+      revalidatePath('/', 'layout');
+      revalidatePath('/posts');
+      revalidatePath('/categories');
+      if (saved.slug) {
+        revalidatePath(`/post/${saved.slug}`);
+      }
+    } catch (e) {
+      // Ignore in dev
+    }
+
     return NextResponse.json({ success: true, post: saved });
   } catch (err: any) {
     return NextResponse.json({ error: err.message || 'Error saving post' }, { status: 500 });
   }
 }
+

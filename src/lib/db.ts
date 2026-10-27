@@ -339,8 +339,47 @@ export function getAuthors(): Author[] {
 
 export function getAuthorById(id?: string): Author | undefined {
   const db = getDb();
+  if (!db.authors || db.authors.length === 0) return undefined;
   if (!id) return db.authors[0];
   return db.authors.find((a) => a.id === id) || db.authors[0];
+}
+
+export function saveAuthor(author: Author): Author {
+  const db = getDb();
+  if (!db.authors) db.authors = [];
+  const targetId = author.id || 'author-1';
+  const index = db.authors.findIndex((a) => a.id === targetId);
+  if (index >= 0) {
+    db.authors[index] = {
+      ...db.authors[index],
+      ...author,
+      id: targetId,
+      socials: {
+        ...(db.authors[index].socials || {}),
+        ...(author.socials || {}),
+      },
+    };
+    saveDb(db);
+    return db.authors[index];
+  } else {
+    const newAuthor: Author = {
+      ...author,
+      id: targetId,
+    };
+    db.authors.push(newAuthor);
+    saveDb(db);
+    return newAuthor;
+  }
+}
+
+export function deleteAuthor(id: string): boolean {
+  const db = getDb();
+  if (!db.authors) return false;
+  const index = db.authors.findIndex((a) => a.id === id);
+  if (index === -1) return false;
+  db.authors.splice(index, 1);
+  saveDb(db);
+  return true;
 }
 
 // ----------------- SETTINGS & MENUS -----------------

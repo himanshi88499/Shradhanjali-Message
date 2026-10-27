@@ -48,7 +48,12 @@ export default function AdminPostsPage() {
         console.error(err);
       }
     } else {
-      if (!window.confirm(`Move post "${title}" to Trash?`)) return;
+      if (
+        !window.confirm(
+          `Delete post "${title}"?\n\nThis post will be completely removed from the website (/posts, categories, and homepage) and moved to Trash.`
+        )
+      )
+        return;
       try {
         const res = await fetch(`/api/admin/posts/${id}`, { method: 'DELETE' });
         if (res.ok) {

@@ -2,7 +2,7 @@ import React from 'react';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import type { Metadata } from 'next';
-import { Calendar, Clock, Sparkles } from 'lucide-react';
+import { Calendar, Clock, Sparkles, Globe } from 'lucide-react';
 import { TwitterIcon, InstagramIcon, YoutubeIcon } from '@/components/SocialIcons';
 import { getPostBySlug, getPosts, getAuthorById, getCategories } from '@/lib/db';
 import { Header } from '@/components/Header';
@@ -45,6 +45,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     },
   };
 }
+
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
 
 interface ContentBlock {
   type: 'h2' | 'h3' | 'paragraph' | 'card' | 'image' | 'list';
@@ -526,7 +529,7 @@ export default async function SingleArticlePage({ params }: Props) {
             {author && (
               <div className="mt-4 sm:mt-5 bg-theme-card border border-theme rounded-2xl p-5 sm:p-6 card-glow transition-colors">
                 <div className="text-sm font-semibold text-gold mb-3 flex items-center gap-2">
-                  <span>About the Author</span>
+                  <span>{author.boxTitle || 'About the Author'}</span>
                 </div>
                 <div className="flex flex-col sm:flex-row items-center sm:items-start gap-5">
                   <div className="relative w-20 h-20 rounded-full overflow-hidden border-2 border-gold shrink-0 shadow-lg bg-theme-main">
@@ -542,42 +545,65 @@ export default async function SingleArticlePage({ params }: Props) {
                         <h4 className="text-lg font-bold text-theme-primary">
                           {author.name}
                         </h4>
-                        <p className="text-xs text-gold">{author.roleTitle}</p>
+                        {author.roleTitle && (
+                          <p className="text-xs text-gold">{author.roleTitle}</p>
+                        )}
                       </div>
-                      {/* Social icons */}
-                      <div className="flex items-center justify-center sm:justify-end space-x-2 text-theme-muted">
-                        <a
-                          href="https://x.com"
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="p-1.5 rounded-full hover:text-gold transition-colors"
-                          aria-label="Twitter"
-                        >
-                          <TwitterIcon size={16} />
-                        </a>
-                        <a
-                          href="https://instagram.com"
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="p-1.5 rounded-full hover:text-gold transition-colors"
-                          aria-label="Instagram"
-                        >
-                          <InstagramIcon size={16} />
-                        </a>
-                        <a
-                          href="https://youtube.com"
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="p-1.5 rounded-full hover:text-gold transition-colors"
-                          aria-label="YouTube"
-                        >
-                          <YoutubeIcon size={16} />
-                        </a>
-                      </div>
+                      {/* Dynamic Social links */}
+                      {author.socials && (
+                        <div className="flex items-center justify-center sm:justify-end space-x-2 text-theme-muted">
+                          {author.socials.twitter && (
+                            <a
+                              href={author.socials.twitter}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="p-1.5 rounded-full hover:text-gold transition-colors"
+                              aria-label="Twitter / X"
+                            >
+                              <TwitterIcon size={16} />
+                            </a>
+                          )}
+                          {author.socials.instagram && (
+                            <a
+                              href={author.socials.instagram}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="p-1.5 rounded-full hover:text-gold transition-colors"
+                              aria-label="Instagram"
+                            >
+                              <InstagramIcon size={16} />
+                            </a>
+                          )}
+                          {author.socials.youtube && (
+                            <a
+                              href={author.socials.youtube}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="p-1.5 rounded-full hover:text-gold transition-colors"
+                              aria-label="YouTube"
+                            >
+                              <YoutubeIcon size={16} />
+                            </a>
+                          )}
+                          {author.socials.website && (
+                            <a
+                              href={author.socials.website}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="p-1.5 rounded-full hover:text-gold transition-colors"
+                              aria-label="Website"
+                            >
+                              <Globe size={16} />
+                            </a>
+                          )}
+                        </div>
+                      )}
                     </div>
-                    <p className="text-xs sm:text-sm text-theme-secondary leading-relaxed">
-                      {author.bio}
-                    </p>
+                    {author.bio && (
+                      <p className="text-xs sm:text-sm text-theme-secondary leading-relaxed">
+                        {author.bio}
+                      </p>
+                    )}
                   </div>
                 </div>
               </div>

@@ -15,6 +15,7 @@ export interface Author {
   roleTitle: string;
   bio: string;
   avatar: string;
+  boxTitle?: string;
   socials?: {
     twitter?: string;
     instagram?: string;
@@ -142,6 +143,9 @@ export interface Page {
   updatedAt: string;
   seoTitle?: string;
   seoDescription?: string;
+  seoKeywords?: string;
+  ogImage?: string;
+  canonicalUrl?: string;
   metadata?: PageMetaSection;
 }
 

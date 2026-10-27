@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import {
   Save,
   ArrowLeft,
@@ -21,6 +22,8 @@ import {
   Bold,
   Link as LinkIcon,
   List,
+  UserCheck,
+  ExternalLink,
 } from 'lucide-react';
 import { RichText } from '@/components/RichText';
 import { Post, Category, MessageCard } from '@/lib/types';
@@ -1295,6 +1298,27 @@ export const PostEditor: React.FC<PostEditorProps> = ({
                 onChange={(e) => setShowTableOfContents(e.target.checked)}
                 className="w-4 h-4 accent-[#F5C45E]"
               />
+            </div>
+
+            {/* Author Box Profile Shortcut */}
+            <div className="pt-3 border-t border-[#1C3A52]/60 space-y-2">
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-semibold text-[#B9C6D6] flex items-center gap-1.5">
+                  <UserCheck size={14} className="text-gold" />
+                  <span>Author Box Profile</span>
+                </span>
+                <Link
+                  href="/admin/author"
+                  target="_blank"
+                  className="text-[11px] text-gold hover:underline flex items-center gap-1 font-bold"
+                >
+                  <span>Edit Author Box</span>
+                  <ExternalLink size={10} />
+                </Link>
+              </div>
+              <p className="text-[10px] text-[#8495A9] leading-relaxed">
+                Post displays author photo, name, bio, and social links at the end of the article.
+              </p>
             </div>
           </div>
 
