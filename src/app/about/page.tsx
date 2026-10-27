@@ -221,8 +221,8 @@ export default function AboutPage() {
         {/* Our Team */}
         <div className="mb-16">
           <div className="mb-8">
-            <h3 className="text-2xl font-bold text-white mb-2">{teamTitle}</h3>
-            <p className="text-sm text-[#B9C6D6]">{teamSubtitle}</p>
+            <h3 className="text-2xl font-bold text-white mb-2"><RichText content={teamTitle} /></h3>
+            <p className="text-sm text-[#B9C6D6]"><RichText content={teamSubtitle} /></p>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
@@ -245,7 +245,7 @@ export default function AboutPage() {
                 <h4 className="text-base font-bold text-white">{member.name}</h4>
                 <p className="text-xs text-gold mb-2">{member.role}</p>
                 <p className="text-xs text-[#B9C6D6] leading-relaxed">
-                  {member.bio}
+                  <RichText content={member.bio} />
                 </p>
               </div>
             ))}

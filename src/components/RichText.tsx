@@ -42,7 +42,7 @@ export const RichText: React.FC<RichTextProps> = ({ content, className }) => {
                 href={href}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-gold underline decoration-gold/60 hover:decoration-gold hover:text-[#ffd782] font-medium transition-colors inline"
+                className="text-gold no-underline hover:no-underline hover:text-[#ffd782] font-semibold transition-colors inline"
               >
                 {label}
               </a>
@@ -53,7 +53,7 @@ export const RichText: React.FC<RichTextProps> = ({ content, className }) => {
             <Link
               key={index}
               href={href}
-              className="text-gold underline decoration-gold/60 hover:decoration-gold hover:text-[#ffd782] font-medium transition-colors inline"
+              className="text-gold no-underline hover:no-underline hover:text-[#ffd782] font-semibold transition-colors inline"
             >
               {label}
             </Link>

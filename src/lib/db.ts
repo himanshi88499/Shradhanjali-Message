@@ -45,9 +45,26 @@ function ensureDbFile(): DatabaseSchema {
         if (!found) {
           cachedDb!.pages.push(JSON.parse(JSON.stringify(seedPage)));
           needPersist = true;
-        } else if (!found.metadata) {
-          found.metadata = JSON.parse(JSON.stringify(seedPage.metadata || {}));
-          needPersist = true;
+        } else {
+          if (!found.metadata) {
+            found.metadata = JSON.parse(JSON.stringify(seedPage.metadata || {}));
+            needPersist = true;
+          } else if (seedPage.slug === 'about') {
+            if (!found.metadata.teamMembers || found.metadata.teamMembers.length === 0) {
+              found.metadata.teamMembers = JSON.parse(JSON.stringify(seedPage.metadata?.teamMembers || []));
+              needPersist = true;
+            }
+            if (!found.metadata.teamTitle) {
+              found.metadata.teamTitle = seedPage.metadata?.teamTitle || 'અમારી ટીમ';
+              needPersist = true;
+            }
+            if (!found.metadata.teamSubtitle) {
+              found.metadata.teamSubtitle =
+                seedPage.metadata?.teamSubtitle ||
+                'અહીં અમને આ વિશેષ કાર્યમાં મદદ કરનાર, પ્રેરણા આપનાર અને સાથ આપનાર અમારા તમામ ટીમ મેમ્બરની માહિતી છે.';
+              needPersist = true;
+            }
+          }
         }
       });
     }

@@ -24,9 +24,35 @@ import {
   Layers,
   Bold,
   Link as LinkIcon,
+  UploadCloud,
+  Loader2,
 } from 'lucide-react';
 import { Page, PageMetaSection, PageValueCard, PageTeamMember } from '@/lib/types';
 import { LotusIcon } from '@/components/LotusLogo';
+
+const DEFAULT_ABOUT_TEAM: PageTeamMember[] = [
+  {
+    id: 1,
+    name: 'ઉષા બાતા',
+    role: 'સ્થાપક અને કન્ટેન્ટ મેનેજર',
+    bio: 'શબ્દો દ્વારા લોકો સુધી ભાવનાઓ પહોંચાડવાનો પ્રયત્ન.',
+    image: '/images/author-hina.jpg',
+  },
+  {
+    id: 2,
+    name: 'ટેક સપોર્ટ',
+    role: 'ટેકનિકલ સહાય',
+    bio: 'સાઈટની ટેકનિકલ કામગીરી અને સુરક્ષા માટે જવાબદાર.',
+    image: '',
+  },
+  {
+    id: 3,
+    name: 'કન્ટેન્ટ ટીમ',
+    role: 'લેખક અને સંપાદન',
+    bio: 'પ્રમાણિત અને ગુણવત્તાસભર માહિતી પ્રદાન કરવા માટે.',
+    image: '',
+  },
+];
 
 export default function EditPage() {
   const router = useRouter();
@@ -47,6 +73,10 @@ export default function EditPage() {
   const aboutContentRef = useRef<HTMLTextAreaElement>(null);
   const contactContentRef = useRef<HTMLTextAreaElement>(null);
   const policyContentRef = useRef<HTMLTextAreaElement>(null);
+  const heroFileInputRef = useRef<HTMLInputElement>(null);
+
+  const [uploadingHero, setUploadingHero] = useState(false);
+  const [uploadingTeamIdx, setUploadingTeamIdx] = useState<number | null>(null);
 
   // Format selected text in a textarea as bold
   const applyBoldToTextarea = (
@@ -136,7 +166,7 @@ export default function EditPage() {
   };
 
   // Active section tab for rich pages
-  const [activeTab, setActiveTab] = useState<'hero' | 'widgets' | 'seo'>('hero');
+  const [activeTab, setActiveTab] = useState<'hero' | 'widgets' | 'team' | 'seo'>('hero');
 
   useEffect(() => {
     fetch('/api/admin/pages', { cache: 'no-store' })
@@ -150,12 +180,84 @@ export default function EditPage() {
             setContent(found.content || '');
             setSeoTitle(found.seoTitle || found.title || '');
             setSeoDescription(found.seoDescription || '');
-            setMetadata(found.metadata || {});
+
+            const meta: PageMetaSection = { ...(found.metadata || {}) };
+            if (found.slug === 'about') {
+              if (!meta.teamTitle) meta.teamTitle = 'અમારી ટીમ';
+              if (!meta.teamSubtitle) {
+                meta.teamSubtitle =
+                  'અહીં અમને આ વિશેષ કાર્યમાં મદદ કરનાર, પ્રેરણા આપનાર અને સાથ આપનાર અમારા તમામ ટીમ મેમ્બરની માહિતી છે.';
+              }
+              if (!meta.teamMembers || meta.teamMembers.length === 0) {
+                meta.teamMembers = DEFAULT_ABOUT_TEAM;
+              }
+            }
+            setMetadata(meta);
           }
         }
       })
       .catch((err) => console.error('Failed to load page:', err));
   }, [id]);
+
+  const handleUploadImageFile = async (file: File): Promise<string | null> => {
+    const fd = new FormData();
+    fd.append('file', file);
+    fd.append('title', file.name);
+
+    try {
+      const res = await fetch('/api/admin/media', {
+        method: 'POST',
+        body: fd,
+      });
+      const data = await res.json();
+      if (res.ok && (data.url || data.media?.url)) {
+        return data.url || data.media?.url;
+      } else {
+        alert(data.error || 'Failed to upload image.');
+        return null;
+      }
+    } catch (err) {
+      console.error(err);
+      alert('Error uploading image.');
+      return null;
+    }
+  };
+
+  const handleTeamPhotoUpload = async (index: number, e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setUploadingTeamIdx(index);
+    try {
+      const url = await handleUploadImageFile(file);
+      if (url) {
+        handleUpdateTeamMember(index, 'image', url);
+        setMessage('Photo uploaded successfully! Click "Save Page" to apply changes.');
+        setTimeout(() => setMessage(''), 4000);
+      }
+    } finally {
+      setUploadingTeamIdx(null);
+      e.target.value = '';
+    }
+  };
+
+  const handleHeroImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setUploadingHero(true);
+    try {
+      const url = await handleUploadImageFile(file);
+      if (url) {
+        updateMetaField('heroImage', url);
+        setMessage('Hero image uploaded successfully! Click "Save Page" to apply changes.');
+        setTimeout(() => setMessage(''), 4000);
+      }
+    } finally {
+      setUploadingHero(false);
+      e.target.value = '';
+    }
+  };
 
   const updateMetaField = <K extends keyof PageMetaSection>(key: K, value: PageMetaSection[K]) => {
     setMetadata((prev) => ({
@@ -362,11 +464,11 @@ export default function EditPage() {
 
       {/* Page Navigation Tabs (for About and Contact) */}
       {(isAboutPage || isContactPage) && (
-        <div className="flex border-b border-[#1C3A52] gap-2 pb-1">
+        <div className="flex border-b border-[#1C3A52] gap-2 pb-1 overflow-x-auto">
           <button
             type="button"
             onClick={() => setActiveTab('hero')}
-            className={`px-4 py-2 rounded-t-xl text-xs font-bold flex items-center gap-2 transition-colors ${
+            className={`px-4 py-2 rounded-t-xl text-xs font-bold flex items-center gap-2 transition-colors shrink-0 ${
               activeTab === 'hero'
                 ? 'bg-[#0B1D2D] text-gold border-t border-x border-[#1C3A52]'
                 : 'text-[#8495A9] hover:text-white'
@@ -379,20 +481,35 @@ export default function EditPage() {
           <button
             type="button"
             onClick={() => setActiveTab('widgets')}
-            className={`px-4 py-2 rounded-t-xl text-xs font-bold flex items-center gap-2 transition-colors ${
+            className={`px-4 py-2 rounded-t-xl text-xs font-bold flex items-center gap-2 transition-colors shrink-0 ${
               activeTab === 'widgets'
                 ? 'bg-[#0B1D2D] text-gold border-t border-x border-[#1C3A52]'
                 : 'text-[#8495A9] hover:text-white'
             }`}
           >
             <Layers size={14} />
-            <span>Page Widgets & Sections</span>
+            <span>{isAboutPage ? 'Value Cards & Story' : 'Page Widgets & Sections'}</span>
           </button>
+
+          {isAboutPage && (
+            <button
+              type="button"
+              onClick={() => setActiveTab('team')}
+              className={`px-4 py-2 rounded-t-xl text-xs font-bold flex items-center gap-2 transition-colors shrink-0 ${
+                activeTab === 'team'
+                  ? 'bg-[#0B1D2D] text-gold border-t border-x border-[#1C3A52]'
+                  : 'text-[#8495A9] hover:text-white'
+              }`}
+            >
+              <Users size={14} />
+              <span>Our Team (અમારી ટીમ)</span>
+            </button>
+          )}
 
           <button
             type="button"
             onClick={() => setActiveTab('seo')}
-            className={`px-4 py-2 rounded-t-xl text-xs font-bold flex items-center gap-2 transition-colors ${
+            className={`px-4 py-2 rounded-t-xl text-xs font-bold flex items-center gap-2 transition-colors shrink-0 ${
               activeTab === 'seo'
                 ? 'bg-[#0B1D2D] text-gold border-t border-x border-[#1C3A52]'
                 : 'text-[#8495A9] hover:text-white'
@@ -509,18 +626,46 @@ export default function EditPage() {
                 />
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2 border-t border-[#1C3A52]/50">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2 border-t border-[#1C3A52]/50 items-end">
                 <div>
-                  <label className="block text-xs font-semibold text-[#B9C6D6] mb-1.5">
-                    Hero Image URL
-                  </label>
-                  <input
-                    type="text"
-                    value={metadata.heroImage || ''}
-                    onChange={(e) => updateMetaField('heroImage', e.target.value)}
-                    className="w-full bg-[#061321] border border-[#1C3A52] focus:border-gold rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none"
-                    placeholder="/images/hero-candle.jpg"
-                  />
+                  <div className="flex items-center justify-between mb-1.5">
+                    <label className="block text-xs font-semibold text-[#B9C6D6]">
+                      Hero Image
+                    </label>
+                    <input
+                      type="file"
+                      ref={heroFileInputRef}
+                      accept="image/*"
+                      className="hidden"
+                      onChange={handleHeroImageUpload}
+                    />
+                    <button
+                      type="button"
+                      onClick={() => heroFileInputRef.current?.click()}
+                      disabled={uploadingHero}
+                      className="px-2.5 py-1 bg-[#142B40] hover:bg-[#1C3A52] text-gold border border-gold/40 rounded-lg text-xs font-bold flex items-center gap-1 transition-colors"
+                      title="Upload Hero Image"
+                    >
+                      <UploadCloud size={13} />
+                      <span>{uploadingHero ? 'Uploading...' : 'Upload Image'}</span>
+                    </button>
+                  </div>
+                  <div className="flex gap-2 items-center">
+                    {metadata.heroImage && (
+                      <img
+                        src={metadata.heroImage}
+                        alt="Hero preview"
+                        className="w-10 h-10 object-cover rounded-lg border border-[#1C3A52] shrink-0 bg-[#061321]"
+                      />
+                    )}
+                    <input
+                      type="text"
+                      value={metadata.heroImage || ''}
+                      onChange={(e) => updateMetaField('heroImage', e.target.value)}
+                      className="w-full bg-[#061321] border border-[#1C3A52] focus:border-gold rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none"
+                      placeholder="/images/hero-candle.jpg"
+                    />
+                  </div>
                 </div>
 
                 <div>
@@ -539,10 +684,12 @@ export default function EditPage() {
             </div>
           )}
 
-          {/* Tab 2: Widgets & Sections */}
-          {activeTab === 'widgets' && (
+          {/* Tab 2: Widgets & Sections / Tab 3: Our Team */}
+          {(activeTab === 'widgets' || activeTab === 'team') && (
             <div className="space-y-6">
-              {/* Widget 1: Value Cards */}
+              {activeTab === 'widgets' && (
+                <>
+                  {/* Widget 1: Value Cards */}
               <div className="bg-[#0B1D2D] border border-[#1C3A52] rounded-2xl p-6 card-glow space-y-4">
                 <div className="flex items-center justify-between border-b border-[#1C3A52] pb-3">
                   <div>
@@ -676,26 +823,28 @@ export default function EditPage() {
                   />
                 </div>
               </div>
+                </>
+              )}
 
-              {/* Widget 3: Our Team */}
-              <div className="bg-[#0B1D2D] border border-[#1C3A52] rounded-2xl p-6 card-glow space-y-4">
-                <div className="flex items-center justify-between border-b border-[#1C3A52] pb-3">
+              {/* Widget 3: Our Team Section (Visible on 'team' and 'widgets' tabs) */}
+              <div id="team-section" className="bg-[#0B1D2D] border border-[#1C3A52] rounded-2xl p-6 card-glow space-y-5">
+                <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[#1C3A52] pb-3">
                   <div>
                     <h2 className="text-base font-bold text-white flex items-center gap-2">
-                      <Users size={16} className="text-gold" />
-                      <span>Our Team Section</span>
+                      <Users size={18} className="text-gold" />
+                      <span>Our Team Section (અમારી ટીમ)</span>
                     </h2>
                     <p className="text-xs text-[#8495A9] mt-0.5">
-                      Introduce key members and management team.
+                      Manage team members, roles, bio descriptions, and upload member photos.
                     </p>
                   </div>
                   <button
                     type="button"
                     onClick={handleAddTeamMember}
-                    className="flex items-center gap-1 px-3 py-1.5 bg-[#061321] hover:bg-[#142B40] text-gold text-xs font-semibold rounded-xl border border-[#1C3A52]"
+                    className="flex items-center gap-1.5 px-3.5 py-2 bg-[#142B40] hover:bg-[#1C3A52] text-gold text-xs font-bold rounded-xl border border-gold/40 hover:border-gold shadow-sm transition-all"
                   >
-                    <Plus size={14} />
-                    <span>Add Member</span>
+                    <Plus size={15} />
+                    <span>+ Add New Member</span>
                   </button>
                 </div>
 
@@ -708,7 +857,7 @@ export default function EditPage() {
                       type="text"
                       value={metadata.teamTitle || ''}
                       onChange={(e) => updateMetaField('teamTitle', e.target.value)}
-                      className="w-full bg-[#061321] border border-[#1C3A52] focus:border-gold rounded-xl px-4 py-2 text-xs text-white focus:outline-none"
+                      className="w-full bg-[#061321] border border-[#1C3A52] focus:border-gold rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none"
                       placeholder="અમારી ટીમ"
                     />
                   </div>
@@ -720,79 +869,154 @@ export default function EditPage() {
                       type="text"
                       value={metadata.teamSubtitle || ''}
                       onChange={(e) => updateMetaField('teamSubtitle', e.target.value)}
-                      className="w-full bg-[#061321] border border-[#1C3A52] focus:border-gold rounded-xl px-4 py-2 text-xs text-white focus:outline-none"
-                      placeholder="અમને આ કાર્યમાં મદદ કરનાર તમામનો આભાર."
+                      className="w-full bg-[#061321] border border-[#1C3A52] focus:border-gold rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none"
+                      placeholder="અહીં અમને આ વિશેષ કાર્યમાં મદદ કરનાર, પ્રેરણા આપનાર અને સાથ આપનાર અમારા તમામ ટીમ મેમ્બરની માહિતી છે."
                     />
                   </div>
                 </div>
 
-                <div className="space-y-3 pt-2">
-                  {(metadata.teamMembers || []).map((member, idx) => (
-                    <div
-                      key={member.id || idx}
-                      className="bg-[#061321] border border-[#1C3A52] rounded-xl p-4 relative group grid grid-cols-1 sm:grid-cols-3 gap-3 items-start"
-                    >
+                <div className="space-y-4 pt-2">
+                  {(metadata.teamMembers || []).length === 0 ? (
+                    <div className="p-8 text-center border border-dashed border-[#1C3A52] rounded-xl text-xs text-[#8495A9] space-y-2">
+                      <p>No team members added yet.</p>
                       <button
                         type="button"
-                        onClick={() => handleRemoveTeamMember(idx)}
-                        className="absolute top-2 right-2 text-red-400 hover:text-red-300 p-1 rounded-lg hover:bg-red-500/10"
-                        title="Remove Member"
+                        onClick={handleAddTeamMember}
+                        className="px-4 py-2 bg-gold text-[#061321] rounded-xl text-xs font-bold inline-flex items-center gap-1.5"
                       >
-                        <Trash2 size={14} />
+                        <Plus size={14} /> Add First Team Member
                       </button>
-
-                      <div>
-                        <label className="block text-[10px] font-semibold text-[#8495A9] mb-1">
-                          Name
-                        </label>
-                        <input
-                          type="text"
-                          value={member.name}
-                          onChange={(e) => handleUpdateTeamMember(idx, 'name', e.target.value)}
-                          className="w-full bg-[#0B1D2D] border border-[#1C3A52] rounded-lg px-2.5 py-1.5 text-xs text-white focus:outline-none"
-                          placeholder="નામ"
-                        />
-                        <label className="block text-[10px] font-semibold text-[#8495A9] mt-2 mb-1">
-                          Role / Title
-                        </label>
-                        <input
-                          type="text"
-                          value={member.role}
-                          onChange={(e) => handleUpdateTeamMember(idx, 'role', e.target.value)}
-                          className="w-full bg-[#0B1D2D] border border-[#1C3A52] rounded-lg px-2.5 py-1.5 text-xs text-white focus:outline-none"
-                          placeholder="સ્થાપક અને કન્ટેન્ટ મેનેજર"
-                        />
-                      </div>
-
-                      <div className="sm:col-span-2">
-                        <label className="block text-[10px] font-semibold text-[#8495A9] mb-1">
-                          Bio / Contribution
-                        </label>
-                        <textarea
-                          rows={2}
-                          value={member.bio}
-                          onChange={(e) => handleUpdateTeamMember(idx, 'bio', e.target.value)}
-                          className="w-full bg-[#0B1D2D] border border-[#1C3A52] rounded-lg p-2 text-xs text-white focus:outline-none"
-                          placeholder="શબ્દો દ્વારા લોકો સુધી ભાવનાઓ પહોંચાડવાનો પ્રયત્ન."
-                        />
-                        <label className="block text-[10px] font-semibold text-[#8495A9] mt-2 mb-1">
-                          Photo URL (Optional)
-                        </label>
-                        <input
-                          type="text"
-                          value={member.image || ''}
-                          onChange={(e) => handleUpdateTeamMember(idx, 'image', e.target.value)}
-                          className="w-full bg-[#0B1D2D] border border-[#1C3A52] rounded-lg px-2.5 py-1.5 text-xs text-white focus:outline-none"
-                          placeholder="/images/author-hina.jpg"
-                        />
-                      </div>
                     </div>
-                  ))}
+                  ) : (
+                    (metadata.teamMembers || []).map((member, idx) => (
+                      <div
+                        key={member.id || idx}
+                        className="bg-[#061321] border border-[#1C3A52] hover:border-[#285375] rounded-xl p-4 sm:p-5 relative group transition-colors grid grid-cols-1 md:grid-cols-12 gap-5 items-center"
+                      >
+                        <button
+                          type="button"
+                          onClick={() => handleRemoveTeamMember(idx)}
+                          className="absolute top-3 right-3 text-red-400 hover:text-red-300 p-1.5 rounded-lg hover:bg-red-500/10 transition-colors"
+                          title="Remove Member"
+                        >
+                          <Trash2 size={16} />
+                        </button>
+
+                        {/* Column 1: Photo Preview & Upload Controls */}
+                        <div className="md:col-span-4 flex flex-col items-center text-center p-3.5 bg-[#0B1D2D]/60 rounded-xl border border-[#1C3A52]/60 space-y-2.5">
+                          <div className="w-24 h-24 rounded-full overflow-hidden border-2 border-gold shadow-lg bg-[#142B40] flex items-center justify-center text-gold relative">
+                            {member.image ? (
+                              <img
+                                src={member.image}
+                                alt={member.name || 'Member Photo'}
+                                className="w-full h-full object-cover"
+                              />
+                            ) : (
+                              <Users size={36} className="text-gold/50" />
+                            )}
+                            {uploadingTeamIdx === idx && (
+                              <div className="absolute inset-0 bg-[#061321]/80 flex flex-col items-center justify-center text-[10px] text-gold font-bold">
+                                <Loader2 size={22} className="animate-spin text-gold mb-1" />
+                                <span>Uploading...</span>
+                              </div>
+                            )}
+                          </div>
+
+                          <input
+                            type="file"
+                            id={`team-upload-${idx}`}
+                            accept="image/*"
+                            className="hidden"
+                            onChange={(e) => handleTeamPhotoUpload(idx, e)}
+                          />
+
+                          <div className="flex flex-col gap-1.5 w-full">
+                            <label
+                              htmlFor={`team-upload-${idx}`}
+                              className="cursor-pointer px-3 py-1.5 bg-[#142B40] hover:bg-[#1C3A52] text-gold border border-gold/40 hover:border-gold rounded-lg text-xs font-bold transition-all flex items-center justify-center gap-1.5 shadow-sm active:scale-95"
+                            >
+                              <UploadCloud size={14} />
+                              <span>{uploadingTeamIdx === idx ? 'Uploading...' : member.image ? 'Change Photo' : 'Upload Photo'}</span>
+                            </label>
+
+                            {member.image && (
+                              <button
+                                type="button"
+                                onClick={() => handleUpdateTeamMember(idx, 'image', '')}
+                                className="text-[11px] text-red-400 hover:text-red-300 hover:underline pt-0.5"
+                              >
+                                Remove Photo
+                              </button>
+                            )}
+                          </div>
+                        </div>
+
+                        {/* Column 2: Member Details */}
+                        <div className="md:col-span-8 space-y-3">
+                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                            <div>
+                              <label className="block text-[11px] font-bold text-[#B9C6D6] mb-1">
+                                Full Name (નામ)
+                              </label>
+                              <input
+                                type="text"
+                                value={member.name}
+                                onChange={(e) => handleUpdateTeamMember(idx, 'name', e.target.value)}
+                                className="w-full bg-[#0B1D2D] border border-[#1C3A52] focus:border-gold rounded-xl px-3 py-2 text-xs text-white focus:outline-none"
+                                placeholder="નામ (e.g. ઉષા બાતા)"
+                              />
+                            </div>
+
+                            <div>
+                              <label className="block text-[11px] font-bold text-[#B9C6D6] mb-1">
+                                Role / Title (હોદ્દો)
+                              </label>
+                              <input
+                                type="text"
+                                value={member.role}
+                                onChange={(e) => handleUpdateTeamMember(idx, 'role', e.target.value)}
+                                className="w-full bg-[#0B1D2D] border border-[#1C3A52] focus:border-gold rounded-xl px-3 py-2 text-xs text-white focus:outline-none"
+                                placeholder="હોદ્દો (e.g. સ્થાપક અને કન્ટેન્ટ મેનેજર)"
+                              />
+                            </div>
+                          </div>
+
+                          <div>
+                            <label className="block text-[11px] font-bold text-[#B9C6D6] mb-1">
+                              Bio / Contribution (પરિચય)
+                            </label>
+                            <textarea
+                              rows={2}
+                              value={member.bio}
+                              onChange={(e) => handleUpdateTeamMember(idx, 'bio', e.target.value)}
+                              className="w-full bg-[#0B1D2D] border border-[#1C3A52] focus:border-gold rounded-xl p-2.5 text-xs text-white focus:outline-none leading-relaxed"
+                              placeholder="શબ્દો દ્વારા લોકો સુધી ભાવનાઓ પહોંચાડવાનો પ્રયત્ન."
+                            />
+                          </div>
+
+                          <div>
+                            <label className="block text-[10px] font-semibold text-[#8495A9] mb-1">
+                              Image URL (Auto-set on upload or enter custom URL)
+                            </label>
+                            <input
+                              type="text"
+                              value={member.image || ''}
+                              onChange={(e) => handleUpdateTeamMember(idx, 'image', e.target.value)}
+                              className="w-full bg-[#0B1D2D] border border-[#1C3A52] rounded-lg px-2.5 py-1.5 text-[11px] text-[#8495A9] focus:text-white focus:border-gold focus:outline-none font-mono"
+                              placeholder="/images/author-hina.jpg"
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    ))
+                  )}
                 </div>
               </div>
 
-              {/* Widget 4: Bottom Call To Action Banner */}
-              <div className="bg-[#0B1D2D] border border-[#1C3A52] rounded-2xl p-6 card-glow space-y-4">
+              {activeTab === 'widgets' && (
+                <>
+                  {/* Widget 4: Bottom Call To Action Banner */}
+                  <div className="bg-[#0B1D2D] border border-[#1C3A52] rounded-2xl p-6 card-glow space-y-4">
                 <h2 className="text-base font-bold text-white flex items-center gap-2 border-b border-[#1C3A52] pb-3">
                   <Award size={16} className="text-gold" />
                   <span>Bottom Banner CTA Widget</span>
@@ -849,6 +1073,8 @@ export default function EditPage() {
                   </div>
                 </div>
               </div>
+                </>
+              )}
             </div>
           )}
         </>
