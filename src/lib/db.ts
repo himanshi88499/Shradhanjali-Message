@@ -25,6 +25,25 @@ function ensureDbFile(): DatabaseSchema {
 
     const data = fs.readFileSync(DB_FILE, 'utf-8');
     cachedDb = JSON.parse(data) as DatabaseSchema;
+
+    // Ensure pages have all seed metadata if not explicitly set
+    if (cachedDb && Array.isArray(cachedDb.pages)) {
+      cachedDb.pages = cachedDb.pages.map((p) => {
+        const seedMatch = initialDatabase.pages.find((sp) => sp.slug === p.slug);
+        if (seedMatch) {
+          return {
+            ...seedMatch,
+            ...p,
+            metadata: {
+              ...(seedMatch.metadata || {}),
+              ...(p.metadata || {}),
+            },
+          };
+        }
+        return p;
+      });
+    }
+
     return cachedDb;
   } catch (err) {
     console.error('Error reading database file:', err);
@@ -255,17 +274,26 @@ export function getPageBySlug(slug: string): Page | undefined {
 export function savePage(page: Page): Page {
   const db = getDb();
   const index = db.pages.findIndex((p) => p.id === page.id || p.slug === page.slug);
+  const existing = index >= 0 ? db.pages[index] : undefined;
+
+  const updatedPage: Page = {
+    ...(existing || {}),
+    ...page,
+    metadata: {
+      ...(existing?.metadata || {}),
+      ...(page.metadata || {}),
+    },
+    id: page.id || existing?.id || `page-${Date.now()}`,
+    updatedAt: new Date().toISOString(),
+  };
+
   if (index >= 0) {
-    db.pages[index] = { ...page, updatedAt: new Date().toISOString() };
+    db.pages[index] = updatedPage;
   } else {
-    db.pages.push({
-      ...page,
-      id: page.id || `page-${Date.now()}`,
-      updatedAt: new Date().toISOString(),
-    });
+    db.pages.push(updatedPage);
   }
   saveDb(db);
-  return page;
+  return updatedPage;
 }
 
 // ----------------- AUTHORS -----------------

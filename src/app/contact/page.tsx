@@ -5,19 +5,71 @@ import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
 import { Breadcrumbs } from '@/components/Breadcrumbs';
 import { ContactForm } from '@/components/ContactForm';
-import { getSettings } from '@/lib/db';
+import { getPageBySlug, getSettings } from '@/lib/db';
 
-export const metadata: Metadata = {
-  title: 'Contact Us | Shradhanjali Msg — We Are Here For You',
-  description:
-    'Contact Shradhanjali Msg with any questions, tribute suggestions, or memorial guidance.',
-  alternates: {
-    canonical: '/contact',
-  },
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const page = getPageBySlug('contact');
+  return {
+    title:
+      page?.seoTitle ||
+      `${page?.title || 'Contact Us'} | Shradhanjali Msg — We Are Here For You`,
+    description:
+      page?.seoDescription ||
+      'Contact Shradhanjali Msg with any questions, tribute suggestions, or memorial guidance.',
+    alternates: {
+      canonical: '/contact',
+    },
+  };
+}
 
 export default function ContactPage() {
+  const page = getPageBySlug('contact');
   const settings = getSettings();
+  const meta = page?.metadata || {};
+
+  const badge = meta.badge || 'Shradhanjali Msg';
+  const pageTitle = page?.title || 'Contact Us';
+  const subtitle = meta.subtitle || 'We Are Here To Support You';
+  const content =
+    page?.content ||
+    'Whether you have an inquiry, feedback on memorial content, or wish to suggest a tribute message, please feel free to reach out to us.';
+  const heroDescription =
+    meta.heroDescription ||
+    'Every message is important to our team, and we will get back to you as soon as possible.';
+  const heroImage = meta.heroImage || '/images/lotus-water.jpg';
+  const heroImageAlt = meta.heroImageAlt || 'Shradhanjali Memorial Lotus';
+
+  const phoneTitle = meta.phoneTitle || 'Phone Assistance';
+  const phoneNumber =
+    meta.phoneNumber || settings.contactPhone || '+91 98765 43210';
+  const phoneHours = meta.phoneHours || '(Mon - Sat, 9:00 AM - 6:00 PM)';
+
+  const emailTitle = meta.emailTitle || 'Email Support';
+  const emailAddress =
+    meta.emailAddress || settings.contactEmail || 'support@shradhanjalimsg.com';
+  const emailResponseTime =
+    meta.emailResponseTime || '(Response within 24 hours)';
+
+  const addressTitle = meta.addressTitle || 'Editorial Office';
+  const addressText =
+    meta.addressText ||
+    settings.contactAddress ||
+    'Ahmedabad, Gujarat, India - 380001';
+
+  const quickChannelsTitle = meta.quickChannelsTitle || 'Quick Communication';
+  const quickChannelsSubtitle =
+    meta.quickChannelsSubtitle ||
+    'You may also reach our team via social channels.';
+  const whatsappButtonText =
+    meta.whatsappButtonText || 'Connect on WhatsApp';
+  const whatsappNumber =
+    meta.whatsappNumber || settings.socials?.whatsappNumber || '919876543210';
+  const whatsappMessage =
+    meta.whatsappMessage || 'Hello, I am reaching out regarding Shradhanjali Msg.';
+  const facebookButtonText =
+    meta.facebookButtonText || 'Connect on Facebook';
+  const facebookUrl =
+    meta.facebookUrl || settings.socials?.facebook || 'https://facebook.com';
 
   return (
     <div className="min-h-screen flex flex-col bg-theme-main text-theme-primary transition-colors">
@@ -28,37 +80,33 @@ export default function ContactPage() {
         <Breadcrumbs
           items={[
             { label: 'Home', url: '/' },
-            { label: 'Contact Us' },
+            { label: pageTitle },
           ]}
         />
 
         {/* Hero Section */}
         <div className="mt-4 mb-12">
           <span className="text-gold font-bold tracking-widest text-xs sm:text-sm uppercase">
-            Shradhanjali Msg
+            {badge}
           </span>
           <h1 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-theme-primary mt-2 mb-3">
-            Contact Us
+            {pageTitle}
           </h1>
           <h2 className="text-xl sm:text-2xl font-bold text-gold mb-6">
-            We Are Here To Support You
+            {subtitle}
           </h2>
 
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
             <div className="lg:col-span-7 space-y-4 text-base sm:text-lg text-theme-secondary leading-relaxed">
-              <p>
-                Whether you have an inquiry, feedback on memorial content, or wish to suggest a tribute message, please feel free to reach out to us.
-              </p>
-              <p>
-                Every message is important to our team, and we will get back to you as soon as possible.
-              </p>
+              <p>{content}</p>
+              {heroDescription && <p>{heroDescription}</p>}
             </div>
 
             <div className="lg:col-span-5">
               <div className="relative rounded-2xl overflow-hidden border border-theme aspect-[16/10] bg-theme-card shadow-xl">
                 <img
-                  src="/images/lotus-water.jpg"
-                  alt="Shradhanjali Memorial Lotus"
+                  src={heroImage}
+                  alt={heroImageAlt}
                   className="w-full h-full object-cover"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
@@ -75,9 +123,13 @@ export default function ContactPage() {
               <Phone size={22} />
             </div>
             <div>
-              <h3 className="text-sm font-semibold text-theme-primary mb-1">Phone Assistance</h3>
-              <p className="text-base font-bold text-gold">{settings.contactPhone}</p>
-              <p className="text-xs text-theme-muted mt-1">(Mon - Sat, 9:00 AM - 6:00 PM)</p>
+              <h3 className="text-sm font-semibold text-theme-primary mb-1">
+                {phoneTitle}
+              </h3>
+              <p className="text-base font-bold text-gold">{phoneNumber}</p>
+              {phoneHours && (
+                <p className="text-xs text-theme-muted mt-1">{phoneHours}</p>
+              )}
             </div>
           </div>
 
@@ -87,9 +139,17 @@ export default function ContactPage() {
               <Mail size={22} />
             </div>
             <div>
-              <h3 className="text-sm font-semibold text-theme-primary mb-1">Email Support</h3>
-              <p className="text-base font-bold text-gold break-all">{settings.contactEmail}</p>
-              <p className="text-xs text-theme-muted mt-1">(Response within 24 hours)</p>
+              <h3 className="text-sm font-semibold text-theme-primary mb-1">
+                {emailTitle}
+              </h3>
+              <p className="text-base font-bold text-gold break-all">
+                {emailAddress}
+              </p>
+              {emailResponseTime && (
+                <p className="text-xs text-theme-muted mt-1">
+                  {emailResponseTime}
+                </p>
+              )}
             </div>
           </div>
 
@@ -99,9 +159,11 @@ export default function ContactPage() {
               <MapPin size={22} />
             </div>
             <div>
-              <h3 className="text-sm font-semibold text-theme-primary mb-1">Editorial Office</h3>
+              <h3 className="text-sm font-semibold text-theme-primary mb-1">
+                {addressTitle}
+              </h3>
               <p className="text-sm font-medium text-theme-secondary leading-snug">
-                {settings.contactAddress}
+                {addressText}
               </p>
             </div>
           </div>
@@ -115,30 +177,34 @@ export default function ContactPage() {
 
           <div className="lg:col-span-5 space-y-6">
             <div className="bg-theme-card border border-theme rounded-2xl p-6 card-glow transition-colors">
-              <h3 className="text-base font-bold text-theme-primary mb-1">Quick Communication</h3>
+              <h3 className="text-base font-bold text-theme-primary mb-1">
+                {quickChannelsTitle}
+              </h3>
               <p className="text-xs text-theme-muted mb-4">
-                You may also reach our team via social channels.
+                {quickChannelsSubtitle}
               </p>
 
               <div className="space-y-3">
                 <a
-                  href={`https://api.whatsapp.com/send?phone=${settings.socials.whatsappNumber || '919876543210'}&text=${encodeURIComponent('Hello, I am reaching out regarding Shradhanjali Msg.')}`}
+                  href={`https://api.whatsapp.com/send?phone=${encodeURIComponent(whatsappNumber)}&text=${encodeURIComponent(whatsappMessage)}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="w-full flex items-center justify-center gap-2 py-3 px-4 bg-[#128C7E] hover:bg-[#0f776a] text-white font-semibold text-sm rounded-xl transition-colors shadow-sm"
                 >
                   <MessageCircle size={18} />
-                  <span>Connect on WhatsApp</span>
+                  <span>{whatsappButtonText}</span>
                 </a>
 
-                <a
-                  href={settings.socials.facebook}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="w-full flex items-center justify-center gap-2 py-3 px-4 bg-[#1877F2] hover:bg-[#1567d3] text-white font-semibold text-sm rounded-xl transition-colors shadow-sm"
-                >
-                  <span>Connect on Facebook</span>
-                </a>
+                {facebookUrl && (
+                  <a
+                    href={facebookUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-full flex items-center justify-center gap-2 py-3 px-4 bg-[#1877F2] hover:bg-[#1567d3] text-white font-semibold text-sm rounded-xl transition-colors shadow-sm"
+                  >
+                    <span>{facebookButtonText}</span>
+                  </a>
+                )}
               </div>
             </div>
           </div>

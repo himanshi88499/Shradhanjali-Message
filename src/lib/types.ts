@@ -78,6 +78,60 @@ export interface Post {
   robotsFollow?: boolean;
 }
 
+export interface PageValueCard {
+  id: string | number;
+  icon?: string;
+  title: string;
+  description: string;
+}
+
+export interface PageTeamMember {
+  id: string | number;
+  name: string;
+  role: string;
+  bio: string;
+  image?: string;
+}
+
+export interface PageMetaSection {
+  badge?: string;
+  subtitle?: string;
+  heroDescription?: string;
+  heroImage?: string;
+  heroImageAlt?: string;
+  lastUpdatedText?: string;
+
+  // About Page Widgets
+  valueCards?: PageValueCard[];
+  journeyTitle?: string;
+  journeyText?: string;
+  missionQuote?: string;
+  teamTitle?: string;
+  teamSubtitle?: string;
+  teamMembers?: PageTeamMember[];
+  ctaHeading?: string;
+  ctaSubtitle?: string;
+  ctaButtonText?: string;
+  ctaButtonLink?: string;
+
+  // Contact Page Widgets
+  phoneTitle?: string;
+  phoneNumber?: string;
+  phoneHours?: string;
+  emailTitle?: string;
+  emailAddress?: string;
+  emailResponseTime?: string;
+  addressTitle?: string;
+  addressText?: string;
+  quickChannelsTitle?: string;
+  quickChannelsSubtitle?: string;
+  whatsappButtonText?: string;
+  whatsappNumber?: string;
+  whatsappMessage?: string;
+  facebookButtonText?: string;
+  facebookUrl?: string;
+}
+
 export interface Page {
   id: string;
   title: string;
@@ -88,6 +142,7 @@ export interface Page {
   updatedAt: string;
   seoTitle?: string;
   seoDescription?: string;
+  metadata?: PageMetaSection;
 }
 
 export interface MenuItem {

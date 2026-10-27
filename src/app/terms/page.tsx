@@ -5,16 +5,23 @@ import { Footer } from '@/components/Footer';
 import { Breadcrumbs } from '@/components/Breadcrumbs';
 import { getPageBySlug } from '@/lib/db';
 
-export const metadata: Metadata = {
-  title: 'Terms & Conditions | Shradhanjali Msg',
-  description: 'Terms and Conditions of use for the Shradhanjali Msg platform.',
-  alternates: {
-    canonical: '/terms',
-  },
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const page = getPageBySlug('terms');
+  return {
+    title: page?.seoTitle || `${page?.title || 'Terms & Conditions'} | Shradhanjali Msg`,
+    description:
+      page?.seoDescription ||
+      'Terms and Conditions of use for the Shradhanjali Msg platform.',
+    alternates: {
+      canonical: '/terms',
+    },
+  };
+}
 
 export default function TermsPage() {
   const page = getPageBySlug('terms');
+  const pageTitle = page?.title || 'Terms & Conditions';
+  const lastUpdated = page?.metadata?.lastUpdatedText || 'Last Updated: April 2026';
 
   return (
     <div className="min-h-screen flex flex-col bg-theme-main text-theme-primary transition-colors">
@@ -24,16 +31,16 @@ export default function TermsPage() {
         <Breadcrumbs
           items={[
             { label: 'Home', url: '/' },
-            { label: 'Terms & Conditions' },
+            { label: pageTitle },
           ]}
         />
 
         <article className="mt-6 bg-theme-card border border-theme rounded-2xl p-6 sm:p-10 card-glow transition-colors">
           <h1 className="text-xl sm:text-2xl font-extrabold text-theme-primary mb-2">
-            {page?.title || 'Terms & Conditions'}
+            {pageTitle}
           </h1>
           <p className="text-xs text-theme-muted mb-8 pb-4 border-b border-theme">
-            Last Updated: April 2026
+            {lastUpdated}
           </p>
 
           <div className="prose prose-invert max-w-none text-sm sm:text-base text-theme-secondary leading-relaxed space-y-5">
